@@ -34,7 +34,9 @@ const prompt = ai.definePrompt({
   name: 'translateToOlchikiPrompt',
   input: {schema: GenerateOlchikiSentenceInputSchema},
   output: {schema: GenerateOlchikiSentenceOutputSchema},
-  prompt: `You are an expert linguist AI. Your task is to translate the provided 'inputText' (which can be in Hindi or English) into the Santali language, and then represent that Santali translation using the Ol Chiki script.
+  prompt: `You are an expert linguist AI.
+Your primary task is to accurately translate the provided 'inputText' (which can be in Hindi or English) into the Santali language.
+Once translated into Santali, your second task is to represent that Santali translation using only Ol Chiki script characters.
 
 Your response MUST be a valid JSON object and NOTHING ELSE. Do not include any text before or after the JSON object. Do not use markdown code blocks. The JSON object must start with '{' and end with '}'.
 
@@ -54,7 +56,14 @@ Output:
   "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?"
 }
 
-Now, translate the following:
+Example 3:
+Input: { "inputText": "hello, what are you doing?" }
+Output:
+{
+  "sentence": "ᱡᱚᱦᱟᱨ, ᱟᱢᱫᱚ ᱪᱮᱫ ᱪᱤᱢ ᱪᱤᱠᱟᱹᱭᱮᱫᱟ?"
+}
+
+Now, translate the following based on the inputText:
 {{{inputText}}}`,
 });
 
@@ -115,4 +124,3 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
     return output;
   }
 );
-

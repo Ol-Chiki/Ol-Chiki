@@ -21,7 +21,7 @@ interface AuthContextType {
   user: FirebaseUser | null;
   loading: boolean;
   signInWithGoogle: () => Promise<UserCredential | null>;
-  signUpWithEmail: (email: string, pass: string, displayName?: string, dob?: string, city?: string, state?: string) => Promise<UserCredential | null>;
+  signUpWithEmail: (email: string, pass: string, displayName: string, dob: string, city?: string, state?: string) => Promise<UserCredential | null>;
   signInWithEmail: (email: string, pass: string) => Promise<UserCredential | null>;
   logOut: () => Promise<void>;
   hasSkippedAuth: boolean;
@@ -74,27 +74,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUpWithEmail = async (email: string, pass: string, displayName?: string, dob?: string, city?: string, state?: string): Promise<UserCredential | null> => {
+  const signUpWithEmail = async (email: string, pass: string, displayName: string, dob: string, city?: string, state?: string): Promise<UserCredential | null> => {
     setLoading(true);
+    // DOB, City, State are collected but not directly stored on Firebase Auth user object by default.
+    // This would typically involve writing to a Firestore database alongside user creation.
+    // For now, we're just updating the Firebase Auth profile with displayName.
     try {
       const result = await createUserWithEmailAndPassword(auth, email, pass);
-      let finalDisplayName = displayName;
-      if (!finalDisplayName && email) {
-        finalDisplayName = email.split('@')[0]; // Basic display name from email
-      }
-      if (finalDisplayName) {
-        await updateProfile(result.user, { displayName: finalDisplayName });
-      }
-      // DOB, City, State are collected but not directly stored on Firebase Auth user object by default.
-      // This would typically involve writing to a Firestore database.
-      // For now, we're just updating the displayName.
+      await updateProfile(result.user, { displayName });
       
       // Manually update the user state to include the displayName immediately
-      const updatedUser = { ...result.user, displayName: finalDisplayName || null };
+      const updatedUser = { ...result.user, displayName }; // displayName is now guaranteed
       setUser(updatedUser as FirebaseUser);
 
-
-      toast({ title: 'Signed up successfully!', description: `Welcome ${finalDisplayName || result.user.email}!` });
+      toast({ title: 'Signed up successfully!', description: `Welcome ${displayName}!` });
       router.push('/');
       return result;
     } catch (error: any) {
@@ -177,3 +170,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, LogIn, UserPlus, SkipForward, CalendarIcon as CalendarIconLucide, MapPin } from 'lucide-react'; // Renamed to avoid conflict
+import { Loader2, LogIn, UserPlus, SkipForward, CalendarIcon as CalendarIconLucide, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -33,7 +33,7 @@ export default function AuthPage() {
   const [dob, setDob] = useState<string>(''); // Stores date as yyyy-MM-dd string
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [city, setCity] = useState('');
-  const [state, setStateName] = useState(''); // Renamed to avoid conflict with React's state
+  const [state, setStateName] = useState('');
 
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signup');
 
@@ -54,6 +54,11 @@ export default function AuthPage() {
   const handleEmailAuth = async (e: FormEvent) => {
     e.preventDefault();
     if (authMode === 'signup') {
+      if (!displayName || !dob) {
+        // This is a basic client-side check. More robust validation can be added.
+        alert("Display Name and Date of Birth are required for signup.");
+        return;
+      }
       await signUpWithEmail(email, password, displayName, dob, city, state); 
     } else {
       await signInWithEmail(email, password);
@@ -68,7 +73,7 @@ export default function AuthPage() {
             {authMode === 'signup' ? 'Create Account' : 'Welcome Back!'}
           </CardTitle>
           <CardDescription>
-            {authMode === 'signup' ? 'Join us to track your Ol Chiki learning journey.' : 'Sign in to continue your progress.'}
+            {authMode === 'signup' ? 'Join us to track your Ol Chiki learning journey. Display Name and Date of Birth are required.' : 'Sign in to continue your progress.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,18 +99,20 @@ export default function AuthPage() {
                 {authMode === 'signup' && (
                   <>
                     <div className="space-y-1.5">
-                      <Label htmlFor="displayName">Display Name (Optional)</Label>
+                      <Label htmlFor="displayName">Display Name <span className="text-destructive">*</span></Label>
                       <Input
                         id="displayName"
                         type="text"
-                        placeholder="Your Name"
+                        placeholder="Your Unique Name"
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
+                        required
                         disabled={loading}
                       />
+                       <p className="text-xs text-muted-foreground">This will be your public name. Choose wisely!</p>
                     </div>
                      <div className="space-y-1.5">
-                      <Label htmlFor="dob-trigger">Date of Birth (Optional)</Label>
+                      <Label htmlFor="dob-trigger">Date of Birth <span className="text-destructive">*</span></Label>
                       <div className="relative">
                         <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
                           <PopoverTrigger asChild>
@@ -113,10 +120,11 @@ export default function AuthPage() {
                               id="dob-trigger"
                               variant="outline"
                               className={cn(
-                                "w-full justify-start text-left font-normal pl-10 pr-3 py-2 h-10", // Match input height and padding
+                                "w-full justify-start text-left font-normal pl-10 pr-3 py-2 h-10", 
                                 !dob && "text-muted-foreground"
                               )}
                               disabled={loading}
+                              type="button" // Important for forms
                             >
                               {dob ? format(new Date(dob), "PPP") : <span>Pick a date</span>}
                             </Button>
@@ -132,7 +140,7 @@ export default function AuthPage() {
                                 } else {
                                   setDob('');
                                 }
-                                setIsDatePickerOpen(false); // Close popover on select
+                                setIsDatePickerOpen(false); 
                               }}
                               disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                               initialFocus
@@ -140,7 +148,7 @@ export default function AuthPage() {
                           </PopoverContent>
                         </Popover>
                       </div>
-                       <p className="text-xs text-muted-foreground">Used for potential username suggestions. Not stored publicly.</p>
+                       <p className="text-xs text-muted-foreground">Required for account features and username suggestions.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
@@ -214,6 +222,7 @@ export default function AuthPage() {
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   Sign in with Google
                 </Button>
+                 <p className="text-xs text-muted-foreground text-center">Google Sign-In will use your Google name as Display Name and may not collect Date of Birth from this form.</p>
               </div>
             </TabsContent>
           </Tabs>

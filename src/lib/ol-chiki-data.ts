@@ -34,16 +34,54 @@ export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 'c30', olChiki: 'ᱷ', transliteration: 'OH', pronunciation: '/ʰ/' },
 ];
 
-export const olChikiExampleWords: OlChikiWord[] = [
-  { id: 'w1', olChiki: 'ᱚᱲᱟᱜ', transliteration: 'oṛag', english: 'house' },
-  { id: 'w2', olChiki: 'ᱫᱟᱨᱮ', transliteration: 'dare', english: 'tree' },
-  { id: 'w3', olChiki: 'ᱥᱮᱛᱟ', transliteration: 'seta', english: 'dog' },
-  { id: 'w4', olChiki: 'ᱵᱟᱦᱟ', transliteration: 'baha', english: 'flower' },
-  { id: 'w5', olChiki: 'ᱫᱟᱜ', transliteration: 'dag’', english: 'water' },
-  { id: 'w6', olChiki: 'ᱤᱥᱠᱩᱞ', transliteration: 'iskul', english: 'school' },
-  { id: 'w7', olChiki: 'ᱠᱤᱛᱟᱹᱵ', transliteration: 'kitāb', english: 'book' },
-  { id: 'w8', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'cow' },
-];
+export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
+  "Animals": [
+    { id: 'a1', olChiki: 'ᱥᱮᱛᱟ', transliteration: 'seta', english: 'Dog' },
+    { id: 'a2', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'Cow' },
+    { id: 'a3', olChiki: 'ᱪᱮᱬᱮ', transliteration: 'cɛ̃ṛɛ', english: 'Bird' },
+    { id: 'a4', olChiki: 'ᱦᱟᱹᱠᱩ', transliteration: 'haku', english: 'Fish' },
+    { id: 'a5', olChiki: 'ᱵᱤᱛᱠᱤᆯ', transliteration: 'bitkil', english: 'Cat' },
+    { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' },
+    { id: 'a7', olChiki: 'ᱠᱩᱞᱟᱹᱭ', transliteration: 'kulay', english: 'Rabbit' },
+  ],
+  "Plants & Nature": [
+    { id: 'p1', olChiki: 'ᱫᱟᱨᱮ', transliteration: 'dare', english: 'Tree' },
+    { id: 'p2', olChiki: 'ᱵᱟᱦᱟ', transliteration: 'baha', english: 'Flower' },
+    { id: 'p3', olChiki: 'ᱥᱟᱠᱟᱢ', transliteration: 'sakam', english: 'Leaf' },
+    { id: 'p4', olChiki: 'ᱵᱩᱨᱩ', transliteration: 'buru', english: 'Mountain' },
+    { id: 'p5', olChiki: 'ᱜᱟᱰᱟ', transliteration: 'gaḍa', english: 'River' },
+    { id: 'p6', olChiki: 'ᱥᱤᱧ', transliteration: 'siñ', english: 'Sun' },
+    { id: 'p7', olChiki: 'ᱪᱟᱸᱫᱚ', transliteration: 'cando', english: 'Moon' },
+  ],
+  "Things & Objects": [
+    { id: 't1', olChiki: 'ᱚᱲᱟᱜ', transliteration: 'oṛag', english: 'House' },
+    { id: 't2', olChiki: 'ᱠᱤᱛᱟᱹᱵ', transliteration: 'kitāb', english: 'Book' },
+    { id: 't3', olChiki: 'ᱪᱩᱢᱟᱹᱬ', transliteration: 'cumaṇ', english: 'Pot' },
+    { id: 't4', olChiki: 'ᱥᱟᱭᱠᱮᱞ', transliteration: 'saikel', english: 'Bicycle' },
+    { id: 't5', olChiki: 'ᱫᱟᱜ', transliteration: 'dag’', english: 'Water' },
+    { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kaṭub', english: 'Knife' },
+    { id: 't7', olChiki: 'ᱪᱟᱨᱯᱟᱭ', transliteration: 'carpai', english: 'Bed' },
+  ],
+  "Food Items": [
+    { id: 'f1', olChiki: 'ᱫᱟᱠᱟ', transliteration: 'daka', english: 'Cooked Rice' },
+    { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Curry/Vegetable Dish' },
+    { id: 'f3', olChiki: 'ᱡᱚ', transliteration: 'jo', english: 'Fruit' },
+    { id: 'f4', olChiki: 'ᱯᱤᱴᱷᱟᱹ', transliteration: 'piṭhạ̈', english: 'Rice Cake/Pancake' },
+    { id: 'f5', olChiki: 'ᱦᱟᱺᱰᱤ', transliteration: 'haṇḍi', english: 'Rice Beer' },
+    { id: 'f6', olChiki: 'ᱵᱩᱞᱩᱝ', transliteration: 'buluṅ', english: 'Salt' },
+    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mạric', english: 'Chilli' },
+  ],
+  "Other Common Words": [
+    { id: 'o1', olChiki: 'ᱤᱥᱠᱩᱞ', transliteration: 'iskul', english: 'School' },
+    { id: 'o2', olChiki: 'ᱵᱟᱡᱟᱨ', transliteration: 'bajar', english: 'Market' },
+    { id: 'o3', olChiki: 'ᱦᱚᱲ', transliteration: 'hɔṛ', english: 'Person/Man' },
+    { id: 'o4', olChiki: 'ᱟᱹᱛᱩ', transliteration: 'ạtu', english: 'Village' },
+    { id: 'o5', olChiki: 'ᱧᱩᱛᱟᱹ', transliteration: 'ñutạ̈', english: 'Night' },
+    { id: 'o6', olChiki: 'ᱥᱮᱛᱟᱜ', transliteration: 'setag', english: 'Morning' },
+    { id: 'o7', olChiki: 'ᱟᱭᱩᱵ', transliteration: 'ayub', english: 'Evening' },
+  ]
+};
+
 
 const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "᱓", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
 
@@ -82,20 +120,20 @@ function getSantaliWord(n: number): string {
   const tensDigit = Math.floor(n / 10);
   const unitDigit = n % 10;
 
-  if (unitDigit === 0 && n >=30 && n < 100) { // For 30, 40, ..., 90
+  if (unitDigit === 0 && n >=30 && n < 100) { 
     return `${santaliUnitWords[tensDigit]} Gel`;
   }
-  if (n >= 30 && n < 100) { // For 31-39, 41-49 etc.
+  if (n >= 30 && n < 100) { 
     return `${santaliUnitWords[tensDigit]} Gel ${santaliUnitWords[unitDigit]}`;
   }
   
   if (n === 100) return "Say";
-  return ""; // Should not happen for 0-100 with current logic
+  return ""; 
 }
 
 function getOlChikiNumeral(n: number): string {
   if (n < 0 || n > 100) return "";
-  if (n === 100) return olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0] + olChikiUnitGlyphs[0]; // 100
+  if (n === 100) return olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0] + olChikiUnitGlyphs[0]; 
   
   const s = String(n);
   let olChikiStr = "";

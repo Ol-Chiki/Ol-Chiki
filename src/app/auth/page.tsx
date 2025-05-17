@@ -8,8 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, LogIn, UserPlus, SkipForward, CalendarIcon, MapPin } from 'lucide-react';
+import { Loader2, LogIn, UserPlus, SkipForward, CalendarIcon as CalendarIconLucide, MapPin } from 'lucide-react'; // Renamed to avoid conflict
 import { useRouter } from 'next/navigation';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 // Simple SVG for Google icon
 const GoogleIcon = () => (
@@ -26,7 +30,8 @@ export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [dob, setDob] = useState('');
+  const [dob, setDob] = useState<string>(''); // Stores date as yyyy-MM-dd string
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [city, setCity] = useState('');
   const [state, setStateName] = useState(''); // Renamed to avoid conflict with React's state
 
@@ -49,9 +54,7 @@ export default function AuthPage() {
   const handleEmailAuth = async (e: FormEvent) => {
     e.preventDefault();
     if (authMode === 'signup') {
-      // Pass displayName, dob, city, state to signUpWithEmail
-      // For now, dob, city, state are collected but not fully utilized in Firebase Auth profile directly
-      await signUpWithEmail(email, password, displayName); 
+      await signUpWithEmail(email, password, displayName, dob, city, state); 
     } else {
       await signInWithEmail(email, password);
     }
@@ -102,18 +105,40 @@ export default function AuthPage() {
                       />
                     </div>
                      <div className="space-y-1.5">
-                      <Label htmlFor="dob">Date of Birth (Optional)</Label>
+                      <Label htmlFor="dob-trigger">Date of Birth (Optional)</Label>
                       <div className="relative">
-                        <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="dob"
-                          type="text" // Consider using type="date" or a date picker component
-                          placeholder="YYYY-MM-DD"
-                          value={dob}
-                          onChange={(e) => setDob(e.target.value)}
-                          disabled={loading}
-                          className="pl-10"
-                        />
+                        <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              id="dob-trigger"
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal pl-10 pr-3 py-2 h-10", // Match input height and padding
+                                !dob && "text-muted-foreground"
+                              )}
+                              disabled={loading}
+                            >
+                              {dob ? format(new Date(dob), "PPP") : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <CalendarIconLucide className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={dob ? new Date(dob) : undefined}
+                              onSelect={(date) => {
+                                if (date) {
+                                  setDob(format(date, 'yyyy-MM-dd'));
+                                } else {
+                                  setDob('');
+                                }
+                                setIsDatePickerOpen(false); // Close popover on select
+                              }}
+                              disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                        <p className="text-xs text-muted-foreground">Used for potential username suggestions. Not stored publicly.</p>
                     </div>

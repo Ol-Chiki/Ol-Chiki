@@ -36,12 +36,12 @@ export default function OlChikiPathPage() {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex flex-col bg-background">
         <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-50 h-18">
-          <div className="flex items-center gap-2 sm:gap-3"> {/* Adjusted gap for potentially tighter space */}
-            <SidebarTrigger className="md:hidden mr-1 sm:mr-2"> {/* Adjusted margin */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <SidebarTrigger className="md:hidden mr-1 sm:mr-2">
               <PanelLeft />
             </SidebarTrigger>
-            <Languages className="h-7 w-7 sm:h-8 sm:w-8" /> {/* Slightly smaller icon on smallest screens */}
-            <h1 className="text-lg sm:text-2xl font-bold tracking-tight whitespace-nowrap">Let's Learn Ol Chiki</h1> {/* Adjusted text size, added whitespace-nowrap */}
+            <Languages className="h-6 w-6" />
+            <h1 className="text-base sm:text-xl font-bold tracking-tight">Let's Learn Ol Chiki</h1>
           </div>
         </header>
 

@@ -4,12 +4,22 @@
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Type, ListOrdered, ArrowRight } from 'lucide-react';
+import { Type, ListOrdered, FileText, ArrowRight } from 'lucide-react';
 // Ensure ActiveView type is accessible, e.g., by exporting from page.tsx or defining globally
 // For this example, we'll assume ActiveView is available or define it if needed.
 // If page.tsx exports it: import type { ActiveView } from '@/app/page'; 
 // For now, let's define it locally to avoid import issues if not exported:
-type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
+type ActiveView = 
+  | 'basic-hub' 
+  | 'alphabet' 
+  | 'numbers' 
+  | 'words' 
+  | 'sentence' 
+  | 'practice-hub'
+  | 'reading-practice-hub'
+  | 'writing-practice-hub'
+  | 'writing-quiz-basic'
+  | 'game';
 
 
 interface BasicLearningHubProps {
@@ -17,7 +27,7 @@ interface BasicLearningHubProps {
 }
 
 interface HubItem {
-  id: ActiveView;
+  id: Exclude<ActiveView, 'basic-hub' | 'sentence' | 'practice-hub' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' | 'game'>;
   title: string;
   description: string;
   icon: LucideIcon;
@@ -26,6 +36,7 @@ interface HubItem {
 const hubItems: HubItem[] = [
   { id: 'alphabet', title: 'Learn Alphabet', description: 'Explore the foundational Ol Chiki characters and their sounds.', icon: Type },
   { id: 'numbers', title: 'Learn Numbers', description: 'Master Ol Chiki numerals from zero to one hundred.', icon: ListOrdered },
+  { id: 'words', title: 'Learn Vocabulary', description: 'Discover common Ol Chiki words across various categories.', icon: FileText },
 ];
 
 export default function BasicLearningHub({ onSectionSelect }: BasicLearningHubProps) {
@@ -34,7 +45,7 @@ export default function BasicLearningHub({ onSectionSelect }: BasicLearningHubPr
       <h2 className="text-3xl font-bold mb-8 text-primary tracking-tight text-center">
         Basic Learning Hub
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-3xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-4xl mx-auto">
         {hubItems.map((item) => (
           <Card 
             key={item.id} 

@@ -3,20 +3,20 @@
 
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
-import { User as UserIconLucide } from 'lucide-react'; // Removed LogIn as it's handled by profile page
+import { User as UserIconLucide } from 'lucide-react'; 
 import type { User as FirebaseUser } from 'firebase/auth';
-import type { ActiveView } from '@/app/page'; // Import ActiveView type
+import type { ActiveView } from '@/app/page'; 
 
 interface BottomNavItem {
-  id: string; // Keep as string, activeView will be ActiveView type
+  id: string; 
   label: string;
   icon: LucideIcon;
 }
 
 interface BottomNavigationProps {
   navItems: BottomNavItem[];
-  activeView: ActiveView; // Use imported ActiveView type
-  onNavChange: (viewId: ActiveView) => void; // Ensure viewId is ActiveView
+  activeView: ActiveView; 
+  onNavChange: (viewId: ActiveView) => void; 
   onProfileClick: () => void;
   currentUser: FirebaseUser | null;
 }
@@ -24,10 +24,10 @@ interface BottomNavigationProps {
 // Define distinct colors for each inactive icon
 const iconColorClasses: Record<string, string> = {
   'basic-hub': 'text-teal-500', 
-  words: 'text-emerald-500', 
-  sentence: 'text-fuchsia-500', 
-  'practice-hub': 'text-sky-500', // New color for Practice Hub
-  game: 'text-violet-500',
+  // 'words': 'text-emerald-500', // Removed as it's now under basic-hub
+  'sentence': 'text-fuchsia-500', 
+  'practice-hub': 'text-sky-500', 
+  'game': 'text-violet-500',
 };
 
 export default function BottomNavigation({
@@ -47,11 +47,11 @@ export default function BottomNavigation({
       {navItems.map((item) => {
         // Determine if the current item is active, considering parent hubs
         let isActive = activeView === item.id;
-        if (item.id === 'basic-hub' && (activeView === 'alphabet' || activeView === 'numbers')) {
+        if (item.id === 'basic-hub' && (activeView === 'alphabet' || activeView === 'numbers' || activeView === 'words')) {
           isActive = true;
         }
         if (item.id === 'practice-hub' && (
-            activeView === 'reading-practice-placeholder' || 
+            activeView === 'reading-practice-hub' || // Corrected placeholder if it was used
             activeView === 'writing-practice-hub' ||
             activeView === 'writing-quiz-basic'
           )) {
@@ -64,7 +64,7 @@ export default function BottomNavigation({
         return (
           <button
             key={item.id}
-            onClick={() => onNavChange(item.id as ActiveView)} // Cast item.id to ActiveView
+            onClick={() => onNavChange(item.id as ActiveView)} 
             className={cn(
               'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20',
               isActive && 'border-t-2 border-primary'
@@ -90,5 +90,3 @@ export default function BottomNavigation({
     </nav>
   );
 }
-
-    

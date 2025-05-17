@@ -12,11 +12,11 @@ import WritingPracticeQuiz from "@/components/ol-chiki/writing-practice-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
 import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import PracticeHub from '@/components/ol-chiki/practice-hub';
-import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub'; // New
+import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
 import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { GraduationCap, FileText, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
+import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react"; // Removed FileText
 import type { LucideIcon } from 'lucide-react';
 
 export type ActiveView = 
@@ -26,13 +26,13 @@ export type ActiveView =
   | 'words' 
   | 'sentence' 
   | 'practice-hub'
-  | 'reading-practice-hub' // New
+  | 'reading-practice-hub' 
   | 'writing-practice-hub'
   | 'writing-quiz-basic'
   | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic'>;
+  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic'>;
   label: string;
   icon: LucideIcon;
 }
@@ -114,7 +114,7 @@ export default function OlChikiPathPage() {
 
   const bottomNavItems: NavItemConfig[] = [
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
-    { id: 'words', label: 'Words', icon: FileText },
+    // { id: 'words', label: 'Words', icon: FileText }, // Removed from bottom nav
     { id: 'sentence', label: 'Santad AI', icon: Sparkles },
     { id: 'practice-hub', label: 'Practice', icon: ClipboardEdit },
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
@@ -131,7 +131,7 @@ export default function OlChikiPathPage() {
     case 'numbers':
       currentComponent = <LearnNumbers />;
       break;
-    case 'words':
+    case 'words': // Still needs to be handled
       currentComponent = <LearnWords />;
       break;
     case 'sentence':
@@ -140,8 +140,8 @@ export default function OlChikiPathPage() {
     case 'practice-hub':
       currentComponent = <PracticeHub onSectionSelect={setActiveView} />;
       break;
-    case 'reading-practice-hub': // New case
-      currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />; // Assuming onLevelSelect will be used later
+    case 'reading-practice-hub': 
+      currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />; 
       break;
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -43,7 +43,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
 
   '.': '᱾', // MUCAAD (Ol Chiki Full Stop)
   ',': 'ᱹ', // AHAD (Ol Chiki Comma/Separator)
-  '?': '<y_bin_358>', // DOUBLE MUCAAD (Often used as a question mark or emphasis)
+  '?': ' কিভাবে', // DOUBLE MUCAAD (Often used as a question mark or emphasis)
 
   // Digits
   '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',
@@ -62,23 +62,19 @@ export default function SentencePractice() {
   const [directInputText, setDirectInputText] = useState<string>('');
   const [directTransliteratedScript, setDirectTransliteratedScript] = useState<string>('');
 
-  const doDirectKeyTransliterate = (inputText: string): string => {
+  const doDirectKeyTransliterate = useCallback((currentInput: string): string => {
     let result = '';
-    for (let i = 0; i < inputText.length; i++) {
-      const char = inputText[i];
-      result += directKeyToOlChikiMap[char] || char; // If not in map, use original char
+    for (let i = 0; i < currentInput.length; i++) {
+      const char = currentInput[i];
+      result += directKeyToOlChikiMap[char] || char;
     }
     return result;
-  };
+  }, []); // directKeyToOlChikiMap is constant and defined outside
 
   useEffect(() => {
-    if (directInputText) {
-      const result = doDirectKeyTransliterate(directInputText);
-      setDirectTransliteratedScript(result);
-    } else {
-      setDirectTransliteratedScript('');
-    }
-  }, [directInputText]);
+    const result = doDirectKeyTransliterate(directInputText);
+    setDirectTransliteratedScript(result);
+  }, [directInputText, doDirectKeyTransliterate]);
 
 
   // ---- AI Translator Tool States & Logic ----
@@ -126,7 +122,7 @@ export default function SentencePractice() {
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto space-y-8">
-      {/* Tool 1: Ol Chiki Direct Key Transliteration Tool */}
+      {/* Tool 1: Ol Chiki Direct Typing Tool */}
       <div>
         <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">Ol Chiki Direct Typing Tool</h2>
         <Card className="shadow-lg">
@@ -134,8 +130,9 @@ export default function SentencePractice() {
             <CardTitle>English Keyboard to Ol Chiki Script (Real-time)</CardTitle>
             <CardDescription>
               Type English characters to see their corresponding Ol Chiki script instantly.
-              This tool provides a direct character mapping for common keys (e.g., 'a' to ᱚ, Shift+A to ᱟ, '.' to ᱾).
-              Symbols like '!' and emojis will appear as typed. It is not a full language translator.
+              This tool provides a direct character mapping for common keys (e.g., 'a' to ᱚ, Shift+A to ᱟ).
+              Punctuation like '.', ',', '?' are mapped to Ol Chiki equivalents. 
+              Other symbols (like '!') and emojis will appear as typed. It is not a full language translator.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

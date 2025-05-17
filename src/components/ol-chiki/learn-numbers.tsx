@@ -5,7 +5,7 @@ import type { OlChikiNumber } from '@/types/ol-chiki';
 import { olChikiNumbers } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog'; // Removed DialogHeader, DialogTitle, DialogDescription as they are used via Card components
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -21,11 +21,11 @@ export default function LearnNumbers() {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
     }
-    setActiveCardId(num.id); // Highlight on mousedown
+    setActiveCardId(num.id); // Highlight on mousedown/touchstart
     longPressTimerRef.current = setTimeout(() => {
       setLongPressedNumber(num);
       setIsDialogOpen(true);
-      longPressTimerRef.current = null;
+      longPressTimerRef.current = null; // Clear timer once dialog is triggered
     }, LONG_PRESS_DURATION);
   };
 
@@ -33,6 +33,8 @@ export default function LearnNumbers() {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
+      // If timer is cleared before firing, it's a click (or short tap)
+      // The activeCardId is already set for highlight
     }
   };
 
@@ -51,11 +53,11 @@ export default function LearnNumbers() {
               key={num.id}
               onMouseDown={() => handleInteractionStart(num)}
               onMouseUp={handleInteractionEnd}
-              onMouseLeave={handleInteractionEnd}
+              onMouseLeave={handleInteractionEnd} // End interaction if mouse leaves while pressed
               onTouchStart={() => handleInteractionStart(num)}
               onTouchEnd={handleInteractionEnd}
               className={cn(
-                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none", // Added select-none
+                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none",
                 activeCardId === num.id && "ring-2 ring-primary scale-105 shadow-xl"
               )}
             >

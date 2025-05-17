@@ -5,7 +5,7 @@ import type { OlChikiCharacter } from '@/types/ol-chiki';
 import { olChikiCharacters } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog'; // Removed DialogHeader, DialogTitle, DialogDescription as they are used via Card components
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -22,12 +22,12 @@ export default function LearnAlphabet() {
       clearTimeout(longPressTimerRef.current);
     }
 
-    setActiveCardId(character.id); // Highlight on mousedown
+    setActiveCardId(character.id); // Highlight on mousedown/touchstart
 
     longPressTimerRef.current = setTimeout(() => {
       setLongPressedCharacter(character);
       setIsDialogOpen(true);
-      longPressTimerRef.current = null;
+      longPressTimerRef.current = null; // Clear timer once dialog is triggered
     }, LONG_PRESS_DURATION);
   };
 
@@ -35,6 +35,8 @@ export default function LearnAlphabet() {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
+      // If timer is cleared before firing, it's a click (or short tap)
+      // The activeCardId is already set for highlight
     }
   };
 
@@ -55,11 +57,11 @@ export default function LearnAlphabet() {
               key={char.id}
               onMouseDown={() => handleInteractionStart(char)}
               onMouseUp={handleInteractionEnd}
-              onMouseLeave={handleInteractionEnd}
+              onMouseLeave={handleInteractionEnd} // End interaction if mouse leaves while pressed
               onTouchStart={() => handleInteractionStart(char)}
               onTouchEnd={handleInteractionEnd}
               className={cn(
-                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none", // Added select-none
+                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none",
                 activeCardId === char.id && "ring-2 ring-primary scale-105 shadow-xl"
               )}
             >
@@ -74,7 +76,7 @@ export default function LearnAlphabet() {
                 </p>
                 {char.pronunciation && (
                   <CardDescription className="text-xs text-muted-foreground mt-1">
-                    {char.pronunciation}
+                    ({char.pronunciation})
                   </CardDescription>
                 )}
               </CardContent>
@@ -100,7 +102,7 @@ export default function LearnAlphabet() {
             <CardContent className="p-4 sm:p-6 text-center flex-grow flex flex-col justify-center">
               <p className="text-3xl sm:text-4xl font-semibold text-accent">{longPressedCharacter.transliteration}</p>
               {longPressedCharacter.pronunciation && (
-                <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">{longPressedCharacter.pronunciation}</CardDescription>
+                <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">({longPressedCharacter.pronunciation})</CardDescription>
               )}
             </CardContent>
           </DialogContent>

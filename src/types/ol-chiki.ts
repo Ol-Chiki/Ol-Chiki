@@ -22,3 +22,20 @@ export interface OlChikiNumber {
   santaliWord: string; // Santali word for the number, e.g., "Sun", "Mit'"
 }
 
+// Game related types
+export interface GameLevel {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType; // Or string for image path if using actual image files
+  stars: number; // 0-5, persisted score
+  isLocked: boolean; // For future progression
+  questionCount: number;
+  gameComponentIdentifier: string; // To know which game component to render
+}
+
+export interface TranscriptionQuestion {
+  id: string; // Typically the character's id
+  olChiki: string;
+  correctAnswer: string; // Transliteration or other expected answer
+}

@@ -21,10 +21,11 @@ import LearnNumbers from "@/components/ol-chiki/learn-numbers";
 import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
-import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered } from "lucide-react";
+import GameHub from "@/components/ol-chiki/game-hub"; // New Game Hub
+import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered, Gamepad2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
-type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz';
+type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
 interface PageView {
   id: ActiveView;
@@ -43,6 +44,7 @@ export default function OlChikiPathPage() {
     { id: 'words', label: 'Example Words', icon: FileText, component: <LearnWords /> },
     { id: 'sentence', label: 'Sentence AI', icon: Sparkles, component: <SentencePractice /> },
     { id: 'quiz', label: 'Quiz', icon: Puzzle, component: <CharacterQuiz /> },
+    { id: 'game', label: 'Game Zone', icon: Gamepad2, component: <GameHub /> }, // New Game Zone
   ];
 
   const activeComponent = pageViews.find(view => view.id === activeView)?.component;

@@ -50,16 +50,16 @@ Example 1:
 Input: { "inputText": "What is your name?" }
 Output:
 {
-  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
-  "englishTransliteration": "omagan nyutum chet kana?"
+  "sentence": "ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
+  "englishTransliteration": "amaag nyutum chet kana?"
 }
 
 Example 2:
 Input: { "inputText": "आपका नाम क्या है?" }
 Output:
 {
-  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
-  "englishTransliteration": "omagan nyutum chet kana?"
+  "sentence": "ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
+  "englishTransliteration": "amaag nyutum chet kana?"
 }
 
 Example 3:

@@ -146,7 +146,7 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     id: 'type-olchiki-word-from-english',
     title: 'Type Ol Chiki Word (from English)',
     description: 'See an English word, type its Ol Chiki translation.',
-    icon: Keyboard,
+    icon: Keyboard, // Changed from KeyboardMouse
     isLocked: true,
     questionCount: 15,
     gameComponentIdentifier: 'TypeOlChikiWordFromEnglish',
@@ -233,27 +233,35 @@ export default function GameHub() {
   }, [user]);
 
   useEffect(() => {
-    // Load data from localStorage when the key changes (user logs in/out or on initial load)
     const storedLevelsData = localStorage.getItem(localStorageKey);
+    let newLevelsState: GameLevel[];
+
     if (storedLevelsData) {
       try {
         const storedStarsArray: Array<{ id: string; stars: number }> = JSON.parse(storedLevelsData);
-        setLevels(currentLevels =>
-          initialGameLevelsData.map(initialLevel => { // Reset to initial data structure
-            const storedData = storedStarsArray.find(s => s.id === initialLevel.id);
-            return { ...initialLevel, stars: storedData ? storedData.stars : 0 };
-          })
-        );
+        // Merge stored stars with the initial structure.
+        // This ensures all levels defined in initialGameLevelsData are present,
+        // and their properties (like title, description, isLocked) are up-to-date.
+        // Only the 'stars' property is taken from localStorage.
+        newLevelsState = initialGameLevelsData.map(initialLevel => {
+          const storedLevelProgress = storedStarsArray.find(s => s.id === initialLevel.id);
+          return {
+            ...initialLevel, // Use all base properties from initialGameLevelsData
+            stars: storedLevelProgress ? storedLevelProgress.stars : 0,
+          };
+        });
       } catch (error) {
         console.error("Failed to parse game levels from localStorage for key:", localStorageKey, error);
-         // If parsing fails, reset to initial state for the current user type
-        setLevels(initialGameLevelsData.map(level => ({ ...level, stars: 0 })));
+        // On error, fallback to initial state with 0 stars for all levels
+        newLevelsState = initialGameLevelsData.map(level => ({ ...level, stars: 0 }));
       }
     } else {
-      // No data for this user/key, set to initial state
-      setLevels(initialGameLevelsData.map(level => ({ ...level, stars: 0 })));
+      // No stored data, use initial state with 0 stars for all levels
+      newLevelsState = initialGameLevelsData.map(level => ({ ...level, stars: 0 }));
     }
-  }, [localStorageKey]); // Rerun when localStorageKey changes
+    setLevels(newLevelsState);
+  }, [localStorageKey]); // Rerun when localStorageKey changes (e.g., on login/logout)
+
 
   const handleGameStart = (levelId: string) => {
     const levelToStart = levels.find(l => l.id === levelId);
@@ -309,6 +317,7 @@ export default function GameHub() {
         />
       );
     } else if (!implementedGameIdentifiers.includes(activeGame.gameComponentIdentifier) && !activeGame.isLocked) {
+      // This handles unlocked games that are not yet implemented
       return (
         <div className="p-4 md:p-6 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
           <Gamepad2 className="w-16 h-16 text-primary mb-4" />
@@ -319,6 +328,7 @@ export default function GameHub() {
         </div>
       );
     }
+    // Fallback for locked or unknown game identifiers if somehow started
     return (
       <div className="p-4 md:p-6 text-center">
         <h3 className="text-2xl font-bold mb-4 text-destructive">Error</h3>
@@ -347,11 +357,11 @@ export default function GameHub() {
                 tabIndex={level.isLocked ? -1 : 0}
               >
                 <CardHeader className="flex flex-row items-center justify-between p-4 space-x-4">
-                  <div className="flex items-center space-x-3.5 min-w-0">
+                  <div className="flex items-center space-x-3.5 min-w-0"> {/* min-w-0 helps with truncation */}
                     <div className={`p-2.5 rounded-full ${level.isLocked ? 'bg-muted' : 'bg-primary/10'}`}>
                        <level.icon className={`h-9 w-9 ${level.isLocked ? 'text-muted-foreground' : 'text-primary'}`} />
                     </div>
-                    <div className="min-w-0 flex-grow"> 
+                    <div className="min-w-0 flex-grow">  {/* min-w-0 helps with truncation */}
                       <CardTitle className="text-lg font-semibold text-accent leading-tight truncate">{level.title}</CardTitle>
                       <CardDescription className="text-xs text-muted-foreground mt-0.5 truncate">{level.description}</CardDescription>
                       {!level.isLocked && <StarRating rating={level.stars} size={18} className="mt-1.5"/>}
@@ -392,3 +402,4 @@ export default function GameHub() {
     </div>
   );
 }
+

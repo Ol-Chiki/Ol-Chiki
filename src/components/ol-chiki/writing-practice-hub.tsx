@@ -6,13 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Zap, Feather, Brain, Trophy, Gem, Star, ArrowRight, Lock } from 'lucide-react';
 import type { ActiveView } from '@/app/page';
+import { useToast } from '@/hooks/use-toast';
 
 interface WritingPracticeHubProps {
   onLevelSelect: (viewId: ActiveView) => void;
 }
 
 interface LevelItem {
-  id: ActiveView; // Specific view ID for this level's quiz
+  id: ActiveView; 
   title: string;
   description: string;
   icon: LucideIcon;
@@ -20,15 +21,25 @@ interface LevelItem {
 }
 
 const levels: LevelItem[] = [
-  { id: 'writing-quiz-basic', title: 'Basic Level', description: 'Practice with fundamental characters and simple words.', icon: Zap, isAvailable: true },
-  { id: 'writing-quiz-basic', title: 'Easy Level', description: 'Form common words and short phrases.', icon: Feather, isAvailable: false },
-  { id: 'writing-quiz-basic', title: 'Intermediate Level', description: 'Construct slightly more complex words and basic sentences.', icon: Brain, isAvailable: false },
-  { id: 'writing-quiz-basic', title: 'Medium Level', description: 'Translate and type short sentences with varied vocabulary.', icon: Star, isAvailable: false },
-  { id: 'writing-quiz-basic', title: 'Hard Level', description: 'Tackle longer sentences and more nuanced vocabulary.', icon: Trophy, isAvailable: false },
-  { id: 'writing-quiz-basic', title: 'Expert Level', description: 'Master complex sentence structures and advanced vocabulary.', icon: Gem, isAvailable: false },
+  { id: 'writing-basic-selection-hub', title: 'Basic Level', description: 'Practice with fundamental characters and simple words. 50 quiz sets available.', icon: Zap, isAvailable: true },
+  { id: 'writing-easy-selection-hub', title: 'Easy Level', description: 'Form common words and short phrases. 50 quiz sets available.', icon: Feather, isAvailable: true },
+  { id: 'writing-intermediate-selection-hub', title: 'Intermediate Level', description: 'Construct more complex words and basic sentences. 50 quiz sets available.', icon: Brain, isAvailable: true },
+  { id: 'writing-medium-selection-hub', title: 'Medium Level', description: 'Translate and type short sentences with varied vocabulary. 50 quiz sets available.', icon: Star, isAvailable: true },
+  { id: 'writing-hard-selection-hub', title: 'Hard Level', description: 'Tackle longer sentences and more nuanced vocabulary. 50 quiz sets available.', icon: Trophy, isAvailable: true },
+  { id: 'writing-expert-selection-hub', title: 'Expert Level', description: 'Master complex sentence structures and advanced vocabulary. 50 quiz sets available.', icon: Gem, isAvailable: true },
 ];
 
 export default function WritingPracticeHub({ onLevelSelect }: WritingPracticeHubProps) {
+  const { toast } = useToast();
+  
+  const handleLevelClick = (level: LevelItem) => {
+    if (level.isAvailable) {
+      onLevelSelect(level.id);
+    } else {
+      toast({ title: "Coming Soon!", description: `The "${level.title}" level is under development.` });
+    }
+  };
+
   return (
     <div className="p-4 md:p-6">
       <h2 className="text-3xl font-bold mb-8 text-primary tracking-tight text-center">
@@ -40,7 +51,7 @@ export default function WritingPracticeHub({ onLevelSelect }: WritingPracticeHub
             key={level.title} 
             className={`shadow-lg transition-all duration-300 group bg-card flex flex-col overflow-hidden rounded-xl border-2 
                         ${level.isAvailable ? 'hover:shadow-2xl cursor-pointer hover:border-primary/50' : 'opacity-60 cursor-not-allowed bg-muted/50'}`}
-            onClick={() => level.isAvailable && onLevelSelect(level.id)}
+            onClick={() => handleLevelClick(level)}
             aria-disabled={!level.isAvailable}
           >
             <CardHeader className="p-5 bg-primary/5 group-hover:bg-primary/10 transition-colors">
@@ -75,5 +86,4 @@ export default function WritingPracticeHub({ onLevelSelect }: WritingPracticeHub
     </div>
   );
 }
-
     

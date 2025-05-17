@@ -3,51 +3,70 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { StarRating } from '@/components/ui/star-rating';
 import { olChikiCharacters } from '@/lib/ol-chiki-data';
 import { RefreshCw, ChevronLeft, ChevronRight, Lightbulb, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
 
-// Sample English sentences for users to translate and type in Ol Chiki
-// For a 10-question quiz, we'll select from these or a larger pool.
-const allSampleEnglishSentences = [
-  "What is your name?",
-  "Learn Ol Chiki Script",
-  "This is a house",
-  "Wake up in the morning",
-  "The dog is barking",
-  "I am reading a book",
-  "My village is beautiful",
-  "Water is life",
-  "The sun rises in the east",
-  "Eat your food slowly"
-];
+// Sample English sentences - will be expanded based on level
+const allSampleEnglishSentences: Record<string, string[]> = {
+  Basic: [
+    "What is your name?",
+    "Learn Ol Chiki Script",
+    "This is a house",
+    "Wake up in the morning",
+    "The dog is barking",
+    "I am reading a book",
+    "My village is beautiful",
+    "Water is life",
+    "The sun rises in the east",
+    "Eat your food slowly"
+  ],
+  // Add more sentences for Easy, Intermediate, etc. later
+};
 
 const QUIZ_LENGTH = 10;
+const WRITING_QUIZ_SCORES_STORAGE_KEY_PREFIX_BASE = 'olChikiWritingQuizScores_';
+
 
 interface WritingPracticeQuizProps {
-  level: string; // e.g., "Basic"
-  onQuizComplete: () => void; // Callback when quiz is finished
+  level: string; 
+  quizSetNumber: number | null;
+  onQuizComplete: () => void; 
 }
 
-export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPracticeQuizProps) {
+export default function WritingPracticeQuiz({ level, quizSetNumber, onQuizComplete }: WritingPracticeQuizProps) {
+  const { user } = useAuth();
   const [quizSentences, setQuizSentences] = useState<string[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [typedOlChiki, setTypedOlChiki] = useState('');
   const [englishTransliteration, setEnglishTransliteration] = useState('');
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(true); // Start with keyboard visible
-  // Future state: [userAnswers, setUserAnswers] = useState<string[]>([]);
-  // Future state: [score, setScore] = useState(0);
-  // Future state: [isQuizFinished, setIsQuizFinished] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(true);
+  const [quizPhase, setQuizPhase] = useState<'playing' | 'finished'>('playing');
+  const [score, setScore] = useState(0); // Simple score, to be developed
+
+  const getStorageKey = useCallback(() => {
+    if (!quizSetNumber) return null;
+    const userId = user?.uid || 'anonymous';
+    return `${WRITING_QUIZ_SCORES_STORAGE_KEY_PREFIX_BASE}${level.toLowerCase()}_${userId}_set${quizSetNumber}`;
+  }, [user, level, quizSetNumber]);
 
 
-  // Initialize quiz sentences (can be expanded based on level later)
-  useEffect(() => {
-    // Shuffle and pick QUIZ_LENGTH sentences
-    const shuffled = [...allSampleEnglishSentences].sort(() => 0.5 - Math.random());
+  const loadQuizContent = useCallback(() => {
+    const levelSentences = allSampleEnglishSentences[level] || allSampleEnglishSentences['Basic']; // Fallback to Basic
+    const shuffled = [...levelSentences].sort(() => 0.5 - Math.random());
     setQuizSentences(shuffled.slice(0, QUIZ_LENGTH));
     setCurrentQuestionIndex(0);
     setTypedOlChiki('');
+    setEnglishTransliteration('');
+    setScore(0);
+    setQuizPhase('playing');
   }, [level]);
+
+  useEffect(() => {
+    loadQuizContent();
+  }, [level, quizSetNumber, loadQuizContent]);
 
 
   const olChikiToEngMap = useMemo(() => {
@@ -57,11 +76,7 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
         map.set(char.olChiki, char.transliteration);
       }
     });
-    // Add common punctuation/symbols that pass through
-    map.set(' ', ' ');
-    map.set('?', '?');
-    map.set('!', '!');
-    map.set('᱾', '.'); 
+    map.set(' ', ' '); map.set('?', '?'); map.set('!', '!'); map.set('᱾', '.'); 
     return map;
   }, []);
 
@@ -69,9 +84,8 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
     let transliterationResult = '';
     for (let i = 0; i < typedOlChiki.length; i++) {
       const char = typedOlChiki[i];
-      transliterationResult += (olChikiToEngMap.get(char) || char); // Keep unknown chars
+      transliterationResult += (olChikiToEngMap.get(char) || char);
        if (char !== ' ' && i < typedOlChiki.length -1 && typedOlChiki[i+1] !== ' ' && olChikiToEngMap.has(char) && olChikiToEngMap.has(typedOlChiki[i+1])) {
-         // Add space between transliterated Ol Chiki units, but not for regular chars or trailing space
          if (olChikiToEngMap.get(char) !== ' ' && olChikiToEngMap.get(typedOlChiki[i+1]) !== ' ') {
             transliterationResult += ' ';
          }
@@ -91,30 +105,51 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
   const handleSpace = useCallback(() => {
     setTypedOlChiki(prev => prev + ' ');
   }, []);
-
-  const nextQuestion = useCallback(() => {
-    if (currentQuestionIndex < quizSentences.length - 1) {
-      // Here, you would typically save/evaluate the current answer
-      // For now, just move to next question
-      setCurrentQuestionIndex(prev => prev + 1);
-      setTypedOlChiki(''); 
-    } else {
-      // Last question - potentially trigger quiz finish
-      console.log("Quiz finished (placeholder)");
-      onQuizComplete(); // Navigate back
-    }
-  }, [currentQuestionIndex, quizSentences.length, onQuizComplete]);
-
-  const prevQuestion = useCallback(() => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
-      setTypedOlChiki(''); // Or load previously typed answer for this question
-    }
-  }, [currentQuestionIndex]);
   
   const clearInput = useCallback(() => {
     setTypedOlChiki('');
   }, []);
+
+  const handleFinishAttempt = () => {
+    // Placeholder for actual answer checking and scoring
+    // For now, let's assume a placeholder score (e.g., 7/10 if they attempt something)
+    const placeholderScore = typedOlChiki.length > 0 ? Math.min(QUIZ_LENGTH, Math.floor(Math.random() * 5) + 5) : 0;
+    setScore(placeholderScore);
+    setQuizPhase('finished');
+
+    const storageKey = getStorageKey();
+    if (storageKey) {
+      const finalStars = Math.round((placeholderScore / QUIZ_LENGTH) * 5);
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({
+          score: placeholderScore,
+          totalQuestions: QUIZ_LENGTH,
+          stars: finalStars,
+        }));
+      } catch (error) {
+        console.error("Error saving writing quiz score to localStorage:", error);
+      }
+    }
+  };
+
+
+  const nextQuestion = useCallback(() => {
+    // In a real quiz, we'd save the answer for currentQuestionIndex here
+    if (currentQuestionIndex < quizSentences.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setTypedOlChiki(''); 
+    } else {
+      handleFinishAttempt();
+    }
+  }, [currentQuestionIndex, quizSentences.length, handleFinishAttempt]);
+
+  const prevQuestion = useCallback(() => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+      setTypedOlChiki(''); 
+    }
+  }, [currentQuestionIndex]);
+  
 
   const keyboardRows = useMemo(() => [
     olChikiCharacters.slice(0, 10),
@@ -123,13 +158,42 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
   ], []);
 
   if (quizSentences.length === 0) {
-    return <div className="p-4 text-center">Loading quiz...</div>;
+    return <div className="p-4 text-center">Loading quiz for Level {level}, Set {quizSetNumber || 'N/A'}...</div>;
+  }
+
+  if (quizPhase === 'finished') {
+    const finalStars = Math.round((score / QUIZ_LENGTH) * 5);
+    return (
+      <div className="p-4 md:p-6 max-w-md mx-auto text-center">
+        <Card className="shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-primary">Quiz Set {quizSetNumber} Complete!</CardTitle>
+            <CardDescription>{level} Level Writing</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-xl font-semibold">Your Score: {score} / {QUIZ_LENGTH}</p>
+            <StarRating rating={finalStars} size={32} className="justify-center" />
+            <p className="text-sm text-muted-foreground mt-2">
+              Practice writing Ol Chiki! (Actual answer checking coming soon).
+            </p>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+            <Button onClick={loadQuizContent} variant="outline" className="w-full sm:w-auto">
+              <RefreshCw className="mr-2 h-4 w-4" /> Play New Set
+            </Button>
+            <Button onClick={onQuizComplete} className="w-full sm:w-auto">
+              Back to Level Selection <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
   }
 
   return (
     <div className="p-2 sm:p-4 md:p-6 max-w-3xl mx-auto flex flex-col space-y-3 sm:space-y-4">
       <h2 className="text-2xl sm:text-3xl font-bold text-primary tracking-tight text-center">
-        {level} Level Writing Quiz
+        {level} Writing Quiz - Set {quizSetNumber}
       </h2>
       <CardDescription className="text-center text-muted-foreground -mt-2 mb-2">
         Question {currentQuestionIndex + 1} of {quizSentences.length}. Translate the English sentence into Ol Chiki.
@@ -137,7 +201,7 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
 
       <Card className="shadow-md">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-base sm:text-lg text-primary">English Sentence to Translate:</CardTitle>
+          <CardTitle className="text-base sm:text-lg text-primary">Translate and Type:</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-md sm:text-lg font-sans text-center p-2 sm:p-3 bg-secondary/20 rounded-md min-h-[3em] select-text">
@@ -214,7 +278,7 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
             Next Question <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button onClick={onQuizComplete} variant="primary" className="bg-green-600 hover:bg-green-700 text-white">
+          <Button onClick={handleFinishAttempt} variant="primary" className="bg-green-600 hover:bg-green-700 text-white">
             Finish Quiz <CheckCircle className="ml-2 h-4 w-4" />
           </Button>
         )}
@@ -223,5 +287,4 @@ export default function WritingPracticeQuiz({ level, onQuizComplete }: WritingPr
     </div>
   );
 }
-
     

@@ -24,6 +24,20 @@ import ReadingHardStoryQuiz from '@/components/ol-chiki/quizzes/reading-hard-sto
 import ReadingExpertSelectionHub from '@/components/ol-chiki/quizzes/reading-expert-selection-hub';
 import ReadingExpertMcqQuiz from '@/components/ol-chiki/quizzes/reading-expert-mcq-quiz';
 import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
+// Writing Quiz Selection Hubs
+import WritingBasicSelectionHub from '@/components/ol-chiki/quizzes/writing-basic-selection-hub';
+import WritingEasySelectionHub from '@/components/ol-chiki/quizzes/writing-easy-selection-hub';
+import WritingIntermediateSelectionHub from '@/components/ol-chiki/quizzes/writing-intermediate-selection-hub';
+import WritingMediumSelectionHub from '@/components/ol-chiki/quizzes/writing-medium-selection-hub';
+import WritingHardSelectionHub from '@/components/ol-chiki/quizzes/writing-hard-selection-hub';
+import WritingExpertSelectionHub from '@/components/ol-chiki/quizzes/writing-expert-selection-hub';
+// Placeholder Writing Quiz Components
+import WritingEasyQuiz from '@/components/ol-chiki/quizzes/writing-easy-quiz';
+import WritingIntermediateQuiz from '@/components/ol-chiki/quizzes/writing-intermediate-quiz';
+import WritingMediumQuiz from '@/components/ol-chiki/quizzes/writing-medium-quiz';
+import WritingHardQuiz from '@/components/ol-chiki/quizzes/writing-hard-quiz';
+import WritingExpertQuiz from '@/components/ol-chiki/quizzes/writing-expert-quiz';
+
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
@@ -36,9 +50,10 @@ export type ActiveView =
   | 'words'
   | 'sentence'
   | 'practice-hub'
+  // Reading
   | 'reading-practice-hub'
-  | 'reading-quiz-selection-hub' // Basic identify words selection
-  | 'reading-quiz-identify-words' // Basic identify words quiz
+  | 'reading-quiz-selection-hub' 
+  | 'reading-quiz-identify-words'
   | 'reading-easy-selection-hub'
   | 'reading-easy-match-word-image-quiz'
   | 'reading-intermediate-selection-hub'
@@ -47,19 +62,37 @@ export type ActiveView =
   | 'reading-hard-story-quiz'
   | 'reading-expert-selection-hub'
   | 'reading-expert-mcq-quiz'
+  // Writing
   | 'writing-practice-hub'
-  | 'writing-quiz-basic'
+  | 'writing-basic-selection-hub'
+  | 'writing-quiz-basic' // This is the actual quiz component
+  | 'writing-easy-selection-hub'
+  | 'writing-quiz-easy'
+  | 'writing-intermediate-selection-hub'
+  | 'writing-quiz-intermediate'
+  | 'writing-medium-selection-hub'
+  | 'writing-quiz-medium'
+  | 'writing-hard-selection-hub'
+  | 'writing-quiz-hard'
+  | 'writing-expert-selection-hub'
+  | 'writing-quiz-expert'
   | 'game';
 
 interface NavItemConfig {
   id: Exclude<ActiveView, 
     'alphabet' | 'numbers' | 'words' | 
-    'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' |
+    'reading-practice-hub' | 'writing-practice-hub' | 
     'reading-quiz-identify-words' | 'reading-quiz-selection-hub' |
     'reading-easy-selection-hub' | 'reading-easy-match-word-image-quiz' |
     'reading-intermediate-selection-hub' | 'reading-intermediate-phrases-quiz' |
     'reading-hard-selection-hub' | 'reading-hard-story-quiz' |
-    'reading-expert-selection-hub' | 'reading-expert-mcq-quiz'
+    'reading-expert-selection-hub' | 'reading-expert-mcq-quiz' |
+    'writing-basic-selection-hub' | 'writing-quiz-basic' |
+    'writing-easy-selection-hub' | 'writing-quiz-easy' |
+    'writing-intermediate-selection-hub' | 'writing-quiz-intermediate' |
+    'writing-medium-selection-hub' | 'writing-quiz-medium' |
+    'writing-hard-selection-hub' | 'writing-quiz-hard' |
+    'writing-expert-selection-hub' | 'writing-quiz-expert'
   >;
   label: string;
   icon: LucideIcon;
@@ -177,10 +210,10 @@ export default function OlChikiPathPage() {
     case 'reading-practice-hub':
       currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />;
       break;
-    case 'reading-quiz-selection-hub': // Basic Identify Words Selection
+    case 'reading-quiz-selection-hub': 
       currentComponent = <ReadingQuizSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-quiz-identify-words')} onBack={() => setActiveView('reading-practice-hub')} />;
       break;
-    case 'reading-quiz-identify-words': // Basic Identify Words Quiz
+    case 'reading-quiz-identify-words': 
       currentComponent = <ReadingQuizIdentifyWords 
         quizSetNumber={currentQuizSetNumber} 
         onQuizComplete={() => setActiveView('reading-quiz-selection-hub')} 
@@ -210,13 +243,48 @@ export default function OlChikiPathPage() {
     case 'reading-expert-mcq-quiz':
       currentComponent = <ReadingExpertMcqQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('reading-expert-selection-hub')} />;
       break;
+    
     // Writing Practice Flows
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;
       break;
-    case 'writing-quiz-basic':
-      currentComponent = <WritingPracticeQuiz level="Basic" onQuizComplete={() => setActiveView('writing-practice-hub')} />;
+    case 'writing-basic-selection-hub':
+      currentComponent = <WritingBasicSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-basic')} onBack={() => setActiveView('writing-practice-hub')} />;
       break;
+    case 'writing-quiz-basic':
+      currentComponent = <WritingPracticeQuiz quizSetNumber={currentQuizSetNumber} level="Basic" onQuizComplete={() => setActiveView('writing-basic-selection-hub')} />;
+      break;
+    case 'writing-easy-selection-hub':
+      currentComponent = <WritingEasySelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-easy')} onBack={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'writing-quiz-easy':
+      currentComponent = <WritingEasyQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('writing-easy-selection-hub')} />;
+      break;
+    case 'writing-intermediate-selection-hub':
+      currentComponent = <WritingIntermediateSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-intermediate')} onBack={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'writing-quiz-intermediate':
+      currentComponent = <WritingIntermediateQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('writing-intermediate-selection-hub')} />;
+      break;
+    case 'writing-medium-selection-hub':
+      currentComponent = <WritingMediumSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-medium')} onBack={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'writing-quiz-medium':
+      currentComponent = <WritingMediumQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('writing-medium-selection-hub')} />;
+      break;
+    case 'writing-hard-selection-hub':
+      currentComponent = <WritingHardSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-hard')} onBack={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'writing-quiz-hard':
+      currentComponent = <WritingHardQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('writing-hard-selection-hub')} />;
+      break;
+    case 'writing-expert-selection-hub':
+      currentComponent = <WritingExpertSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'writing-quiz-expert')} onBack={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'writing-quiz-expert':
+      currentComponent = <WritingExpertQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('writing-expert-selection-hub')} />;
+      break;
+
     case 'game':
       currentComponent = <GameHub />;
       break;
@@ -229,11 +297,8 @@ export default function OlChikiPathPage() {
   };
 
   const handleNavChange = (viewId: ActiveView) => {
-    // Logic to check if user is in an active quiz and wants to navigate away can be added here.
-    // For example, if currentQuizSetNumber is not null for certain views.
     setActiveView(viewId);
   };
-
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -265,5 +330,4 @@ export default function OlChikiPathPage() {
     </div>
   );
 }
-
     

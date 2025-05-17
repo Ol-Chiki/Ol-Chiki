@@ -14,25 +14,27 @@ import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import PracticeHub from '@/components/ol-chiki/practice-hub';
 import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
 import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
+import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words'; // New Quiz
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react"; // Removed FileText
+import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
 import type { LucideIcon } from 'lucide-react';
 
-export type ActiveView = 
-  | 'basic-hub' 
-  | 'alphabet' 
-  | 'numbers' 
-  | 'words' 
-  | 'sentence' 
+export type ActiveView =
+  | 'basic-hub'
+  | 'alphabet'
+  | 'numbers'
+  | 'words'
+  | 'sentence'
   | 'practice-hub'
-  | 'reading-practice-hub' 
+  | 'reading-practice-hub'
   | 'writing-practice-hub'
   | 'writing-quiz-basic'
+  | 'reading-quiz-identify-words' // New quiz view
   | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic'>;
+  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' | 'reading-quiz-identify-words'>;
   label: string;
   icon: LucideIcon;
 }
@@ -47,7 +49,7 @@ export default function OlChikiPathPage() {
   const [currentYear, setCurrentYear] = useState<string>('');
 
   useEffect(() => {
-    setIsClient(true); 
+    setIsClient(true);
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
         setSplashSeenThisSession(true);
@@ -68,11 +70,11 @@ export default function OlChikiPathPage() {
 
   useEffect(() => {
     if (!isClient) {
-      return; 
+      return;
     }
 
     if (!splashSeenThisSession) {
-      return; 
+      return;
     }
 
     if (!authLoading && !user && !hasSkippedAuth) {
@@ -94,7 +96,7 @@ export default function OlChikiPathPage() {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  if (authLoading) {
+  if (authLoading && isClient) { // Ensure authLoading is checked only after client is confirmed
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -102,8 +104,8 @@ export default function OlChikiPathPage() {
       </div>
     );
   }
-  
-  if (!user && !hasSkippedAuth && splashSeenThisSession) {
+
+  if (isClient && !user && !hasSkippedAuth && splashSeenThisSession) {
      return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -114,7 +116,6 @@ export default function OlChikiPathPage() {
 
   const bottomNavItems: NavItemConfig[] = [
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
-    // { id: 'words', label: 'Words', icon: FileText }, // Removed from bottom nav
     { id: 'sentence', label: 'Santad AI', icon: Sparkles },
     { id: 'practice-hub', label: 'Practice', icon: ClipboardEdit },
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
@@ -131,7 +132,7 @@ export default function OlChikiPathPage() {
     case 'numbers':
       currentComponent = <LearnNumbers />;
       break;
-    case 'words': // Still needs to be handled
+    case 'words':
       currentComponent = <LearnWords />;
       break;
     case 'sentence':
@@ -140,14 +141,17 @@ export default function OlChikiPathPage() {
     case 'practice-hub':
       currentComponent = <PracticeHub onSectionSelect={setActiveView} />;
       break;
-    case 'reading-practice-hub': 
-      currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />; 
+    case 'reading-practice-hub':
+      currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />;
       break;
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;
       break;
     case 'writing-quiz-basic':
       currentComponent = <WritingPracticeQuiz level="Basic" onQuizComplete={() => setActiveView('writing-practice-hub')} />;
+      break;
+    case 'reading-quiz-identify-words': // New case for the quiz
+      currentComponent = <ReadingQuizIdentifyWords onQuizComplete={() => setActiveView('reading-practice-hub')} />;
       break;
     case 'game':
       currentComponent = <GameHub />;
@@ -161,8 +165,8 @@ export default function OlChikiPathPage() {
   };
 
   const handleNavChange = (viewId: ActiveView) => {
-    if (activeView === 'writing-quiz-basic' && viewId !== 'writing-quiz-basic') {
-        // Potentially prompt user or save progress
+    if ((activeView === 'writing-quiz-basic' || activeView === 'reading-quiz-identify-words') && viewId !== activeView) {
+        // Potentially prompt user or save progress if they are in a quiz and try to navigate away
     }
     setActiveView(viewId);
   };

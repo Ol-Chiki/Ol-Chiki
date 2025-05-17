@@ -16,7 +16,9 @@ export interface OlChikiWord {
 export interface OlChikiNumber {
   id: string;
   olChiki: string; // Ol Chiki numeral glyph
-  transliteration: string; // e.g., "0", "1"
+  digitString: string; // e.g., "0", "1", "10"
+  englishWord: string; // e.g., "Zero", "One", "Ten"
   value: number; // The actual numeric value
-  santaliWord: string; // Santali word for the number, e.g., "Mit'", "Bar"
+  santaliWord: string; // Santali word for the number, e.g., "Sun", "Mit'"
 }
+

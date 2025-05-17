@@ -19,10 +19,10 @@ export default function LearnNumbers() {
               </CardHeader>
               <CardContent className="p-2 pt-1 text-center">
                 <p className="text-[10px] sm:text-xs md:text-sm font-semibold text-primary">
-                  {num.transliteration}
+                  {num.englishWord} ({num.digitString})
                 </p>
                  <CardDescription className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                    Santali: {num.santaliWord}
+                    {num.santaliWord}
                   </CardDescription>
               </CardContent>
             </Card>

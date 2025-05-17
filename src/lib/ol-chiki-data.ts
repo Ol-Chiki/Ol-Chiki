@@ -4,8 +4,8 @@ import type { OlChikiCharacter, OlChikiWord, OlChikiNumber } from '@/types/ol-ch
 export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 's1', olChiki: 'ᱛ', transliteration: 'A', pronunciation: '' },
   { id: 's2', olChiki: 'ᑖ', transliteration: 'At', pronunciation: '' },
-  { id: 's3', olChiki: ' गैस', transliteration: 'Ag', pronunciation: '' },
-  { id: 's4', olChiki: '<y_bin_365>', transliteration: 'Ang', pronunciation: '' },
+  { id: 's3', olChiki: 'ᱚᱜ', transliteration: 'Ag', pronunciation: '' }, // Corrected: Was ' गैस'
+  { id: 's4', olChiki: 'ᱚᱝ', transliteration: 'Ang', pronunciation: '' }, // Corrected: Was '<y_bin_365>'
   { id: 's5', olChiki: 'ᱞ', transliteration: 'Al', pronunciation: '' },
   { id: 's6', olChiki: 'ᱟ', transliteration: 'Aa', pronunciation: '' },
   { id: 's7', olChiki: 'ᱠ', transliteration: 'Aak', pronunciation: '' },
@@ -45,18 +45,39 @@ export const olChikiExampleWords: OlChikiWord[] = [
   { id: 'w8', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'cow' },
 ];
 
-const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "十三章", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
-const transliterationUnit = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+// Corrected Ol Chiki unit glyphs for numbers 0-9
+const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "᱓", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
+const digitUnitStrings = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const santaliUnitWords = ["Sun", "Mit'", "Bar", "Pɛ", "Pon", "Mɔ̃ɽɛ̃", "Turui", "Eyae", "Irəl", "Are"];
 
+const englishUnitWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+const englishTeenWords = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+const englishTensWords = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"]; // Index 0, 1 are placeholders
+
 const generatedNumbers: OlChikiNumber[] = [];
+
+function getEnglishWord(n: number): string {
+  if (n < 0 || n > 100) return ""; // Handle out of bounds, though data is 0-100
+  if (n < 10) return englishUnitWords[n];
+  if (n < 20) return englishTeenWords[n - 10];
+  if (n === 100) return "One Hundred";
+  
+  const tensDigit = Math.floor(n / 10);
+  const unitDigit = n % 10;
+
+  if (unitDigit === 0) {
+    return englishTensWords[tensDigit];
+  }
+  return `${englishTensWords[tensDigit]}-${englishUnitWords[unitDigit]}`;
+}
 
 // 0-9
 for (let i = 0; i <= 9; i++) {
   generatedNumbers.push({
     id: `n${i}`,
     olChiki: olChikiUnitGlyphs[i],
-    transliteration: transliterationUnit[i],
+    digitString: digitUnitStrings[i],
+    englishWord: getEnglishWord(i),
     value: i,
     santaliWord: santaliUnitWords[i],
   });
@@ -66,7 +87,8 @@ for (let i = 0; i <= 9; i++) {
 generatedNumbers.push({
   id: 'n10',
   olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0],
-  transliteration: '10',
+  digitString: '10',
+  englishWord: getEnglishWord(10),
   value: 10,
   santaliWord: 'Gel',
 });
@@ -76,7 +98,8 @@ for (let i = 1; i <= 9; i++) {
   generatedNumbers.push({
     id: `n${10 + i}`,
     olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[i],
-    transliteration: '1' + transliterationUnit[i],
+    digitString: '1' + digitUnitStrings[i],
+    englishWord: getEnglishWord(10 + i),
     value: 10 + i,
     santaliWord: `Gel ${santaliUnitWords[i]}`,
   });
@@ -88,7 +111,8 @@ for (let tens = 2; tens <= 9; tens++) {
   generatedNumbers.push({
     id: `n${tens * 10}`,
     olChiki: olChikiUnitGlyphs[tens] + olChikiUnitGlyphs[0],
-    transliteration: transliterationUnit[tens] + '0',
+    digitString: digitUnitStrings[tens] + '0',
+    englishWord: getEnglishWord(tens * 10),
     value: tens * 10,
     santaliWord: `${santaliUnitWords[tens]} Gel`,
   });
@@ -97,7 +121,8 @@ for (let tens = 2; tens <= 9; tens++) {
     generatedNumbers.push({
       id: `n${tens * 10 + ones}`,
       olChiki: olChikiUnitGlyphs[tens] + olChikiUnitGlyphs[ones],
-      transliteration: transliterationUnit[tens] + transliterationUnit[ones],
+      digitString: digitUnitStrings[tens] + digitUnitStrings[ones],
+      englishWord: getEnglishWord(tens * 10 + ones),
       value: tens * 10 + ones,
       santaliWord: `${santaliUnitWords[tens]} Gel ${santaliUnitWords[ones]}`,
     });
@@ -108,7 +133,8 @@ for (let tens = 2; tens <= 9; tens++) {
 generatedNumbers.push({
   id: 'n100',
   olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0] + olChikiUnitGlyphs[0],
-  transliteration: '100',
+  digitString: '100',
+  englishWord: getEnglishWord(100),
   value: 100,
   santaliWord: "Mit' Sae",
 });

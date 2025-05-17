@@ -71,11 +71,20 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'f6', olChiki: 'ᱵᱩᱞᱩᱝ', transliteration: 'buluṅ', english: 'Salt' },
     { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mạric', english: 'Chilli' },
   ],
+  "Days of the Week": [
+    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' }, // Corrected to match your Roman entry
+    { id: 'd2', olChiki: 'ᱚᱛᱮ', transliteration: 'ote', english: 'Monday' },
+    { id: 'd3', olChiki: 'ᱵᱟᱞᱮ', transliteration: 'bale', english: 'Tuesday' },
+    { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'sagun', english: 'Wednesday' },
+    { id: 'd5', olChiki: 'ᱥᱟᱹᱨᱫᱤ', transliteration: 'sardi', english: 'Thursday' },
+    { id: 'd6', olChiki: 'ᱡᱟᱹᱨᱩᱵ', transliteration: 'jarub', english: 'Friday' },
+    { id: 'd7', olChiki: 'ᱧᱩᱸᱦᱩᱢ', transliteration: 'inguhum', english: 'Saturday' }, // Using the Roman as transliteration
+  ],
   "Months": [
     { id: 'm1', olChiki: 'ᱢᱟᱜᱽ', transliteration: 'mag', english: 'January' },
     { id: 'm2', olChiki: 'ᱯᱷᱟᱹᱜᱩᱱ', transliteration: 'phagun', english: 'February' },
     { id: 'm3', olChiki: 'ᱪᱟᱹᱛ', transliteration: 'chhat', english: 'March' },
-    { id: 'm4', olChiki: 'ᱵᱟᱭᱥᱟᱠ', transliteration: 'baysakh', english: 'April' },
+    { id: 'm4', olChiki: 'ᱵᱟᱹᱭᱥᱟᱹᱠ', transliteration: 'baysakh', english: 'April' },
     { id: 'm5', olChiki: 'ᱡᱷᱮᱴ', transliteration: 'jhet', english: 'May' },
     { id: 'm6', olChiki: 'ᱟᱥᱟᱲ', transliteration: 'aasadh', english: 'June' },
     { id: 'm7', olChiki: 'ᱥᱟᱱ', transliteration: 'san', english: 'July' },
@@ -99,6 +108,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
 
 const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "᱓", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
 
+// Updated based on user provided list
 const santaliUnitWords = ["Sun", "Mit’", "Bar", "Pe", "Pun", "Mɔ̃ṇe", "Turuy", "Eyai", "Irăl", "Are"];
 const englishUnitWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
 const englishTeenWords = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
@@ -121,29 +131,30 @@ function getEnglishWord(n: number): string {
 
 function getSantaliWord(n: number): string {
   if (n < 0 || n > 100) return "";
-
-  if (n === 0) return santaliUnitWords[0]; // Sun
+  if (n === 0) return santaliUnitWords[0];
   if (n > 0 && n < 10) return santaliUnitWords[n];
   
   if (n === 10) return "Gel";
   if (n > 10 && n < 20) return `Gel ${santaliUnitWords[n % 10]}`;
   
-  if (n === 20) return "Isi"; // Using "Isi" as per user's list for 20
-  if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`; // e.g., Isi Mit' for 21
+  if (n === 20) return "Isi"; // Primary form from user list
+  if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`;
   
   const tensDigit = Math.floor(n / 10);
   const unitDigit = n % 10;
 
   if (n % 10 === 0 && n >= 30 && n < 100) { // 30, 40, ..., 90
+    // Use santaliUnitWords for the tens digit name
     return `${santaliUnitWords[tensDigit]} Gel`;
   }
   if (n > 30 && n < 100 && n % 10 !== 0) { // 31-39, 41-49 etc.
     return `${santaliUnitWords[tensDigit]} Gel ${santaliUnitWords[unitDigit]}`;
   }
   
-  if (n === 100) return "Say"; // Using "Say" as per user's list for 100
-  return ""; 
+  if (n === 100) return "Say"; // Primary form from user list
+  return ""; // Should not be reached for 0-100
 }
+
 
 function getOlChikiNumeral(n: number): string {
   if (n < 0 || n > 100) return "";

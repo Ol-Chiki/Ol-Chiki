@@ -2,79 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --background: 60 56% 91%; /* Soft Beige */
+    --foreground: 25 30% 20%; /* Dark Brown */
+
+    --card: 60 50% 93%; /* Slightly Lighter/Different Beige for cards */
+    --card-foreground: 25 30% 20%; /* Dark Brown */
+
+    --popover: 60 50% 93%; /* Similar to card */
+    --popover-foreground: 25 30% 20%; /* Dark Brown */
+
+    --primary: 25 76% 47%; /* Earthy Orange */
+    --primary-foreground: 30 50% 95%; /* Very Light Warm Off-White */
+
+    --secondary: 60 60% 80%; /* Lighter, less saturated olive/beige for secondary elements */
+    --secondary-foreground: 60 100% 20%; /* Darker olive for text on secondary */
+
+    --muted: 60 50% 96%; /* Very light beige, almost off-white */
+    --muted-foreground: 60 30% 45%; /* Softer, mid-tone brown/gray */
+
+    --accent: 60 100% 25%; /* Muted Olive Green */
+    --accent-foreground: 60 50% 95%; /* Very Light Beige for text on accent */
+
+    --destructive: 0 70% 55%; /* Standard Red */
+    --destructive-foreground: 0 0% 100%; /* White */
+
+    --border: 60 40% 82%; /* Slightly darker/contrasting beige for borders */
+    --input: 60 40% 88%; /* Input background, similar to border */
+    --ring: 25 76% 55%; /* Brighter Orange for focus rings */
+    
+    --chart-1: 25 76% 55%; /* Primary Orange shade for charts */
+    --chart-2: 60 100% 30%; /* Accent Olive Green shade for charts */
+    --chart-3: 30 40% 60%; /* A complementary brown */
+    --chart-4: 60 50% 70%; /* A lighter olive/beige */
+    --chart-5: 20 60% 65%; /* Another earthy tone */
+
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Sidebar specific colors, can be adjusted if sidebar is heavily used */
+    --sidebar-background: 60 56% 88%; /* Slightly darker beige for sidebar bg */
+    --sidebar-foreground: 25 30% 15%; /* Darker brown for sidebar text */
+    --sidebar-primary: 25 76% 47%; /* Earthy Orange */
+    --sidebar-primary-foreground: 30 50% 95%; /* Very Light Warm Off-White */
+    --sidebar-accent: 60 100% 25%; /* Muted Olive Green */
+    --sidebar-accent-foreground: 60 50% 95%; /* Very Light Beige */
+    --sidebar-border: 60 40% 78%;
+    --sidebar-ring: 25 76% 55%;
   }
+
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    /* A basic dark theme derivation, can be further customized */
+    --background: 25 10% 15%; /* Dark Brownish Gray */
+    --foreground: 60 30% 85%; /* Light Beige/Gray */
+
+    --card: 25 10% 20%; /* Darker Brownish Gray for cards */
+    --card-foreground: 60 30% 85%;
+
+    --popover: 25 10% 20%;
+    --popover-foreground: 60 30% 85%;
+
+    --primary: 25 70% 55%; /* Earthy Orange (slightly brighter for dark mode) */
+    --primary-foreground: 25 20% 10%; /* Dark Brown for text on orange */
+
+    --secondary: 60 50% 30%; /* Dark Olive Green */
+    --secondary-foreground: 60 40% 80%; /* Light Olive/Beige text */
+
+    --muted: 25 10% 25%; /* Darker Muted Brownish Gray */
+    --muted-foreground: 60 30% 65%; /* Lighter Muted Beige/Gray */
+
+    --accent: 60 80% 35%; /* Muted Olive Green (slightly brighter for dark mode) */
+    --accent-foreground: 60 20% 90%; /* Light Beige text on accent */
+
+    --destructive: 0 60% 50%; 
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --border: 25 10% 28%;
+    --input: 25 10% 28%;
+    --ring: 25 70% 60%;
+
+    --chart-1: 25 70% 60%;
+    --chart-2: 60 80% 40%;
+    --chart-3: 30 30% 50%;
+    --chart-4: 60 40% 60%;
+    --chart-5: 20 50% 55%;
+
+    --sidebar-background: 25 10% 12%;
+    --sidebar-foreground: 60 30% 80%;
+    --sidebar-primary: 25 70% 55%;
+    --sidebar-primary-foreground: 25 20% 10%;
+    --sidebar-accent: 60 80% 35%;
+    --sidebar-accent-foreground: 60 20% 90%;
+    --sidebar-border: 25 10% 25%;
+    --sidebar-ring: 25 70% 60%;
   }
 }
 

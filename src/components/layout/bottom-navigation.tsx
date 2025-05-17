@@ -3,19 +3,20 @@
 
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
-import { User as UserIconLucide, LogIn } from 'lucide-react';
+import { User as UserIconLucide } from 'lucide-react'; // Removed LogIn as it's handled by profile page
 import type { User as FirebaseUser } from 'firebase/auth';
+import type { ActiveView } from '@/app/page'; // Import ActiveView type
 
 interface BottomNavItem {
-  id: string;
+  id: string; // Keep as string, activeView will be ActiveView type
   label: string;
   icon: LucideIcon;
 }
 
 interface BottomNavigationProps {
   navItems: BottomNavItem[];
-  activeView: string;
-  onNavChange: (viewId: string) => void;
+  activeView: ActiveView; // Use imported ActiveView type
+  onNavChange: (viewId: ActiveView) => void; // Ensure viewId is ActiveView
   onProfileClick: () => void;
   currentUser: FirebaseUser | null;
 }
@@ -25,7 +26,7 @@ const iconColorClasses: Record<string, string> = {
   'basic-hub': 'text-teal-500', 
   words: 'text-emerald-500', 
   sentence: 'text-fuchsia-500', 
-  'writing-practice': 'text-sky-500', // New color for Writing Practice
+  'practice-hub': 'text-sky-500', // New color for Practice Hub
   game: 'text-violet-500',
 };
 
@@ -44,17 +45,26 @@ export default function BottomNavigation({
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t bg-card text-card-foreground shadow-[0_-2px_5px_-1px_rgba(0,0,0,0.1)]">
       {navItems.map((item) => {
-        const isActive = activeView === item.id || 
-                         (activeView === 'alphabet' && item.id === 'basic-hub') ||
-                         (activeView === 'numbers' && item.id === 'basic-hub');
+        // Determine if the current item is active, considering parent hubs
+        let isActive = activeView === item.id;
+        if (item.id === 'basic-hub' && (activeView === 'alphabet' || activeView === 'numbers')) {
+          isActive = true;
+        }
+        if (item.id === 'practice-hub' && (
+            activeView === 'reading-practice-placeholder' || 
+            activeView === 'writing-practice-hub' ||
+            activeView === 'writing-quiz-basic'
+          )) {
+          isActive = true;
+        }
         
-        const iconColor = isActive ? 'text-primary' : (iconColorClasses[item.id] || 'text-accent'); // Fallback to accent if no specific color
+        const iconColor = isActive ? 'text-primary' : (iconColorClasses[item.id] || 'text-accent'); 
         const labelColor = isActive ? 'text-primary' : 'text-accent';
 
         return (
           <button
             key={item.id}
-            onClick={() => onNavChange(item.id)}
+            onClick={() => onNavChange(item.id as ActiveView)} // Cast item.id to ActiveView
             className={cn(
               'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20',
               isActive && 'border-t-2 border-primary'
@@ -80,3 +90,5 @@ export default function BottomNavigation({
     </nav>
   );
 }
+
+    

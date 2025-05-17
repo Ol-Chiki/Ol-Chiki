@@ -14,7 +14,8 @@ import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import PracticeHub from '@/components/ol-chiki/practice-hub';
 import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
 import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
-import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words'; // New Quiz
+import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words';
+import ReadingQuizSelectionHub from '@/components/ol-chiki/quizzes/reading-quiz-selection-hub'; // New
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
@@ -28,13 +29,14 @@ export type ActiveView =
   | 'sentence'
   | 'practice-hub'
   | 'reading-practice-hub'
+  | 'reading-quiz-selection-hub' // New
+  | 'reading-quiz-identify-words'
   | 'writing-practice-hub'
   | 'writing-quiz-basic'
-  | 'reading-quiz-identify-words' // New quiz view
   | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' | 'reading-quiz-identify-words'>;
+  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' | 'reading-quiz-identify-words' | 'reading-quiz-selection-hub'>;
   label: string;
   icon: LucideIcon;
 }
@@ -144,14 +146,17 @@ export default function OlChikiPathPage() {
     case 'reading-practice-hub':
       currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />;
       break;
+    case 'reading-quiz-selection-hub': // New
+      currentComponent = <ReadingQuizSelectionHub onSelectQuiz={() => setActiveView('reading-quiz-identify-words')} onBack={() => setActiveView('reading-practice-hub')} />;
+      break;
+    case 'reading-quiz-identify-words':
+      currentComponent = <ReadingQuizIdentifyWords onQuizComplete={() => setActiveView('reading-quiz-selection-hub')} />;
+      break;
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;
       break;
     case 'writing-quiz-basic':
       currentComponent = <WritingPracticeQuiz level="Basic" onQuizComplete={() => setActiveView('writing-practice-hub')} />;
-      break;
-    case 'reading-quiz-identify-words': // New case for the quiz
-      currentComponent = <ReadingQuizIdentifyWords onQuizComplete={() => setActiveView('reading-practice-hub')} />;
       break;
     case 'game':
       currentComponent = <GameHub />;

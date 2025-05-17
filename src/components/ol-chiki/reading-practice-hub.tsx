@@ -24,9 +24,9 @@ interface LevelItem {
 const readingLevels: LevelItem[] = [
   {
     id: 'reading-basic-identify-words',
-    viewId: 'reading-quiz-identify-words',
+    viewId: 'reading-quiz-selection-hub', // Changed to navigate to the new selection hub
     title: 'Basic: Identify Words',
-    description: 'See an Ol Chiki word and pick the correct English meaning from multiple choices.',
+    description: 'Select one of 50 quiz sets. Each set has 10 questions to identify Ol Chiki words.',
     icon: SpellCheck,
     isAvailable: true
   },

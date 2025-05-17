@@ -20,7 +20,7 @@ interface QuizQuestion {
 }
 
 interface ReadingQuizIdentifyWordsProps {
-  onQuizComplete: () => void;
+  onQuizComplete: () => void; // To navigate back to the selection hub
 }
 
 export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuizIdentifyWordsProps) {
@@ -35,10 +35,9 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
   useEffect(() => {
     const flattenedWords = Object.values(categorizedOlChikiWords).flat();
     if (flattenedWords.length < NUM_OPTIONS) {
-      // Not enough words to even form one question with distractors
       console.error("Not enough unique words available to create the quiz.");
       setAllWords([]);
-      setQuizPhase('finished'); // Or some error state
+      setQuizPhase('finished'); 
       return;
     }
     setAllWords(shuffleArray(flattenedWords));
@@ -50,7 +49,7 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
 
     const selectedQuizWords = shuffleArray(allWords).slice(0, QUIZ_LENGTH);
     if (selectedQuizWords.length === 0) {
-        setQuizPhase('finished'); // Not enough words for a quiz
+        setQuizPhase('finished'); 
         return;
     }
 
@@ -62,11 +61,9 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
       for (let i = 0; i < NUM_OPTIONS - 1 && i < shuffledDistractors.length; i++) {
         distractors.push(shuffledDistractors[i].english);
       }
-      // Ensure we have enough distractors if the word pool is small
       while (distractors.length < NUM_OPTIONS -1) {
-          distractors.push(`Placeholder Option ${distractors.length + 1}`); // Fallback
+          distractors.push(`Placeholder Option ${distractors.length + 1}`);
       }
-
 
       const options = shuffleArray([correctWord.english, ...distractors]);
       return {
@@ -144,8 +141,8 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
             <Button onClick={generateQuizQuestions} variant="outline" className="w-full sm:w-auto">
               <RefreshCw className="mr-2 h-4 w-4" /> Play New Set
             </Button>
-            <Button onClick={onQuizComplete} className="w-full sm:w-auto">
-              Back to Reading Levels <ArrowRight className="ml-2 h-4 w-4" />
+            <Button onClick={onQuizComplete} className="w-full sm:w-auto"> {/* Changed from Back to Reading Levels */}
+              Back to Quiz Selection <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
         </Card>
@@ -222,5 +219,3 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
     </div>
   );
 }
-
-    

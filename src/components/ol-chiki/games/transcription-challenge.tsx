@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { StarRating } from '@/components/ui/star-rating';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, XCircle, Award, ArrowRight } from 'lucide-react';
+import { CheckCircle, XCircle, Award, ArrowRight, Loader2 } from 'lucide-react';
 
 interface TranscriptionChallengeProps {
   level: GameLevel;
@@ -23,24 +23,28 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const [gamePhase, setGamePhase] = useState<'playing' | 'feedback' | 'finished'>('playing');
+  const [gamePhase, setGamePhase] = useState<'loading'| 'playing' | 'feedback' | 'finished'>('loading');
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
   const loadQuestions = useCallback(() => {
+    setGamePhase('loading');
     let sourceData: (OlChikiCharacter | OlChikiNumber)[];
     if (challengeType === 'characters') {
       sourceData = olChikiCharacters;
     } else { // 'numbers'
-      sourceData = olChikiNumbers.filter(n => n.value <= 20); // Limit numbers for now for variety
+      sourceData = olChikiNumbers.filter(n => n.value <= 100); // Use all numbers up to 100
     }
     
     const shuffledData = shuffleArray(sourceData);
-    const selectedQuestions = shuffledData.slice(0, level.questionCount).map(item => ({
+    const questionCount = Math.min(level.questionCount, shuffledData.length); // Ensure we don't ask for more questions than available
+
+    const selectedQuestions = shuffledData.slice(0, questionCount).map(item => ({
       id: item.id,
       olChiki: item.olChiki,
       correctAnswer: challengeType === 'characters' ? (item as OlChikiCharacter).transliteration.toLowerCase() : (item as OlChikiNumber).digitString.toLowerCase(),
     }));
     setQuestions(selectedQuestions);
+    setGamePhase('playing');
   }, [level.questionCount, challengeType]);
 
   useEffect(() => {
@@ -48,7 +52,6 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
     setCurrentQuestionIndex(0);
     setScore(0);
     setUserAnswer('');
-    setGamePhase('playing');
     setFeedback(null);
   }, [level, loadQuestions]);
 
@@ -78,12 +81,17 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
     }, 1500); // Show feedback for 1.5 seconds
   };
 
-  if (!questions.length && gamePhase === 'playing') {
-    return <div className="p-4 text-center">Loading questions...</div>;
+  if (gamePhase === 'loading' || (!questions.length && gamePhase === 'playing')) {
+    return (
+      <div className="p-4 md:p-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-[300px]">
+        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+        <p className="text-muted-foreground">Loading questions...</p>
+      </div>
+    );
   }
 
   if (gamePhase === 'finished') {
-    const finalStars = Math.round((score / questions.length) * 5);
+    const finalStars = questions.length > 0 ? Math.round((score / questions.length) * 5) : 0;
     return (
       <div className="p-4 md:p-6 max-w-md mx-auto text-center">
         <Card className="shadow-xl">
@@ -110,7 +118,7 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex +1) / questions.length) * 100;
+  const progress = questions.length > 0 ? ((currentQuestionIndex +1) / questions.length) * 100 : 0;
 
   return (
     <div className="p-4 md:p-6 max-w-lg mx-auto">

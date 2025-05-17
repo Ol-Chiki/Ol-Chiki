@@ -1,6 +1,7 @@
 
 "use client";
 
+import * as React from 'react'; // Added import for React
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

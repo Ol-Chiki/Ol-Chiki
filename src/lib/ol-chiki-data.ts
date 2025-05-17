@@ -38,7 +38,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
   "Animals": [
     { id: 'a1', olChiki: 'ᱥᱮᱛᱟ', transliteration: 'seta', english: 'Dog' },
     { id: 'a2', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'Cow' },
-    { id: 'a3', olChiki: 'ᱪᱮᱬᱮ', transliteration: 'cɛ̃ṛɛ', english: 'Bird' }, // General bird, will be distinct from new Bird category
+    { id: 'a3', olChiki: 'ᱪᱮᱬᱮ', transliteration: 'cɛ̃ṛɛ', english: 'Bird' }, 
     { id: 'a4', olChiki: 'ᱦᱟᱹᱠᱩ', transliteration: 'haku', english: 'Fish' },
     { id: 'a5', olChiki: 'ᱵᱤᱛᱠᱤᱞ', transliteration: 'bitkil', english: 'Cat' }, 
     { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' },
@@ -74,7 +74,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'a39', olChiki: 'ᱰᱟᱝᱨᱟ', transliteration: 'dangra', english: 'Ox' },
     { id: 'a40', olChiki: 'ᱵᱷᱤᱰᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'bhidi gidra', english: 'Lamb' },
     { id: 'a41', olChiki: 'ᱠᱟᱲᱟ', transliteration: 'kada', english: 'Buffalo' },
-    { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hound' }, // Corrected Hoond
+    { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hound' },
     { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'sodo', english: 'Bull' },
     { id: 'a44', olChiki: 'ᱥᱩᱠᱨᱤ', transliteration: 'sukri', english: 'Pig' },
   ],
@@ -116,6 +116,42 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'b12', olChiki: 'ᱢᱟᱨᱟᱝ ᱜᱮᱰᱮ', transliteration: 'marang gede', english: 'Swan' },
     { id: 'b13', olChiki: 'ᱜᱤᱫᱤ', transliteration: 'gidi', english: 'Vulture' },
   ],
+  "Eatables": [
+    { id: 'e1', olChiki: 'ᱦᱩᱲᱩ', transliteration: 'hudu', english: 'Grain' },
+    { id: 'e2', olChiki: 'ᱟᱪᱟᱨ', transliteration: 'achar', english: 'Pickle' },
+    { id: 'e3', olChiki: 'ᱥᱩᱡᱤ', transliteration: 'suji', english: 'Semolina' },
+    { id: 'e4', olChiki: 'ᱚᱴᱟ', transliteration: 'ota', english: 'Flour' },
+    { id: 'e5', olChiki: 'ᱤᱞᱟᱹᱭᱪᱤ', transliteration: 'elaichi', english: 'Comfit' }, // Assuming Comfit is cardamom
+    { id: 'e6', olChiki: 'ᱛᱚᱣᱟ ᱨᱮᱭᱟᱜ ᱪᱟᱭ', transliteration: 'towa reag chay', english: 'Coffee' }, // Lit. "milk's tea"
+    { id: 'e7', olChiki: 'ᱛᱚᱣᱟ', transliteration: 'towa', english: 'Milk' },
+    { id: 'e8', olChiki: 'ᱮᱥᱠᱨᱮᱢ', transliteration: 'eskrem', english: 'Ice-cream' },
+    { id: 'e9', olChiki: 'ᱜᱩᱦᱩᱢ', transliteration: 'guhum', english: 'Wheat' },
+    { id: 'e10', olChiki: 'ᱤᱛᱤᱞ ᱥᱩᱱᱩᱢ', transliteration: 'itil sunum', english: 'Ghee' },
+    { id: 'e11', olChiki: 'ᱪᱚᱴᱱᱤ', transliteration: 'cotni', english: 'Sauce' },
+    { id: 'e12', olChiki: 'ᱪᱟᱱᱟ/ᱪᱷᱚᱞᱟ', transliteration: 'chona/chola', english: 'Gram' },
+    { id: 'e13', olChiki: 'ᱪᱟᱣᱞᱮ', transliteration: 'chawle', english: 'Rice' },
+    { id: 'e14', olChiki: 'ᱪᱟᱭ', transliteration: 'chai', english: 'Tea' },
+    { id: 'e15', olChiki: 'ᱪᱤᱱᱤ', transliteration: 'chini', english: 'Sugar' },
+    { id: 'e16', olChiki: 'ᱯᱟᱹᱱᱤᱨ', transliteration: 'ponir', english: 'Cheese' },
+    { id: 'e17', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Vegetables' }, // Also means curry/dish
+    { id: 'e18', olChiki: 'ᱥᱩᱱᱩᱢ', transliteration: 'sunum', english: 'Oil' },
+    { id: 'e19', olChiki: 'ᱫᱟᱹᱞ', transliteration: 'daal', english: 'Pulse' },
+    { id: 'e20', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ ᱪᱟᱴᱱᱤ', transliteration: 'bilati cotni', english: 'Tomato sauce' },
+    { id: 'e21', olChiki: 'ᱵᱚᱨᱚᱯᱷ', transliteration: 'boroph', english: 'Ice' },
+    { id: 'e22', olChiki: 'ᱵᱤᱥᱠᱩᱴ', transliteration: 'biskut', english: 'Biscuit' },
+    { id: 'e23', olChiki: 'ᱡᱚᱱᱚᱲᱟ', transliteration: 'jonoda', english: 'Maize' }, // Corrected from Maiz
+    { id: 'e24', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Meat' },
+    { id: 'e25', olChiki: 'ᱢᱮᱨᱚᱢ ᱡᱤᱞ', transliteration: 'merom jil', english: 'Mutton' },
+    { id: 'e26', olChiki: 'ᱥᱩᱠᱨᱤ ᱡᱤᱞ', transliteration: 'sukri jil', english: 'Pork' },
+    { id: 'e27', olChiki: 'ᱢᱤᱥᱨᱤ ᱪᱤᱱᱤ', transliteration: 'mesri chini', english: 'Sugar candy' },
+    { id: 'e28', olChiki: 'ᱢᱟᱭᱫᱟ', transliteration: 'maida', english: 'Maida' }, // Fine flour
+    { id: 'e29', olChiki: 'ᱛᱩᱲᱤ', transliteration: 'tudi', english: 'Mustard' },
+    { id: 'e30', olChiki: 'ᱧᱤᱸᱫᱟ ᱫᱟᱠᱟ', transliteration: 'ninda daka', english: 'Bread' }, // Lit. "night rice/food" - often refers to bread/roti
+    { id: 'e31', olChiki: 'ᱥᱚᱨᱵᱚᱛ', transliteration: 'sorbot', english: 'Syrup' },
+    { id: 'e32', olChiki: 'ᱯᱟᱹᱨᱣᱟ', transliteration: 'parwa', english: 'Wine' }, // Also means pigeon
+    { id: 'e33', olChiki: 'ᱧᱮᱸᱞᱮᱨᱟᱥᱟ', transliteration: 'nelerasa', english: 'Honey' },
+    { id: 'e34', olChiki: 'ᱛᱩᱲᱤ ᱥᱩᱱᱩᱢ', transliteration: 'tudi sunum', english: 'Mustard oil' },
+  ],
   "Plants & Nature": [
     { id: 'p1', olChiki: 'ᱫᱟᱨᱮ', transliteration: 'dare', english: 'Tree' },
     { id: 'p2', olChiki: 'ᱵᱟᱦᱟ', transliteration: 'baha', english: 'Flower' },
@@ -134,14 +170,14 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kaṭub', english: 'Knife' },
     { id: 't7', olChiki: 'ᱪᱟᱨᱯᱟᱭ', transliteration: 'carpai', english: 'Bed' },
   ],
-  "Food Items": [
+  "Food Items": [ // Kept this separate, might be a good idea to merge with Eatables later or rename
     { id: 'f1', olChiki: 'ᱫᱟᱠᱟ', transliteration: 'daka', english: 'Cooked Rice' },
     { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Curry/Vegetable Dish' },
     { id: 'f3', olChiki: 'ᱡᱚ', transliteration: 'jo', english: 'Fruit' },
     { id: 'f4', olChiki: 'ᱯᱤᱴᱷᱟᱹ', transliteration: 'piṭhạ̈', english: 'Rice Cake/Pancake' },
     { id: 'f5', olChiki: 'ᱦᱟᱺᱰᱤ', transliteration: 'haṇḍi', english: 'Rice Beer' },
     { id: 'f6', olChiki: 'ᱵᱩᱞᱩᱝ', transliteration: 'buluṅ', english: 'Salt' },
-    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mạric', english: 'Chilli' },
+    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mạric', english: 'Chilli' }, // Duplicate of vegetable entry, consider consolidation
   ],
   "Relations": [
     { id: 'rel1', olChiki: 'ᱵᱟᱵᱟ', transliteration: 'baba', english: 'Father' },
@@ -168,7 +204,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel22', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱫᱮᱣᱨᱟᱱᱤ', transliteration: 'iril kudi dewrani', english: 'Sister in law (younger brother\'s wife)' },
     { id: 'rel23', olChiki: 'ᱢᱟᱢᱟ', transliteration: 'mama', english: 'Maternal Uncle' },
     { id: 'rel24', olChiki: 'ᱢᱟᱢᱤ', transliteration: 'mami', english: 'Maternal Aunt' },
-    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' },
+    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' }, // Was kaka in roman, corrected to kaki
     { id: 'rel26', olChiki: 'ᱟᱪᱮᱛ', transliteration: 'auchet', english: 'Pupil' },
     { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijor', english: 'Own' },
     { id: 'rel28', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱵᱟᱵᱟ', transliteration: 'honjhar baba', english: 'Father in law' },
@@ -183,7 +219,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel37', olChiki: 'ᱦᱤᱞᱤ', transliteration: 'hili', english: 'Maternal Sister' },
   ],
   "Days of the Week": [
-    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' },
+    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' }, // Corrected from ᱥᱤᱸᱜᱩᱱ
     { id: 'd2', olChiki: 'ᱚᱛᱮ', transliteration: 'ote', english: 'Monday' },
     { id: 'd3', olChiki: 'ᱵᱟᱞᱮ', transliteration: 'bale', english: 'Tuesday' },
     { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'sagun', english: 'Wednesday' },

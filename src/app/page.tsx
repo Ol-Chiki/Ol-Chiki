@@ -30,20 +30,21 @@ export default function OlChikiPathPage() {
   const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
-  const [splashSeenThisSession, setSplashSeenThisSession] = useState(true); 
+  const [splashSeenThisSession, setSplashSeenThisSession] = useState(false); // Default to false
   const [currentYear, setCurrentYear] = useState<string>('');
 
   useEffect(() => {
-    setIsClient(true); 
+    setIsClient(true);
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
         setSplashSeenThisSession(true);
       } else {
-        setSplashSeenThisSession(false); 
+        setSplashSeenThisSession(false);
       }
       setCurrentYear(new Date().getFullYear().toString());
     }
   }, []);
+
 
   const handleSplashComplete = () => {
     if (typeof window !== 'undefined') {
@@ -53,14 +54,20 @@ export default function OlChikiPathPage() {
   };
 
   useEffect(() => {
-    if (!isClient || !splashSeenThisSession) {
-      return;
+    if (!isClient) {
+      return; // Don't run auth checks until client has mounted and determined splash status
     }
 
+    if (!splashSeenThisSession) {
+      return; // If splash hasn't been seen/completed, wait for it
+    }
+
+    // Proceed with auth checks only after client mount and splash completion
     if (!authLoading && !user && !hasSkippedAuth) {
       router.push('/auth');
     }
   }, [isClient, splashSeenThisSession, user, authLoading, hasSkippedAuth, router]);
+
 
   if (!isClient) {
     return (
@@ -96,7 +103,7 @@ export default function OlChikiPathPage() {
   const bottomNavItems: NavItemConfig[] = [
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
     { id: 'words', label: 'Words', icon: FileText },
-    { id: 'sentence', label: 'Sentence AI', icon: Sparkles },
+    { id: 'sentence', label: 'Santad AI', icon: Sparkles },
     { id: 'quiz', label: 'Quiz', icon: Puzzle },
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];

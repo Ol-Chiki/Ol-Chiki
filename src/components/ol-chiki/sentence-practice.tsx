@@ -42,7 +42,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
 
   '.': '᱾', 
   ',': 'ᱹ', 
-  '?': '?', 
+  '?': '?',
 };
 
 // Schema for the AI Translator Tool
@@ -103,10 +103,11 @@ export default function SentencePractice() {
       }
     } catch (error: any) {
       console.error('Error translating with AI:', error);
-      setAiTranslationError(error.message || 'Failed to translate sentence with AI. Check console for details.');
+      const errorMessage = error.message || 'Failed to translate sentence with AI. Check console for details.';
+      setAiTranslationError(errorMessage);
       toast({
         title: "AI Translation Error",
-        description: error.message || "Could not translate sentence with AI.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -157,7 +158,7 @@ export default function SentencePractice() {
 
       {/* Tool 2: AI-Powered English/Hindi to Santali (Ol Chiki) Translator */}
       <div>
-        <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">AI-Powered English/Hindi to Santali (Ol Chiki) Translator</h2>
+        <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">Santad AI - English/Hindi to Ol Chiki Translator</h2>
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Translate English or Hindi Sentence to Santali (Ol Chiki)</CardTitle>

@@ -6,7 +6,7 @@
 /**
  * @fileOverview A flow for translating English or Hindi sentences into Ol Chiki script.
  *
- * - generateOlchikiSentence - A function that translates sentences into Ol Chiki.
+ * - generateOlchikiSentence - A function that translates sentences into Ol Chiki and provides an English transliteration.
  * - GenerateOlchikiSentenceInput - The input type for the generateOlchikiSentence function.
  * - GenerateOlchikiSentenceOutput - The return type for the generateOlchikiSentence function.
  */
@@ -22,6 +22,7 @@ export type GenerateOlchikiSentenceInput = z.infer<typeof GenerateOlchikiSentenc
 
 const GenerateOlchikiSentenceOutputSchema = z.object({
   sentence: z.string().describe('The translated sentence in Ol Chiki script.'),
+  englishTransliteration: z.string().describe('A simple English letter-based transliteration of the generated Ol Chiki script (e.g., "omagan nyutum chet kana?").'),
 });
 
 export type GenerateOlchikiSentenceOutput = z.infer<typeof GenerateOlchikiSentenceOutputSchema>;
@@ -37,30 +38,36 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert linguist AI.
 Your primary task is to accurately translate the provided 'inputText' (which can be in Hindi or English) into the Santali language.
 Once translated into Santali, your second task is to represent that Santali translation using only Ol Chiki script characters.
+Your third task is to provide a simple, phonetic, English letter-based transliteration of the generated Ol Chiki script.
 
 Your response MUST be a valid JSON object and NOTHING ELSE. Do not include any text before or after the JSON object. Do not use markdown code blocks. The JSON object must start with '{' and end with '}'.
 
-The JSON object must have a single key "sentence" whose value is the translated Ol Chiki script as a string.
+The JSON object must have two keys:
+1. "sentence": The translated sentence in Ol Chiki script as a string.
+2. "englishTransliteration": A simple English letter-based transliteration of the Ol Chiki script "sentence" (e.g., "omagan nyutum chet kana?").
 
 Example 1:
 Input: { "inputText": "What is your name?" }
 Output:
 {
-  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?"
+  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
+  "englishTransliteration": "omagan nyutum chet kana?"
 }
 
 Example 2:
 Input: { "inputText": "आपका नाम क्या है?" }
 Output:
 {
-  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?"
+  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?",
+  "englishTransliteration": "omagan nyutum chet kana?"
 }
 
 Example 3:
 Input: { "inputText": "hello, what are you doing?" }
 Output:
 {
-  "sentence": "ᱡᱚᱦᱟᱨ, ᱟᱢᱫᱚ ᱪᱮᱫ ᱪᱤᱢ ᱪᱤᱠᱟᱹᱭᱮᱫᱟ?"
+  "sentence": "ᱡᱚᱦᱟᱨ, ᱟᱢᱫᱚ ᱪᱮᱫ ᱪᱤᱢ ᱪᱤᱠᱟᱹᱭᱮᱫᱟ?",
+  "englishTransliteration": "johar, amdo ched chim chikaeyeda?"
 }
 
 Now, translate the following based on the inputText:
@@ -75,14 +82,14 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
   },
   async (input: GenerateOlchikiSentenceInput): Promise<GenerateOlchikiSentenceOutput> => {
     const result = await prompt(input);
-    let output = result.output; // Corrected: access output as a property
+    let output = result.output; 
 
     if (!output) {
       console.error(
         'AI model did not return the expected structured output initially. Raw response candidates:',
         JSON.stringify(result.candidates, null, 2)
       );
-      const rawText = result.text; // Corrected: access text as a property
+      const rawText = result.text; 
       console.error('Raw text from model:', rawText);
 
       // Attempt to find JSON within markdown (common issue)

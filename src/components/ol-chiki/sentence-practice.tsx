@@ -12,11 +12,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel as RHFFormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import { generateOlchikiSentence, type GenerateOlchikiSentenceInput } from '@/ai/flows/generate-olchiki-sentence';
+import { generateOlchikiSentence, type GenerateOlchikiSentenceInput, type GenerateOlchikiSentenceOutput } from '@/ai/flows/generate-olchiki-sentence';
 import { Loader2, Wand2 } from 'lucide-react';
 
 // Direct mapping for common English keys to Ol Chiki characters
-// This map is inspired by typical Santali keyboard layouts.
 const directKeyToOlChikiMap: { [key: string]: string } = {
   'a': 'ᱚ', 'A': 'ᱟ',
   't': 'ᱛ', 'T': 'ᱴ',
@@ -30,24 +29,20 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   's': 'ᱥ',
   'h': 'ᱦ', 'H': 'ᱷ',
   'n': 'ᱱ',
-  'N': 'ᱧ', // Shift+n for ᱧ
-  'r': 'ᱨ', 'R': 'ᱲ', // Shift+r for ᱲ
+  'N': 'ᱧ', 
+  'r': 'ᱨ', 'R': 'ᱲ', 
   'u': 'ᱩ',
   'c': 'ᱪ',
-  'd': 'ᱫ', 'D': 'ᱰ', // Shift+d for ᱰ
+  'd': 'ᱫ', 'D': 'ᱰ', 
   'y': 'ᱭ',
   'e': 'ᱮ',
   'p': 'ᱯ',
   'b': 'ᱵ',
   'o': 'ᱳ',
 
-  '.': '᱾', // MUCAAD (Ol Chiki Full Stop)
-  ',': 'ᱹ', // AHAD (Ol Chiki Comma/Separator)
-  '?': '?', // Literal question mark
-
-  // Digits
-  '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',
-  '5': '᱕', '6': '᱖', '7': '᱗', '8': '᱘', '9': '᱙',
+  '.': '᱾', 
+  ',': 'ᱹ', 
+  '?': '?', 
 };
 
 // Schema for the AI Translator Tool
@@ -69,7 +64,7 @@ export default function SentencePractice() {
       result += directKeyToOlChikiMap[char] || char;
     }
     return result;
-  }, []); // directKeyToOlChikiMap is constant and defined outside
+  }, []); 
 
   useEffect(() => {
     const result = doDirectKeyTransliterate(directInputText);
@@ -79,7 +74,7 @@ export default function SentencePractice() {
 
   // ---- AI Translator Tool States & Logic ----
   const { toast } = useToast();
-  const [aiOutputScript, setAiOutputScript] = useState<string | null>(null);
+  const [aiOutputScript, setAiOutputScript] = useState<GenerateOlchikiSentenceOutput | null>(null);
   const [isAiTranslating, setIsAiTranslating] = useState(false);
   const [aiTranslationError, setAiTranslationError] = useState<string | null>(null);
 
@@ -98,7 +93,7 @@ export default function SentencePractice() {
       const input: GenerateOlchikiSentenceInput = { inputText: data.englishSentence };
       const result = await generateOlchikiSentence(input);
       if (result && result.sentence) {
-        setAiOutputScript(result.sentence);
+        setAiOutputScript(result);
         toast({
           title: "AI Translation Successful!",
           description: "English/Hindi sentence translated to Ol Chiki script.",
@@ -132,7 +127,7 @@ export default function SentencePractice() {
               Type English characters to see their corresponding Ol Chiki script instantly.
               This tool provides a direct character mapping for common keys (e.g., 'a' to ᱚ, Shift+A to ᱟ).
               Punctuation like '.' and ',' are mapped to Ol Chiki equivalents. 
-              Other symbols (like '!') and emojis will appear as typed. It is not a full language translator.
+              Other symbols (like '!' or '?') and emojis will appear as typed. It is not a full language translator.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -168,7 +163,7 @@ export default function SentencePractice() {
             <CardTitle>Translate English or Hindi Sentence to Santali (Ol Chiki)</CardTitle>
             <CardDescription>
               Enter an English or Hindi sentence below. The AI will attempt to translate it into Santali
-              and provide the result in Ol Chiki script. AI translations can sometimes be imperfect.
+              and provide the result in Ol Chiki script, along with an English transliteration. AI translations can sometimes be imperfect.
             </CardDescription>
           </CardHeader>
           <Form {...aiTranslateForm}>
@@ -223,10 +218,17 @@ export default function SentencePractice() {
         {aiOutputScript && !isAiTranslating && !aiTranslationError && (
           <Card className="mt-6 shadow-md">
             <CardHeader>
-              <CardTitle className="text-accent">AI Translated Ol Chiki Script:</CardTitle>
+              <CardTitle className="text-accent">AI Translation Result:</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center break-words min-h-[3em]">{aiOutputScript}</p>
+            <CardContent className="space-y-3">
+              <div>
+                <Label className="text-sm text-muted-foreground">Ol Chiki Script:</Label>
+                <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center break-words min-h-[3em]">{aiOutputScript.sentence}</p>
+              </div>
+              <div>
+                <Label className="text-sm text-muted-foreground">English Transliteration:</Label>
+                <p className="text-lg p-3 bg-secondary/20 rounded-md text-center break-words min-h-[2.5em]">{aiOutputScript.englishTransliteration}</p>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -234,4 +236,3 @@ export default function SentencePractice() {
     </div>
   );
 }
-

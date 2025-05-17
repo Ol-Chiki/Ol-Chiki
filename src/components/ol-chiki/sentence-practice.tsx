@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -43,7 +43,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
 
   '.': '᱾', // MUCAAD (Ol Chiki Full Stop)
   ',': 'ᱹ', // AHAD (Ol Chiki Comma/Separator)
-  '?': '<y_bin_358>', // CORRECTED: DOUBLE MUCAAD (Often used as a question mark or emphasis)
+  '?': '?', // Literal question mark
 
   // Digits
   '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',
@@ -131,7 +131,7 @@ export default function SentencePractice() {
             <CardDescription>
               Type English characters to see their corresponding Ol Chiki script instantly.
               This tool provides a direct character mapping for common keys (e.g., 'a' to ᱚ, Shift+A to ᱟ).
-              Punctuation like '.', ',', '?' are mapped to Ol Chiki equivalents. 
+              Punctuation like '.' and ',' are mapped to Ol Chiki equivalents. 
               Other symbols (like '!') and emojis will appear as typed. It is not a full language translator.
             </CardDescription>
           </CardHeader>
@@ -140,7 +140,7 @@ export default function SentencePractice() {
               <Label htmlFor="direct-input">Enter English Text</Label>
               <Input 
                 id="direct-input"
-                placeholder="e.g., Ol Chiki Lipi! 👍" 
+                placeholder="e.g., Ol Chiki Lipi! 👍 ?" 
                 value={directInputText}
                 onChange={(e) => setDirectInputText(e.target.value)}
                 className="text-lg"
@@ -234,3 +234,4 @@ export default function SentencePractice() {
     </div>
   );
 }
+

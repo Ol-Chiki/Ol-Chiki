@@ -33,7 +33,7 @@ export default function BottomNavigation({
           onClick={() => onNavChange(item.id)}
           className={cn(
             'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20',
-            activeView === item.id ? 'text-primary border-t-2 border-primary' : 'text-muted-foreground'
+            activeView === item.id ? 'text-primary border-t-2 border-primary' : 'text-accent' // Changed from text-muted-foreground
           )}
           aria-label={item.label}
         >
@@ -44,7 +44,7 @@ export default function BottomNavigation({
       <button
         onClick={onProfileClick}
         className={cn(
-          'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20 text-muted-foreground'
+          'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20 text-accent' // Changed from text-muted-foreground
         )}
         aria-label="Profile"
       >

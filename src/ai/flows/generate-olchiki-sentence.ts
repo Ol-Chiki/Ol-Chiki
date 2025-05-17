@@ -74,7 +74,7 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
     outputSchema: GenerateOlchikiSentenceOutputSchema,
   },
   async (input: GenerateOlchikiSentenceInput): Promise<GenerateOlchikiSentenceOutput> => {
-    const result = await prompt.generate({input}); // Use .generate for more details
+    const result = await prompt(input); // Corrected: call prompt directly
     let output = result.output();
 
     if (!output) {
@@ -124,3 +124,4 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
     return output;
   }
 );
+

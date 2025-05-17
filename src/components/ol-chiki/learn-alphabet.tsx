@@ -5,7 +5,9 @@ import type { OlChikiCharacter } from '@/types/ol-chiki';
 import { olChikiCharacters } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent } from '@/components/ui/dialog'; // Removed DialogHeader, DialogTitle, DialogDescription as they are used via Card components
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Volume2 } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -31,13 +33,16 @@ export default function LearnAlphabet() {
     }, LONG_PRESS_DURATION);
   };
 
-  const handleInteractionEnd = () => {
+  const handleInteractionEnd = (character: OlChikiCharacter) => {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
       // If timer is cleared before firing, it's a click (or short tap)
-      // The activeCardId is already set for highlight
+      // Set activeCardId to highlight on click as well
+      setActiveCardId(character.id);
     }
+    // If dialog didn't open, it was a click, keep activeCardId for highlight
+    // If dialog opened, activeCardId is already set
   };
 
   const handleDialogClose = () => {
@@ -56,10 +61,10 @@ export default function LearnAlphabet() {
             <Card
               key={char.id}
               onMouseDown={() => handleInteractionStart(char)}
-              onMouseUp={handleInteractionEnd}
-              onMouseLeave={handleInteractionEnd} // End interaction if mouse leaves while pressed
+              onMouseUp={() => handleInteractionEnd(char)}
+              onMouseLeave={() => {if(longPressTimerRef.current) {clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null;}}}
               onTouchStart={() => handleInteractionStart(char)}
-              onTouchEnd={handleInteractionEnd}
+              onTouchEnd={() => handleInteractionEnd(char)}
               className={cn(
                 "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none",
                 activeCardId === char.id && "ring-2 ring-primary scale-105 shadow-xl"
@@ -93,18 +98,25 @@ export default function LearnAlphabet() {
             setIsDialogOpen(true); 
           }
         }}>
-          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-stretch justify-start p-0 rounded-lg shadow-2xl overflow-hidden">
-            <CardHeader className="p-4 sm:p-6 text-center border-b border-border">
-              <CardTitle className="text-7xl sm:text-8xl font-mono text-primary leading-tight">
+          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-2xl overflow-hidden">
+            <div className="text-center flex flex-col items-center justify-center h-full">
+              <p className="text-7xl sm:text-8xl md:text-[100px] font-mono text-primary leading-none mb-3 sm:mb-4">
                 {longPressedCharacter.olChiki}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6 text-center flex-grow flex flex-col justify-center">
-              <p className="text-3xl sm:text-4xl font-semibold text-accent">{longPressedCharacter.transliteration}</p>
+              </p>
+              <p className="text-2xl sm:text-3xl font-semibold text-accent mt-1 sm:mt-2">{longPressedCharacter.transliteration}</p>
               {longPressedCharacter.pronunciation && (
-                <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">({longPressedCharacter.pronunciation})</CardDescription>
+                <p className="text-lg sm:text-xl text-muted-foreground mt-1">({longPressedCharacter.pronunciation})</p>
               )}
-            </CardContent>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="mt-4 sm:mt-6 text-primary hover:bg-primary/10 rounded-full p-2" 
+                onClick={() => console.log(`Play sound for ${longPressedCharacter.transliteration}`)}
+                aria-label={`Play pronunciation for ${longPressedCharacter.transliteration}`}
+              >
+                <Volume2 className="h-6 w-6 sm:h-7 sm:w-7" />
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       )}

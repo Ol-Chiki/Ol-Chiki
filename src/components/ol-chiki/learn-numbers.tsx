@@ -5,7 +5,9 @@ import type { OlChikiNumber } from '@/types/ol-chiki';
 import { olChikiNumbers } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Dialog, DialogContent } from '@/components/ui/dialog'; // Removed DialogHeader, DialogTitle, DialogDescription as they are used via Card components
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Volume2 } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -29,12 +31,13 @@ export default function LearnNumbers() {
     }, LONG_PRESS_DURATION);
   };
 
-  const handleInteractionEnd = () => {
+  const handleInteractionEnd = (num: OlChikiNumber) => {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
-      // If timer is cleared before firing, it's a click (or short tap)
-      // The activeCardId is already set for highlight
+       // If timer is cleared before firing, it's a click (or short tap)
+      // Set activeCardId to highlight on click as well
+      setActiveCardId(num.id);
     }
   };
 
@@ -52,10 +55,10 @@ export default function LearnNumbers() {
             <Card
               key={num.id}
               onMouseDown={() => handleInteractionStart(num)}
-              onMouseUp={handleInteractionEnd}
-              onMouseLeave={handleInteractionEnd} // End interaction if mouse leaves while pressed
+              onMouseUp={() => handleInteractionEnd(num)}
+              onMouseLeave={() => {if(longPressTimerRef.current) {clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null;}}}
               onTouchStart={() => handleInteractionStart(num)}
-              onTouchEnd={handleInteractionEnd}
+              onTouchEnd={() => handleInteractionEnd(num)}
               className={cn(
                 "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none",
                 activeCardId === num.id && "ring-2 ring-primary scale-105 shadow-xl"
@@ -63,7 +66,7 @@ export default function LearnNumbers() {
             >
               <CardHeader className="p-2 text-center">
                 <CardTitle className="text-lg sm:text-xl md:text-2xl text-center font-mono text-accent leading-tight">
-                  {num.olChiki} ({num.digitString})
+                   {num.olChiki} ({num.digitString})
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2 pt-1 text-center">
@@ -87,18 +90,25 @@ export default function LearnNumbers() {
             setIsDialogOpen(true);
           }
         }}>
-          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-stretch justify-start p-0 rounded-lg shadow-2xl overflow-hidden">
-            <CardHeader className="p-4 sm:p-6 text-center border-b border-border">
-              <CardTitle className="text-5xl sm:text-6xl font-mono text-primary leading-tight">
+          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-2xl overflow-hidden">
+            <div className="text-center flex flex-col items-center justify-center h-full">
+              <p className="text-6xl sm:text-7xl md:text-[90px] font-mono text-primary leading-none mb-3 sm:mb-4">
                 {longPressedNumber.olChiki} ({longPressedNumber.digitString})
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6 text-center flex-grow flex flex-col justify-center">
-              <p className="text-2xl sm:text-3xl font-semibold text-accent">
+              </p>
+              <p className="text-xl sm:text-2xl font-semibold text-accent mt-1 sm:mt-2">
                 {longPressedNumber.englishWord}
               </p>
-              <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">{longPressedNumber.santaliWord}</CardDescription>
-            </CardContent>
+              <p className="text-lg sm:text-xl text-muted-foreground mt-1">{longPressedNumber.santaliWord}</p>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="mt-4 sm:mt-6 text-primary hover:bg-primary/10 rounded-full p-2"
+                onClick={() => console.log(`Play sound for ${longPressedNumber.englishWord} / ${longPressedNumber.santaliWord}`)}
+                aria-label={`Play pronunciation for ${longPressedNumber.englishWord}`}
+              >
+                <Volume2 className="h-6 w-6 sm:h-7 sm:w-7" />
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       )}

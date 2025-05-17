@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Ensured React is imported
 import type { GameLevel } from '@/types/ol-chiki';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StarRating } from '@/components/ui/star-rating';
 import TranscriptionChallenge from '@/components/ol-chiki/games/transcription-challenge';
-import { Type, ListChecks } from 'lucide-react'; // Example icons
+import { Type, ListChecks, Lock, Play, ChevronDown } from 'lucide-react'; 
 
 const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
   {
@@ -16,7 +16,7 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     description: 'Test your knowledge of Ol Chiki character transliterations.',
     icon: Type,
     isLocked: false,
-    questionCount: 5, // Start with a small number for easier testing
+    questionCount: 5, 
     gameComponentIdentifier: 'TranscriptionChallengeChars',
   },
   {
@@ -24,7 +24,7 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     title: 'Number Transcription',
     description: 'Transcribe Ol Chiki numbers to their English transliterations.',
     icon: ListChecks,
-    isLocked: true, // Locked initially
+    isLocked: true, 
     questionCount: 5,
     gameComponentIdentifier: 'TranscriptionChallengeNumbers',
   },
@@ -38,7 +38,6 @@ export default function GameHub() {
   const [activeGameLevelId, setActiveGameLevelId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load stars from localStorage
     const storedLevelsData = localStorage.getItem('olChikiGameLevels');
     if (storedLevelsData) {
       try {
@@ -67,10 +66,9 @@ export default function GameHub() {
     setLevels(prevLevels => {
       newLevelsState = prevLevels.map(level =>
         level.id === levelId
-          ? { ...level, stars: Math.max(level.stars, earnedStars) } // Keep best score
+          ? { ...level, stars: Math.max(level.stars, earnedStars) } 
           : level
       );
-      // Persist to localStorage
       try {
         const levelsToStore = newLevelsState.map(l => ({ id: l.id, stars: l.stars }));
         localStorage.setItem('olChikiGameLevels', JSON.stringify(levelsToStore));
@@ -79,7 +77,7 @@ export default function GameHub() {
       }
       return newLevelsState;
     });
-    setActiveGameLevelId(null); // Return to hub
+    setActiveGameLevelId(null); 
   };
 
   const handleExitGame = () => {
@@ -89,8 +87,6 @@ export default function GameHub() {
   const activeGame = levels.find(level => level.id === activeGameLevelId);
 
   if (activeGame) {
-    // For now, only TranscriptionChallenge is implemented.
-    // Later, use activeGame.gameComponentIdentifier to select the correct game component.
     if (activeGame.gameComponentIdentifier === 'TranscriptionChallengeChars') {
       return (
         <TranscriptionChallenge
@@ -110,7 +106,6 @@ export default function GameHub() {
         />
       );
     }
-    // Fallback if component identifier is unknown
     return (
       <div>
         <p>Error: Game component not found.</p>
@@ -121,25 +116,66 @@ export default function GameHub() {
 
   return (
     <div className="p-4 md:p-6">
-      <h2 className="text-3xl font-bold mb-6 text-primary tracking-tight">Game Zone</h2>
-      <p className="text-muted-foreground mb-8">Select a game to test your Ol Chiki skills!</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {levels.map(level => (
-          <Card key={level.id} className={`shadow-lg hover:shadow-xl transition-shadow duration-300 ${level.isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => !level.isLocked && handleGameStart(level.id)}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-semibold text-accent">{level.title}</CardTitle>
-              <level.icon className="h-8 w-8 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">{level.description}</p>
-              <StarRating rating={level.stars} size={24} />
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" disabled={level.isLocked}>
-                {level.isLocked ? 'Locked' : 'Play Now'}
-              </Button>
-            </CardFooter>
-          </Card>
+      <h2 className="text-3xl font-bold mb-4 text-primary tracking-tight text-center">Game Zone Path</h2>
+      <p className="text-muted-foreground mb-10 text-center">Follow the winding path to test your Ol Chiki skills!</p>
+      
+      <div className="w-full max-w-lg mx-auto"> {/* Centered container for the path */}
+        {levels.map((level, index) => (
+          <React.Fragment key={level.id}>
+            {/* Level Item Row */}
+            <div className={`flex w-full py-2 ${index % 2 === 0 ? 'justify-start' : 'sm:justify-end justify-center'}`}>
+              {/* Spacer for right-aligned cards on sm screens and up */}
+              {index % 2 !== 0 && <div className="w-1/2 flex-shrink-0 hidden sm:block"></div>}
+              
+              <Card 
+                className={`w-full sm:w-1/2 shadow-lg transition-shadow duration-300 
+                            ${level.isLocked ? 'opacity-70 cursor-not-allowed bg-card' : 'hover:shadow-xl cursor-pointer bg-card'}`}
+                onClick={() => !level.isLocked && handleGameStart(level.id)}
+                aria-disabled={level.isLocked}
+                tabIndex={level.isLocked ? -1 : 0}
+              >
+                <CardHeader className="flex flex-row items-center justify-between p-3.5 space-x-3">
+                  <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-full ${level.isLocked ? 'bg-muted' : 'bg-primary/10'}`}>
+                       <level.icon className={`h-8 w-8 ${level.isLocked ? 'text-muted-foreground' : 'text-primary'}`} />
+                    </div>
+                    <div className="min-w-0 flex-grow"> 
+                      <CardTitle className="text-md font-semibold text-accent leading-tight truncate">{level.title}</CardTitle>
+                      {!level.isLocked && <StarRating rating={level.stars} size={18} className="mt-1"/>}
+                      {level.isLocked && <p className="text-xs text-muted-foreground mt-1">Locked</p>}
+                    </div>
+                  </div>
+                  
+                  <div className="flex-shrink-0">
+                    {!level.isLocked && (
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="h-9 w-9 p-0 rounded-full shadow-md" 
+                        onClick={(e) => { e.stopPropagation(); !level.isLocked && handleGameStart(level.id); }}
+                        aria-label={`Play ${level.title}`}
+                      >
+                        <Play className="h-5 w-5" />
+                      </Button>
+                    )}
+                    {level.isLocked && (
+                      <Lock className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+                </CardHeader>
+              </Card>
+              
+              {/* Spacer for left-aligned cards on sm screens and up*/}
+              {index % 2 === 0 && <div className="w-1/2 flex-shrink-0 hidden sm:block"></div>}
+            </div>
+
+            {/* Connector Section */}
+            {index < levels.length - 1 && (
+              <div className={`flex h-12 w-full items-center justify-center`}>
+                 <ChevronDown className="h-8 w-8 text-primary/40" />
+              </div>
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>

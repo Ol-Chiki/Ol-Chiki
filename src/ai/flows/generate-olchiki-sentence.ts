@@ -34,16 +34,28 @@ const prompt = ai.definePrompt({
   name: 'translateToOlchikiPrompt',
   input: {schema: GenerateOlchikiSentenceInputSchema},
   output: {schema: GenerateOlchikiSentenceOutputSchema},
-  prompt: `You are an expert linguist specializing in translating Hindi and English sentences into the Ol Chiki script.
-Translate the following sentence into Ol Chiki script:
-{{{inputText}}}
+  prompt: `You are an expert linguist AI. Your task is to translate the provided 'inputText' (which can be in Hindi or English) into the Santali language, and then represent that Santali translation using the Ol Chiki script.
 
-Your response MUST be a JSON object with a single key "sentence" containing the translated Ol Chiki script. For example:
+Your response MUST be a valid JSON object and NOTHING ELSE. Do not include any text before or after the JSON object. Do not use markdown code blocks. The JSON object must start with '{' and end with '}'.
+
+The JSON object must have a single key "sentence" whose value is the translated Ol Chiki script as a string.
+
+Example 1:
+Input: { "inputText": "What is your name?" }
+Output:
 {
-  "sentence": "Translated Ol Chiki script here"
+  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?"
 }
 
-Ensure the translation is accurate and grammatically correct in Santali using Ol Chiki.`,
+Example 2:
+Input: { "inputText": "आपका नाम क्या है?" }
+Output:
+{
+  "sentence": "ᱚᱢᱟᱜᱟᱱ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?"
+}
+
+Now, translate the following:
+{{{inputText}}}`,
 });
 
 const generateOlchikiSentenceFlow = ai.defineFlow(
@@ -52,11 +64,54 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
     inputSchema: GenerateOlchikiSentenceInputSchema,
     outputSchema: GenerateOlchikiSentenceOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async (input: GenerateOlchikiSentenceInput): Promise<GenerateOlchikiSentenceOutput> => {
+    const result = await prompt.generate({input}); // Use .generate for more details
+    let output = result.output();
+
     if (!output) {
-      throw new Error('AI model did not return the expected output format.');
+      console.error(
+        'AI model did not return the expected structured output initially. Raw response candidates:',
+        JSON.stringify(result.candidates, null, 2)
+      );
+      const rawText = result.text();
+      console.error('Raw text from model:', rawText);
+
+      // Attempt to find JSON within markdown (common issue)
+      if (rawText) {
+        const match = rawText.match(/```json\s*([\s\S]*?)\s*```/);
+        if (match && match[1]) {
+          console.log('Found JSON wrapped in markdown. Attempting to parse...');
+          try {
+            const parsedJson = JSON.parse(match[1]);
+            // Validate against Zod schema
+            const validationResult = GenerateOlchikiSentenceOutputSchema.safeParse(parsedJson);
+            if (validationResult.success) {
+              console.log('Successfully extracted and validated JSON from raw text markdown.');
+              output = validationResult.data; // Assign to output to be returned
+            } else {
+              console.error('Extracted JSON from markdown does not match schema:', validationResult.error.format());
+              throw new Error(
+                'AI model returned JSON in markdown, but it did not match the expected schema. Details: ' +
+                JSON.stringify(validationResult.error.format())
+              );
+            }
+          } catch (e: any) {
+            console.error('Failed to parse JSON extracted from markdown:', e.message);
+            throw new Error(
+              'AI model returned content within markdown, but it was not valid JSON. Error: ' + e.message
+            );
+          }
+        }
+      }
     }
+
+    // Final check if output is now populated
+    if (!output) {
+      throw new Error(
+        'AI model did not return the expected output format even after attempting markdown extraction. Check Genkit dev server logs for details.'
+      );
+    }
+    
     return output;
   }
 );

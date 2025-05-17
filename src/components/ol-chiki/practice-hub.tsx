@@ -12,7 +12,7 @@ interface PracticeHubProps {
 }
 
 interface HubItem {
-  id: Exclude<ActiveView, 'practice-hub' | 'writing-quiz-basic'>; // More specific type for IDs here
+  id: Exclude<ActiveView, 'practice-hub' | 'writing-quiz-basic' | 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'game' >; // More specific type for IDs here
   title: string;
   description: string;
   icon: LucideIcon;
@@ -20,7 +20,7 @@ interface HubItem {
 
 const hubItems: HubItem[] = [
   { 
-    id: 'reading-practice-placeholder', 
+    id: 'reading-practice-hub', 
     title: 'Reading Practice', 
     description: 'Sharpen your Ol Chiki reading skills with various exercises.', 
     icon: LibraryBig 
@@ -72,5 +72,3 @@ export default function PracticeHub({ onSectionSelect }: PracticeHubProps) {
     </div>
   );
 }
-
-    

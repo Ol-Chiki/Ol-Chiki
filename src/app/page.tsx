@@ -8,15 +8,15 @@ import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
 import LearnNumbers from "@/components/ol-chiki/learn-numbers";
 import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
-import WritingPracticeQuiz from "@/components/ol-chiki/writing-practice-quiz"; // Renamed
+import WritingPracticeQuiz from "@/components/ol-chiki/writing-practice-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
 import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
-import PracticeHub from '@/components/ol-chiki/practice-hub'; // New
-import ReadingPracticePlaceholder from '@/components/ol-chiki/reading-practice-placeholder'; // New
-import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub'; // New
+import PracticeHub from '@/components/ol-chiki/practice-hub';
+import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub'; // New
+import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { GraduationCap, FileText, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react"; // Changed PenTool/FilePenLine to ClipboardEdit
+import { GraduationCap, FileText, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
 import type { LucideIcon } from 'lucide-react';
 
 export type ActiveView = 
@@ -25,14 +25,14 @@ export type ActiveView =
   | 'numbers' 
   | 'words' 
   | 'sentence' 
-  | 'practice-hub' // New
-  | 'reading-practice-placeholder' // New
-  | 'writing-practice-hub' // New
-  | 'writing-quiz-basic' // New for basic level quiz
+  | 'practice-hub'
+  | 'reading-practice-hub' // New
+  | 'writing-practice-hub'
+  | 'writing-quiz-basic'
   | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'reading-practice-placeholder' | 'writing-practice-hub' | 'writing-quiz-basic'>;
+  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic'>;
   label: string;
   icon: LucideIcon;
 }
@@ -103,7 +103,7 @@ export default function OlChikiPathPage() {
     );
   }
   
-  if (!user && !hasSkippedAuth && splashSeenThisSession) { // Added splashSeenThisSession to condition
+  if (!user && !hasSkippedAuth && splashSeenThisSession) {
      return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -116,7 +116,7 @@ export default function OlChikiPathPage() {
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
     { id: 'words', label: 'Words', icon: FileText },
     { id: 'sentence', label: 'Santad AI', icon: Sparkles },
-    { id: 'practice-hub', label: 'Practice', icon: ClipboardEdit }, // Changed from Write to Practice
+    { id: 'practice-hub', label: 'Practice', icon: ClipboardEdit },
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];
 
@@ -140,8 +140,8 @@ export default function OlChikiPathPage() {
     case 'practice-hub':
       currentComponent = <PracticeHub onSectionSelect={setActiveView} />;
       break;
-    case 'reading-practice-placeholder':
-      currentComponent = <ReadingPracticePlaceholder />;
+    case 'reading-practice-hub': // New case
+      currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />; // Assuming onLevelSelect will be used later
       break;
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;
@@ -161,10 +161,8 @@ export default function OlChikiPathPage() {
   };
 
   const handleNavChange = (viewId: ActiveView) => {
-    // If navigating away from a quiz, perhaps reset quiz state or go to hub
     if (activeView === 'writing-quiz-basic' && viewId !== 'writing-quiz-basic') {
         // Potentially prompt user or save progress
-        // For now, just navigate
     }
     setActiveView(viewId);
   };
@@ -200,5 +198,3 @@ export default function OlChikiPathPage() {
     </div>
   );
 }
-
-    

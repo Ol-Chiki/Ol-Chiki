@@ -13,8 +13,16 @@ import GameHub from "@/components/ol-chiki/game-hub";
 import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import PracticeHub from '@/components/ol-chiki/practice-hub';
 import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
-import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words';
 import ReadingQuizSelectionHub from '@/components/ol-chiki/quizzes/reading-quiz-selection-hub';
+import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words';
+import ReadingEasySelectionHub from '@/components/ol-chiki/quizzes/reading-easy-selection-hub';
+import ReadingEasyMatchWordImageQuiz from '@/components/ol-chiki/quizzes/reading-easy-match-word-image-quiz';
+import ReadingIntermediateSelectionHub from '@/components/ol-chiki/quizzes/reading-intermediate-selection-hub';
+import ReadingIntermediatePhrasesQuiz from '@/components/ol-chiki/quizzes/reading-intermediate-phrases-quiz';
+import ReadingHardSelectionHub from '@/components/ol-chiki/quizzes/reading-hard-selection-hub';
+import ReadingHardStoryQuiz from '@/components/ol-chiki/quizzes/reading-hard-story-quiz';
+import ReadingExpertSelectionHub from '@/components/ol-chiki/quizzes/reading-expert-selection-hub';
+import ReadingExpertMcqQuiz from '@/components/ol-chiki/quizzes/reading-expert-mcq-quiz';
 import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
@@ -29,14 +37,30 @@ export type ActiveView =
   | 'sentence'
   | 'practice-hub'
   | 'reading-practice-hub'
-  | 'reading-quiz-selection-hub'
-  | 'reading-quiz-identify-words'
+  | 'reading-quiz-selection-hub' // Basic identify words selection
+  | 'reading-quiz-identify-words' // Basic identify words quiz
+  | 'reading-easy-selection-hub'
+  | 'reading-easy-match-word-image-quiz'
+  | 'reading-intermediate-selection-hub'
+  | 'reading-intermediate-phrases-quiz'
+  | 'reading-hard-selection-hub'
+  | 'reading-hard-story-quiz'
+  | 'reading-expert-selection-hub'
+  | 'reading-expert-mcq-quiz'
   | 'writing-practice-hub'
   | 'writing-quiz-basic'
   | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers' | 'words' | 'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' | 'reading-quiz-identify-words' | 'reading-quiz-selection-hub'>;
+  id: Exclude<ActiveView, 
+    'alphabet' | 'numbers' | 'words' | 
+    'reading-practice-hub' | 'writing-practice-hub' | 'writing-quiz-basic' |
+    'reading-quiz-identify-words' | 'reading-quiz-selection-hub' |
+    'reading-easy-selection-hub' | 'reading-easy-match-word-image-quiz' |
+    'reading-intermediate-selection-hub' | 'reading-intermediate-phrases-quiz' |
+    'reading-hard-selection-hub' | 'reading-hard-story-quiz' |
+    'reading-expert-selection-hub' | 'reading-expert-mcq-quiz'
+  >;
   label: string;
   icon: LucideIcon;
 }
@@ -124,9 +148,9 @@ export default function OlChikiPathPage() {
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];
 
-  const handleSelectReadingQuizSet = (quizNumber: number) => {
+  const handleSelectQuizSet = (quizNumber: number, targetQuizView: ActiveView) => {
     setCurrentQuizSetNumber(quizNumber);
-    setActiveView('reading-quiz-identify-words');
+    setActiveView(targetQuizView);
   };
 
   let currentComponent;
@@ -149,18 +173,44 @@ export default function OlChikiPathPage() {
     case 'practice-hub':
       currentComponent = <PracticeHub onSectionSelect={setActiveView} />;
       break;
+    // Reading Practice Flows
     case 'reading-practice-hub':
       currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />;
       break;
-    case 'reading-quiz-selection-hub':
-      currentComponent = <ReadingQuizSelectionHub onSelectQuiz={handleSelectReadingQuizSet} onBack={() => setActiveView('reading-practice-hub')} />;
+    case 'reading-quiz-selection-hub': // Basic Identify Words Selection
+      currentComponent = <ReadingQuizSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-quiz-identify-words')} onBack={() => setActiveView('reading-practice-hub')} />;
       break;
-    case 'reading-quiz-identify-words':
+    case 'reading-quiz-identify-words': // Basic Identify Words Quiz
       currentComponent = <ReadingQuizIdentifyWords 
         quizSetNumber={currentQuizSetNumber} 
         onQuizComplete={() => setActiveView('reading-quiz-selection-hub')} 
       />;
       break;
+    case 'reading-easy-selection-hub':
+      currentComponent = <ReadingEasySelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-easy-match-word-image-quiz')} onBack={() => setActiveView('reading-practice-hub')} />;
+      break;
+    case 'reading-easy-match-word-image-quiz':
+      currentComponent = <ReadingEasyMatchWordImageQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('reading-easy-selection-hub')} />;
+      break;
+    case 'reading-intermediate-selection-hub':
+      currentComponent = <ReadingIntermediateSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-intermediate-phrases-quiz')} onBack={() => setActiveView('reading-practice-hub')} />;
+      break;
+    case 'reading-intermediate-phrases-quiz':
+      currentComponent = <ReadingIntermediatePhrasesQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('reading-intermediate-selection-hub')} />;
+      break;
+    case 'reading-hard-selection-hub':
+      currentComponent = <ReadingHardSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-hard-story-quiz')} onBack={() => setActiveView('reading-practice-hub')} />;
+      break;
+    case 'reading-hard-story-quiz':
+      currentComponent = <ReadingHardStoryQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('reading-hard-selection-hub')} />;
+      break;
+    case 'reading-expert-selection-hub':
+      currentComponent = <ReadingExpertSelectionHub onSelectQuiz={(num) => handleSelectQuizSet(num, 'reading-expert-mcq-quiz')} onBack={() => setActiveView('reading-practice-hub')} />;
+      break;
+    case 'reading-expert-mcq-quiz':
+      currentComponent = <ReadingExpertMcqQuiz quizSetNumber={currentQuizSetNumber} onQuizComplete={() => setActiveView('reading-expert-selection-hub')} />;
+      break;
+    // Writing Practice Flows
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;
       break;
@@ -179,9 +229,8 @@ export default function OlChikiPathPage() {
   };
 
   const handleNavChange = (viewId: ActiveView) => {
-    if ((activeView === 'writing-quiz-basic' || activeView === 'reading-quiz-identify-words') && viewId !== activeView) {
-        // Potentially prompt user or save progress if they are in a quiz and try to navigate away
-    }
+    // Logic to check if user is in an active quiz and wants to navigate away can be added here.
+    // For example, if currentQuizSetNumber is not null for certain views.
     setActiveView(viewId);
   };
 
@@ -216,3 +265,5 @@ export default function OlChikiPathPage() {
     </div>
   );
 }
+
+    

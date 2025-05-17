@@ -13,8 +13,8 @@ interface ReadingPracticeHubProps {
 }
 
 interface LevelItem {
-  id: string; // Unique ID for the level
-  viewId: ActiveView; // ActiveView to navigate to
+  id: string; 
+  viewId: ActiveView; 
   title: string;
   description: string;
   icon: LucideIcon;
@@ -24,7 +24,7 @@ interface LevelItem {
 const readingLevels: LevelItem[] = [
   {
     id: 'reading-basic-identify-words',
-    viewId: 'reading-quiz-selection-hub', // Changed to navigate to the new selection hub
+    viewId: 'reading-quiz-selection-hub', 
     title: 'Basic: Identify Words',
     description: 'Select one of 50 quiz sets. Each set has 10 questions to identify Ol Chiki words.',
     icon: SpellCheck,
@@ -32,35 +32,35 @@ const readingLevels: LevelItem[] = [
   },
   {
     id: 'reading-easy-match-word-image',
-    viewId: 'reading-practice-hub', // Placeholder, stays on hub
+    viewId: 'reading-easy-selection-hub', 
     title: 'Easy: Match Words to Pictures',
-    description: 'Match simple Ol Chiki words with their visual representations.',
+    description: 'Match simple Ol Chiki words with their visual representations across 50 quiz sets.',
     icon: ImageIcon,
-    isAvailable: false
+    isAvailable: true // Mark as available to test navigation
   },
   {
     id: 'reading-intermediate-phrases',
-    viewId: 'reading-practice-hub', // Placeholder
+    viewId: 'reading-intermediate-selection-hub', 
     title: 'Intermediate: Read Short Phrases',
-    description: 'Practice reading and understanding common Ol Chiki phrases.',
+    description: 'Practice reading and understanding common Ol Chiki phrases via 50 quiz sets.',
     icon: Text,
-    isAvailable: false
+    isAvailable: true // Mark as available
   },
   {
     id: 'reading-hard-story',
-    viewId: 'reading-practice-hub', // Placeholder
+    viewId: 'reading-hard-selection-hub', 
     title: 'Hard: Story Comprehension',
-    description: 'Read short stories in Ol Chiki and answer comprehension questions.',
+    description: 'Read short stories in Ol Chiki and answer comprehension questions. 50 sets available.',
     icon: BookOpenText,
-    isAvailable: false
+    isAvailable: true // Mark as available
   },
   {
     id: 'reading-expert-mcq',
-    viewId: 'reading-practice-hub', // Placeholder
+    viewId: 'reading-expert-selection-hub', 
     title: 'Expert: MCQ Translation Quiz',
-    description: 'Translate English sentences by choosing the correct Ol Chiki option from multiple choices.',
+    description: 'Translate English sentences by choosing the correct Ol Chiki option. 50 sets available.',
     icon: FileQuestion,
-    isAvailable: false
+    isAvailable: true // Mark as available
   },
 ];
 
@@ -121,3 +121,5 @@ export default function ReadingPracticeHub({ onLevelSelect }: ReadingPracticeHub
     </div>
   );
 }
+
+    

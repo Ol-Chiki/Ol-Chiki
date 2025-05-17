@@ -8,7 +8,7 @@ export default function LearnCharacters() {
     <div className="p-2 sm:p-4 md:p-6">
       <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-primary tracking-tight">Ol Chiki Characters</h2>
       <ScrollArea className="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6 xl:gap-4">
+        <div className="grid grid-cols-5 gap-3 sm:gap-4">
           {olChikiCharacters.map((char) => (
             <Card key={char.id} className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between">
               <CardHeader className="p-2 sm:p-3 text-center">

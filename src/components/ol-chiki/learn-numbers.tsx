@@ -13,13 +13,13 @@ export default function LearnNumbers() {
           {olChikiNumbers.map((num) => (
             <Card key={num.id} className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between">
               <CardHeader className="p-2 text-center">
-                <CardTitle className="text-xl sm:text-2xl md:text-3xl lg:text-3xl text-center font-mono text-accent leading-tight">
-                  {num.olChiki}
+                <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-2xl text-center font-mono text-accent leading-tight">
+                  {num.olChiki} ({num.digitString})
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2 pt-1 text-center">
                 <p className="text-[10px] sm:text-xs md:text-sm font-semibold text-primary">
-                  {num.englishWord} ({num.digitString})
+                  {num.englishWord}
                 </p>
                  <CardDescription className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     {num.santaliWord}
@@ -32,3 +32,4 @@ export default function LearnNumbers() {
     </div>
   );
 }
+

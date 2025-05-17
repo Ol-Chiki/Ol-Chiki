@@ -10,50 +10,101 @@ import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
-import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub"; // New import
+import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { GraduationCap, FileText, Sparkles, Puzzle, Gamepad2, Loader2 } from "lucide-react"; // Changed Type and ListOrdered to GraduationCap
+import { GraduationCap, FileText, Sparkles, Puzzle, Gamepad2, Loader2 } from "lucide-react";
 import type { LucideIcon } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+// import { useToast } from '@/hooks/use-toast'; // Not currently used
 
-// Define ActiveView type to be more specific
 export type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
 interface NavItemConfig {
-  id: Exclude<ActiveView, 'alphabet' | 'numbers'>; // Items for bottom nav bar
+  id: Exclude<ActiveView, 'alphabet' | 'numbers'>;
   label: string;
   icon: LucideIcon;
 }
 
 export default function OlChikiPathPage() {
-  const [activeView, setActiveView] = useState<ActiveView>('basic-hub'); // Default to basic-hub
+  const [activeView, setActiveView] = useState<ActiveView>('basic-hub');
   const { user, loading: authLoading, hasSkippedAuth } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
-  const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
+  // const { toast } = useToast(); // Not currently used
+
+  const [isClient, setIsClient] = useState(false);
+  // Default to true (splash seen) for SSR; client useEffect will correct this from sessionStorage.
+  const [splashSeenThisSession, setSplashSeenThisSession] = useState(true);
+  const [currentYear, setCurrentYear] = useState<string>('');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
-        setSplashSeenThisSession(true);
-      }
+    setIsClient(true); // Component has mounted on the client
+    if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
+      setSplashSeenThisSession(true);
+    } else {
+      setSplashSeenThisSession(false); // Splash has not been seen this session
     }
+    setCurrentYear(new Date().getFullYear().toString()); // Set year on client
   }, []);
 
   const handleSplashComplete = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('splashSeenOlChiki', 'true');
-    }
+    // This function is called from SplashScreen, which is client-side only
+    sessionStorage.setItem('splashSeenOlChiki', 'true');
     setSplashSeenThisSession(true);
   };
 
   useEffect(() => {
-    if (splashSeenThisSession && !authLoading && !user && !hasSkippedAuth) {
+    // This effect handles redirection to auth if needed, AFTER client check and splash screen logic
+    if (!isClient || !splashSeenThisSession) {
+      // If not client yet, or splash screen is supposed to be showing, don't redirect yet
+      return;
+    }
+
+    if (!authLoading && !user && !hasSkippedAuth) {
       router.push('/auth');
     }
-  }, [user, authLoading, hasSkippedAuth, router, splashSeenThisSession]);
+  }, [isClient, splashSeenThisSession, user, authLoading, hasSkippedAuth, router]);
 
+  // --- Initial Render Logic for SSR and First Client Pass ---
+  if (!isClient) {
+    // Consistent minimal loader for server-side render and initial client render before useEffect runs
+    // This ensures the server and client render the same initial HTML structure.
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        <p className="mt-4 text-lg text-muted-foreground">Initializing...</p>
+      </div>
+    );
+  }
+
+  // --- Client-Side Render Logic from here ---
+  if (!splashSeenThisSession) {
+    // Only render SplashScreen on the client if it hasn't been seen this session
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  // If splash has been seen (or wasn't needed based on sessionStorage), proceed with auth loading checks
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        <p className="mt-4 text-lg text-muted-foreground">Loading authentication...</p>
+      </div>
+    );
+  }
+  
+  // This check is for after authLoading is false.
+  // If redirection to /auth is needed, the useEffect above should handle it.
+  // This block acts as a UI placeholder during the brief period redirection might take.
+  if (!user && !hasSkippedAuth) {
+     return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        <p className="mt-4 text-lg text-muted-foreground">Redirecting...</p>
+      </div>
+    );
+  }
+
+  // --- Main App Content Rendering ---
   const bottomNavItems: NavItemConfig[] = [
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
     { id: 'words', label: 'Words', icon: FileText },
@@ -93,28 +144,6 @@ export default function OlChikiPathPage() {
     router.push('/profile');
   };
 
-  if (typeof window !== 'undefined' && !splashSeenThisSession) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
-  if (authLoading || (splashSeenThisSession && !user && !hasSkippedAuth)) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        <p className="mt-4 text-lg text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user && !hasSkippedAuth) {
-     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        <p className="mt-4 text-lg text-muted-foreground">Redirecting...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-40 h-18">
@@ -134,12 +163,12 @@ export default function OlChikiPathPage() {
       <BottomNavigation
         navItems={bottomNavItems}
         activeView={activeView}
-        onNavChange={(id) => setActiveView(id as ActiveView)} // Cast id to ActiveView
+        onNavChange={(id) => setActiveView(id as ActiveView)}
         onProfileClick={handleProfileNavigation}
       />
 
       <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto">
-        <p>&copy; {new Date().getFullYear()} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
+        <p>&copy; {currentYear} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
       </footer>
     </div>
   );

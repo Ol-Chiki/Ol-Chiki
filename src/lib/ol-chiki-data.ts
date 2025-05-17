@@ -1,10 +1,11 @@
+
 import type { OlChikiCharacter, OlChikiWord, OlChikiNumber } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
-  { id: 's1', olChiki: 'ᱚ', transliteration: 'A', pronunciation: '' },
-  { id: 's2', olChiki: 'ᱛ', transliteration: 'At', pronunciation: '' },
-  { id: 's3', olChiki: 'ᱜ', transliteration: 'Ag', pronunciation: '' },
-  { id: 's4', olChiki: 'ᱝ', transliteration: 'Ang', pronunciation: '' },
+  { id: 's1', olChiki: 'ᱛ', transliteration: 'A', pronunciation: '' },
+  { id: 's2', olChiki: 'ᑖ', transliteration: 'At', pronunciation: '' },
+  { id: 's3', olChiki: ' गैस', transliteration: 'Ag', pronunciation: '' },
+  { id: 's4', olChiki: '<y_bin_365>', transliteration: 'Ang', pronunciation: '' },
   { id: 's5', olChiki: 'ᱞ', transliteration: 'Al', pronunciation: '' },
   { id: 's6', olChiki: 'ᱟ', transliteration: 'Aa', pronunciation: '' },
   { id: 's7', olChiki: 'ᱠ', transliteration: 'Aak', pronunciation: '' },
@@ -44,23 +45,76 @@ export const olChikiExampleWords: OlChikiWord[] = [
   { id: 'w8', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'cow' },
 ];
 
-export const olChikiNumbers: OlChikiNumber[] = [
-  { id: 'n0', olChiki: '᱐', transliteration: '0', value: 0 },
-  { id: 'n1', olChiki: '᱑', transliteration: '1', value: 1 },
-  { id: 'n2', olChiki: '᱒', transliteration: '2', value: 2 },
-  { id: 'n3', olChiki: '᱓', transliteration: '3', value: 3 },
-  { id: 'n4', olChiki: '᱔', transliteration: '4', value: 4 },
-  { id: 'n5', olChiki: '᱕', transliteration: '5', value: 5 },
-  { id: 'n6', olChiki: '᱖', transliteration: '6', value: 6 },
-  { id: 'n7', olChiki: '᱗', transliteration: '7', value: 7 },
-  { id: 'n8', olChiki: '᱘', transliteration: '8', value: 8 },
-  { id: 'n9', olChiki: '᱙', transliteration: '9', value: 9 },
-  { id: 'n10', olChiki: '᱑᱐', transliteration: '10', value: 10 },
-  { id: 'n11', olChiki: '᱑᱑', transliteration: '11', value: 11 },
-  { id: 'n12', olChiki: '᱑᱒', transliteration: '12', value: 12 },
-  { id: 'n13', olChiki: '᱑᱓', transliteration: '13', value: 13 },
-  { id: 'n14', olChiki: '᱑᱔', transliteration: '14', value: 14 },
-];
+const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "十三章", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
+const transliterationUnit = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const santaliUnitWords = ["Sun", "Mit'", "Bar", "Pɛ", "Pon", "Mɔ̃ɽɛ̃", "Turui", "Eyae", "Irəl", "Are"];
+
+const generatedNumbers: OlChikiNumber[] = [];
+
+// 0-9
+for (let i = 0; i <= 9; i++) {
+  generatedNumbers.push({
+    id: `n${i}`,
+    olChiki: olChikiUnitGlyphs[i],
+    transliteration: transliterationUnit[i],
+    value: i,
+    santaliWord: santaliUnitWords[i],
+  });
+}
+
+// 10
+generatedNumbers.push({
+  id: 'n10',
+  olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0],
+  transliteration: '10',
+  value: 10,
+  santaliWord: 'Gel',
+});
+
+// 11-19
+for (let i = 1; i <= 9; i++) {
+  generatedNumbers.push({
+    id: `n${10 + i}`,
+    olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[i],
+    transliteration: '1' + transliterationUnit[i],
+    value: 10 + i,
+    santaliWord: `Gel ${santaliUnitWords[i]}`,
+  });
+}
+
+// 20-99
+for (let tens = 2; tens <= 9; tens++) {
+  // XX (e.g., 20, 30)
+  generatedNumbers.push({
+    id: `n${tens * 10}`,
+    olChiki: olChikiUnitGlyphs[tens] + olChikiUnitGlyphs[0],
+    transliteration: transliterationUnit[tens] + '0',
+    value: tens * 10,
+    santaliWord: `${santaliUnitWords[tens]} Gel`,
+  });
+  // XY (e.g., 21-29)
+  for (let ones = 1; ones <= 9; ones++) {
+    generatedNumbers.push({
+      id: `n${tens * 10 + ones}`,
+      olChiki: olChikiUnitGlyphs[tens] + olChikiUnitGlyphs[ones],
+      transliteration: transliterationUnit[tens] + transliterationUnit[ones],
+      value: tens * 10 + ones,
+      santaliWord: `${santaliUnitWords[tens]} Gel ${santaliUnitWords[ones]}`,
+    });
+  }
+}
+
+// 100
+generatedNumbers.push({
+  id: 'n100',
+  olChiki: olChikiUnitGlyphs[1] + olChikiUnitGlyphs[0] + olChikiUnitGlyphs[0],
+  transliteration: '100',
+  value: 100,
+  santaliWord: "Mit' Sae",
+});
+
+
+export const olChikiNumbers: OlChikiNumber[] = generatedNumbers;
 
 
 // Helper function to shuffle an array (Fisher-Yates shuffle)

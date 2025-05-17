@@ -98,7 +98,7 @@ export default function LearnAlphabet() {
             setIsDialogOpen(true); 
           }
         }}>
-          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-2xl overflow-hidden">
+          <DialogContent className="sm:max-w-xs w-10/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 rounded-lg shadow-2xl overflow-hidden">
             <div className="text-center flex flex-col items-center justify-center h-full">
               <p className="font-mono text-primary leading-none mb-3 sm:mb-4 text-7xl sm:text-8xl md:text-[100px]">
                 {longPressedCharacter.olChiki}

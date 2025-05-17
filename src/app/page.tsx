@@ -17,7 +17,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
-  SidebarFooter, // Added for logout/login button
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
 import LearnNumbers from "@/components/ol-chiki/learn-numbers";
@@ -25,9 +25,9 @@ import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
-import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered, Gamepad2, LogIn, LogOut, UserCircle, Loader2 } from "lucide-react";
-// Removed Toaster from here, it's in RootLayout now
-import { Button } from '@/components/ui/button'; // For login/logout button
+import SplashScreen from '@/components/splash-screen'; // Added SplashScreen
+import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered, Gamepad2, LogIn, LogOut, Loader2 } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
@@ -37,19 +37,35 @@ interface PageView {
   icon: React.ElementType;
   component: JSX.Element;
   isSubItem?: boolean;
-  requiresAuth?: boolean; // Optional: for future if some views require login
+  requiresAuth?: boolean;
 }
 
 export default function OlChikiPathPage() {
   const [activeView, setActiveView] = useState<ActiveView>('alphabet');
   const { user, loading: authLoading, hasSkippedAuth, logOut } = useAuth();
   const router = useRouter();
+  const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user && !hasSkippedAuth) {
+    if (typeof window !== 'undefined') {
+      if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
+        setSplashSeenThisSession(true);
+      }
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('splashSeenOlChiki', 'true');
+    }
+    setSplashSeenThisSession(true);
+  };
+
+  useEffect(() => {
+    if (splashSeenThisSession && !authLoading && !user && !hasSkippedAuth) {
       router.push('/auth');
     }
-  }, [user, authLoading, hasSkippedAuth, router]);
+  }, [user, authLoading, hasSkippedAuth, router, splashSeenThisSession]);
 
   const pageViews: PageView[] = [
     { id: 'alphabet', label: 'Alphabet', icon: Type, component: <LearnAlphabet />, isSubItem: true },
@@ -62,7 +78,12 @@ export default function OlChikiPathPage() {
 
   const activeComponent = pageViews.find(view => view.id === activeView)?.component;
 
-  if (authLoading || (!user && !hasSkippedAuth)) {
+  if (typeof window !== 'undefined' && !splashSeenThisSession) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  if (authLoading || (splashSeenThisSession && !user && !hasSkippedAuth)) {
+     // Show loader if auth is loading OR if splash is done, no user, and not skipped (before redirect effect runs)
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -70,20 +91,33 @@ export default function OlChikiPathPage() {
       </div>
     );
   }
+  
+  // If splash is seen, user is loaded (or skipped), then render app or redirect (handled by useEffect)
+  if (!user && !hasSkippedAuth) {
+    // This case should ideally be caught by the useEffect redirect, 
+    // but as a fallback, show loader while redirecting.
+     return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        <p className="mt-4 text-lg text-muted-foreground">Redirecting...</p>
+      </div>
+    );
+  }
+
 
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex flex-col bg-background">
         <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-50 h-18">
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2">
             <SidebarTrigger className="md:hidden mr-1 sm:mr-2">
               <PanelLeft />
             </SidebarTrigger>
             <Languages className="h-6 w-6" />
-            <h1 className="text-base sm:text-xl font-bold tracking-tight">Let's Learn Ol Chiki</h1>
+            <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">Let's Learn Ol Chiki</h1>
           </div>
           {user && (
-             <div className="text-xs sm:text-sm hidden sm:block">Logged in as: {user.email}</div>
+             <div className="text-xs sm:text-sm hidden sm:block truncate max-w-[150px] sm:max-w-[250px]" title={user.email ?? undefined}>Logged in as: {user.email}</div>
           )}
         </header>
 
@@ -95,8 +129,7 @@ export default function OlChikiPathPage() {
           >
             <SidebarHeader className="p-2 flex items-center h-18 group-data-[collapsible=icon]:justify-center">
                <div className="group-data-[collapsible=icon]:hidden flex-grow">
-                {/* Optional: Can add a small logo or title here that hides on collapse */}
-              </div>
+               </div>
               <SidebarTrigger className="hidden md:flex shrink-0">
                  <PanelLeft />
               </SidebarTrigger>

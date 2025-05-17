@@ -74,15 +74,15 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
     outputSchema: GenerateOlchikiSentenceOutputSchema,
   },
   async (input: GenerateOlchikiSentenceInput): Promise<GenerateOlchikiSentenceOutput> => {
-    const result = await prompt(input); // Corrected: call prompt directly
-    let output = result.output();
+    const result = await prompt(input);
+    let output = result.output; // Corrected: access output as a property
 
     if (!output) {
       console.error(
         'AI model did not return the expected structured output initially. Raw response candidates:',
         JSON.stringify(result.candidates, null, 2)
       );
-      const rawText = result.text();
+      const rawText = result.text; // Corrected: access text as a property
       console.error('Raw text from model:', rawText);
 
       // Attempt to find JSON within markdown (common issue)

@@ -141,7 +141,7 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
             <Button onClick={generateQuizQuestions} variant="outline" className="w-full sm:w-auto">
               <RefreshCw className="mr-2 h-4 w-4" /> Play New Set
             </Button>
-            <Button onClick={onQuizComplete} className="w-full sm:w-auto"> {/* Changed from Back to Reading Levels */}
+            <Button onClick={onQuizComplete} className="w-full sm:w-auto">
               Back to Quiz Selection <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
@@ -172,7 +172,7 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
             <p className="text-5xl sm:text-6xl font-mono text-accent py-4 bg-secondary/20 rounded-md select-none">
               {currentQuestion.olChikiWord.olChiki}
             </p>
-            <p className="text-sm text-muted-foreground mt-1">({currentQuestion.olChikiWord.transliteration})</p>
+            {/* Transliteration removed from here */}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

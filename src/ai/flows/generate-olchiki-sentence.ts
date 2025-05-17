@@ -1,3 +1,4 @@
+
 // This file is machine-generated - DO NOT EDIT.
 
 'use server';
@@ -36,7 +37,13 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert linguist specializing in translating Hindi and English sentences into the Ol Chiki script.
 Translate the following sentence into Ol Chiki script:
 {{{inputText}}}
-Provide only the Ol Chiki script as the output. Ensure the translation is accurate and grammatically correct in Santali using Ol Chiki.`,
+
+Your response MUST be a JSON object with a single key "sentence" containing the translated Ol Chiki script. For example:
+{
+  "sentence": "Translated Ol Chiki script here"
+}
+
+Ensure the translation is accurate and grammatically correct in Santali using Ol Chiki.`,
 });
 
 const generateOlchikiSentenceFlow = ai.defineFlow(
@@ -47,6 +54,10 @@ const generateOlchikiSentenceFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('AI model did not return the expected output format.');
+    }
+    return output;
   }
 );
+

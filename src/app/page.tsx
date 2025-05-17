@@ -4,46 +4,32 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarTrigger,
-  SidebarInset,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarFooter,
-} from "@/components/ui/sidebar";
 import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
 import LearnNumbers from "@/components/ol-chiki/learn-numbers";
 import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
-import SplashScreen from '@/components/splash-screen'; // Added SplashScreen
-import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered, Gamepad2, LogIn, LogOut, Loader2 } from "lucide-react";
-import { Button } from '@/components/ui/button';
+import SplashScreen from '@/components/splash-screen';
+import BottomNavigation from '@/components/layout/bottom-navigation'; // New import
+import { Languages, Type, ListOrdered, FileText, Sparkles, Puzzle, Gamepad2, User, LogIn, Loader2 } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
 interface PageView {
   id: ActiveView;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   component: JSX.Element;
-  isSubItem?: boolean;
-  requiresAuth?: boolean;
 }
 
 export default function OlChikiPathPage() {
   const [activeView, setActiveView] = useState<ActiveView>('alphabet');
   const { user, loading: authLoading, hasSkippedAuth, logOut } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
 
   useEffect(() => {
@@ -68,9 +54,9 @@ export default function OlChikiPathPage() {
   }, [user, authLoading, hasSkippedAuth, router, splashSeenThisSession]);
 
   const pageViews: PageView[] = [
-    { id: 'alphabet', label: 'Alphabet', icon: Type, component: <LearnAlphabet />, isSubItem: true },
-    { id: 'numbers', label: 'Numbers', icon: ListOrdered, component: <LearnNumbers />, isSubItem: true },
-    { id: 'words', label: 'Example Words', icon: FileText, component: <LearnWords /> },
+    { id: 'alphabet', label: 'Alphabet', icon: Type, component: <LearnAlphabet /> },
+    { id: 'numbers', label: 'Numbers', icon: ListOrdered, component: <LearnNumbers /> },
+    { id: 'words', label: 'Words', icon: FileText, component: <LearnWords /> },
     { id: 'sentence', label: 'Sentence AI', icon: Sparkles, component: <SentencePractice /> },
     { id: 'quiz', label: 'Quiz', icon: Puzzle, component: <CharacterQuiz /> },
     { id: 'game', label: 'Game Zone', icon: Gamepad2, component: <GameHub /> },
@@ -78,12 +64,19 @@ export default function OlChikiPathPage() {
 
   const activeComponent = pageViews.find(view => view.id === activeView)?.component;
 
+  const handleProfileNavigation = () => {
+    if (user) {
+      logOut(); // If user is logged in, profile icon logs them out
+    } else {
+      router.push('/auth'); // If not logged in, navigates to auth page
+    }
+  };
+
   if (typeof window !== 'undefined' && !splashSeenThisSession) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
   if (authLoading || (splashSeenThisSession && !user && !hasSkippedAuth)) {
-     // Show loader if auth is loading OR if splash is done, no user, and not skipped (before redirect effect runs)
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -92,10 +85,7 @@ export default function OlChikiPathPage() {
     );
   }
   
-  // If splash is seen, user is loaded (or skipped), then render app or redirect (handled by useEffect)
   if (!user && !hasSkippedAuth) {
-    // This case should ideally be caught by the useEffect redirect, 
-    // but as a fallback, show loader while redirecting.
      return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -104,110 +94,34 @@ export default function OlChikiPathPage() {
     );
   }
 
-
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex flex-col bg-background">
-        <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-50 h-18">
-          <div className="flex items-center gap-1 sm:gap-2">
-            <SidebarTrigger className="md:hidden mr-1 sm:mr-2">
-              <PanelLeft />
-            </SidebarTrigger>
-            <Languages className="h-6 w-6" />
-            <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">Let's Learn Ol Chiki</h1>
-          </div>
-          {user && (
-             <div className="text-xs sm:text-sm hidden sm:block truncate max-w-[150px] sm:max-w-[250px]" title={user.email ?? undefined}>Logged in as: {user.email}</div>
-          )}
-        </header>
-
-        <div className="flex flex-1">
-          <Sidebar
-            collapsible="icon"
-            variant="sidebar"
-            className="border-r"
-          >
-            <SidebarHeader className="p-2 flex items-center h-18 group-data-[collapsible=icon]:justify-center">
-               <div className="group-data-[collapsible=icon]:hidden flex-grow">
-               </div>
-              <SidebarTrigger className="hidden md:flex shrink-0">
-                 <PanelLeft />
-              </SidebarTrigger>
-            </SidebarHeader>
-            <SidebarContent>
-              <SidebarMenu>
-                <SidebarGroup>
-                  <SidebarGroupLabel>
-                    <BookOpenText className="mr-2 h-5 w-5"/> Characters
-                  </SidebarGroupLabel>
-                  <SidebarGroupContent>
-                    <SidebarMenu>
-                      {pageViews.filter(item => item.isSubItem).map((item) => (
-                        <SidebarMenuItem key={item.id}>
-                          <SidebarMenuButton
-                            onClick={() => setActiveView(item.id as ActiveView)}
-                            isActive={activeView === item.id}
-                            tooltip={{ children: item.label, side: "right", align: "center" }}
-                            className="justify-start"
-                          >
-                            <item.icon className="h-5 w-5" />
-                            <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
-                    </SidebarMenu>
-                  </SidebarGroupContent>
-                </SidebarGroup>
-
-                {pageViews.filter(item => !item.isSubItem).map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton
-                      onClick={() => setActiveView(item.id as ActiveView)}
-                      isActive={activeView === item.id}
-                      tooltip={{ children: item.label, side: "right", align: "center" }}
-                      className="justify-start"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarContent>
-             <SidebarFooter>
-              {user ? (
-                <SidebarMenuButton
-                  onClick={logOut}
-                  tooltip={{ children: "Logout", side: "right", align: "center" }}
-                  className="justify-start w-full"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span className="group-data-[collapsible=icon]:hidden">Logout</span>
-                </SidebarMenuButton>
-              ) : (
-                <SidebarMenuButton
-                  onClick={() => router.push('/auth')}
-                  tooltip={{ children: "Login / Sign Up", side: "right", align: "center" }}
-                  className="justify-start w-full"
-                >
-                  <LogIn className="h-5 w-5" />
-                  <span className="group-data-[collapsible=icon]:hidden">Login / Sign Up</span>
-                </SidebarMenuButton>
-              )}
-            </SidebarFooter>
-          </Sidebar>
-
-          <SidebarInset>
-            <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4">
-              {activeComponent}
-            </main>
-          </SidebarInset>
+    <div className="min-h-screen flex flex-col bg-background">
+      <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-40 h-18">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Languages className="h-6 w-6" />
+          <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">Let's Learn Ol Chiki</h1>
         </div>
+        {user && (
+           <div className="text-xs sm:text-sm hidden sm:block truncate max-w-[150px] sm:max-w-[250px]" title={user.email ?? undefined}>Logged in as: {user.email}</div>
+        )}
+      </header>
 
-        <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
-        </footer>
-      </div>
-    </SidebarProvider>
+      <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4 pb-20"> {/* Added pb-20 for bottom nav */}
+        {activeComponent}
+      </main>
+
+      <BottomNavigation
+        navItems={pageViews.map(item => ({id: item.id, label: item.label, icon: item.icon}))}
+        activeView={activeView}
+        onNavChange={setActiveView}
+        onProfileClick={handleProfileNavigation}
+        ProfileIconComponent={user ? User : LogIn}
+        profileLabel={user ? 'Logout' : 'Login'}
+      />
+
+      <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto"> {/* Ensured footer is at bottom if content is short, above nav */}
+        <p>&copy; {new Date().getFullYear()} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
+      </footer>
+    </div>
   );
 }

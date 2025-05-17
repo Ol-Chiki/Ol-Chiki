@@ -6,29 +6,44 @@ import { olChikiCharacters } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
-export default function LearnAlphabet() {
-  const [selectedCharacter, setSelectedCharacter] = useState<OlChikiCharacter | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+const LONG_PRESS_DURATION = 700; // milliseconds
 
-  const handleCardClick = (character: OlChikiCharacter) => {
-    setSelectedCharacter(character);
-    setIsDialogOpen(true);
-    setActiveCardId(character.id);
+export default function LearnAlphabet() {
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [longPressedCharacter, setLongPressedCharacter] = useState<OlChikiCharacter | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleInteractionStart = (character: OlChikiCharacter) => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+
+    setActiveCardId(character.id); // Highlight on mousedown
+
+    longPressTimerRef.current = setTimeout(() => {
+      setLongPressedCharacter(character);
+      setIsDialogOpen(true);
+      longPressTimerRef.current = null;
+    }, LONG_PRESS_DURATION);
+  };
+
+  const handleInteractionEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    // Keep activeCardId for a short duration for visual feedback, then clear
-    setTimeout(() => {
-      if (!isDialogOpen) { // only clear if dialog hasn't been re-opened quickly
-         setActiveCardId(null);
-      }
-    }, 300);
+    // Delay clearing to allow for fade-out animations if any
+    setTimeout(() => setLongPressedCharacter(null), 300); 
   };
+
 
   return (
     <div className="p-2 sm:p-4 md:p-6">
@@ -38,9 +53,13 @@ export default function LearnAlphabet() {
           {olChikiCharacters.map((char) => (
             <Card
               key={char.id}
-              onClick={() => handleCardClick(char)}
+              onMouseDown={() => handleInteractionStart(char)}
+              onMouseUp={handleInteractionEnd}
+              onMouseLeave={handleInteractionEnd}
+              onTouchStart={() => handleInteractionStart(char)}
+              onTouchEnd={handleInteractionEnd}
               className={cn(
-                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer",
+                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none", // Added select-none
                 activeCardId === char.id && "ring-2 ring-primary scale-105 shadow-xl"
               )}
             >
@@ -64,27 +83,26 @@ export default function LearnAlphabet() {
         </div>
       </ScrollArea>
 
-      {selectedCharacter && (
+      {longPressedCharacter && (
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           if (!open) {
             handleDialogClose();
           } else {
-            setIsDialogOpen(true); // if opened programmatically or by trigger
+            setIsDialogOpen(true); 
           }
         }}>
-          <DialogContent className="sm:max-w-[425px] bg-card text-card-foreground">
-            <DialogHeader className="text-center">
-              <DialogTitle className="text-6xl font-mono text-primary py-4">
-                {selectedCharacter.olChiki}
-              </DialogTitle>
-              <DialogDescription className="space-y-1 text-center">
-                <p className="text-2xl font-semibold text-accent">{selectedCharacter.transliteration}</p>
-                {selectedCharacter.pronunciation && (
-                  <p className="text-lg text-muted-foreground">{selectedCharacter.pronunciation}</p>
-                )}
-              </DialogDescription>
-            </DialogHeader>
-            {/* Additional content for the dialog can go here if needed */}
+          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-stretch justify-start p-0 rounded-lg shadow-2xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-6 text-center border-b border-border">
+              <CardTitle className="text-7xl sm:text-8xl font-mono text-primary leading-tight">
+                {longPressedCharacter.olChiki}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 text-center flex-grow flex flex-col justify-center">
+              <p className="text-3xl sm:text-4xl font-semibold text-accent">{longPressedCharacter.transliteration}</p>
+              {longPressedCharacter.pronunciation && (
+                <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">{longPressedCharacter.pronunciation}</CardDescription>
+              )}
+            </CardContent>
           </DialogContent>
         </Dialog>
       )}

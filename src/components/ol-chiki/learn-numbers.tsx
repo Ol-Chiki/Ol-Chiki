@@ -6,27 +6,39 @@ import { olChikiNumbers } from '@/lib/ol-chiki-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
-export default function LearnNumbers() {
-  const [selectedNumber, setSelectedNumber] = useState<OlChikiNumber | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+const LONG_PRESS_DURATION = 700; // milliseconds
 
-  const handleCardClick = (num: OlChikiNumber) => {
-    setSelectedNumber(num);
-    setIsDialogOpen(true);
-    setActiveCardId(num.id);
+export default function LearnNumbers() {
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [longPressedNumber, setLongPressedNumber] = useState<OlChikiNumber | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleInteractionStart = (num: OlChikiNumber) => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+    setActiveCardId(num.id); // Highlight on mousedown
+    longPressTimerRef.current = setTimeout(() => {
+      setLongPressedNumber(num);
+      setIsDialogOpen(true);
+      longPressTimerRef.current = null;
+    }, LONG_PRESS_DURATION);
+  };
+
+  const handleInteractionEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-     setTimeout(() => {
-      if (!isDialogOpen) {
-        setActiveCardId(null);
-      }
-    }, 300);
+    setTimeout(() => setLongPressedNumber(null), 300);
   };
 
   return (
@@ -37,14 +49,18 @@ export default function LearnNumbers() {
           {olChikiNumbers.map((num) => (
             <Card
               key={num.id}
-              onClick={() => handleCardClick(num)}
+              onMouseDown={() => handleInteractionStart(num)}
+              onMouseUp={handleInteractionEnd}
+              onMouseLeave={handleInteractionEnd}
+              onTouchStart={() => handleInteractionStart(num)}
+              onTouchEnd={handleInteractionEnd}
               className={cn(
-                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer",
+                "shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col justify-between cursor-pointer select-none", // Added select-none
                 activeCardId === num.id && "ring-2 ring-primary scale-105 shadow-xl"
               )}
             >
               <CardHeader className="p-2 text-center">
-                <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-2xl text-center font-mono text-accent leading-tight">
+                <CardTitle className="text-lg sm:text-xl md:text-2xl text-center font-mono text-accent leading-tight">
                   {num.olChiki} ({num.digitString})
                 </CardTitle>
               </CardHeader>
@@ -61,7 +77,7 @@ export default function LearnNumbers() {
         </div>
       </ScrollArea>
 
-      {selectedNumber && (
+      {longPressedNumber && (
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           if (!open) {
             handleDialogClose();
@@ -69,16 +85,18 @@ export default function LearnNumbers() {
             setIsDialogOpen(true);
           }
         }}>
-          <DialogContent className="sm:max-w-[425px] bg-card text-card-foreground">
-            <DialogHeader className="text-center">
-              <DialogTitle className="text-5xl font-mono text-primary py-3">
-                {selectedNumber.olChiki}
-              </DialogTitle>
-              <DialogDescription className="space-y-1 text-center">
-                <p className="text-xl font-semibold text-accent">({selectedNumber.digitString}) {selectedNumber.englishWord}</p>
-                <p className="text-lg text-muted-foreground">{selectedNumber.santaliWord}</p>
-              </DialogDescription>
-            </DialogHeader>
+          <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-stretch justify-start p-0 rounded-lg shadow-2xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-6 text-center border-b border-border">
+              <CardTitle className="text-5xl sm:text-6xl font-mono text-primary leading-tight">
+                {longPressedNumber.olChiki} ({longPressedNumber.digitString})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 text-center flex-grow flex flex-col justify-center">
+              <p className="text-2xl sm:text-3xl font-semibold text-accent">
+                {longPressedNumber.englishWord}
+              </p>
+              <CardDescription className="text-xl sm:text-2xl text-muted-foreground mt-2">{longPressedNumber.santaliWord}</CardDescription>
+            </CardContent>
           </DialogContent>
         </Dialog>
       )}

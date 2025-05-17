@@ -9,9 +9,12 @@ import { StarRating } from '@/components/ui/star-rating';
 import { Loader2, CheckCircle, XCircle, ArrowRight, RefreshCw } from 'lucide-react';
 import type { OlChikiWord } from '@/types/ol-chiki';
 import { categorizedOlChikiWords, shuffleArray } from '@/lib/ol-chiki-data';
+import { useAuth } from '@/contexts/auth-context';
 
 const QUIZ_LENGTH = 10;
 const NUM_OPTIONS = 4;
+const READING_QUIZ_SCORES_STORAGE_KEY_PREFIX = 'olChikiReadingQuizScores_';
+
 
 interface QuizQuestion {
   olChikiWord: OlChikiWord;
@@ -20,10 +23,12 @@ interface QuizQuestion {
 }
 
 interface ReadingQuizIdentifyWordsProps {
-  onQuizComplete: () => void; // To navigate back to the selection hub
+  quizSetNumber: number | null; // To identify which set is being played
+  onQuizComplete: () => void; // To navigate back
 }
 
-export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuizIdentifyWordsProps) {
+export default function ReadingQuizIdentifyWords({ quizSetNumber, onQuizComplete }: ReadingQuizIdentifyWordsProps) {
+  const { user } = useAuth();
   const [allWords, setAllWords] = useState<OlChikiWord[]>([]);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -62,7 +67,13 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
         distractors.push(shuffledDistractors[i].english);
       }
       while (distractors.length < NUM_OPTIONS -1) {
-          distractors.push(`Placeholder Option ${distractors.length + 1}`);
+          // Fallback if not enough unique distractors, less ideal but prevents errors
+          const placeholderOption = `Placeholder ${Math.random().toString(36).substring(7)}`;
+          if(!distractors.includes(placeholderOption) && correctWord.english !== placeholderOption) {
+            distractors.push(placeholderOption);
+          } else {
+             distractors.push(`Alt ${Math.random().toString(36).substring(7)}`);
+          }
       }
 
       const options = shuffleArray([correctWord.english, ...distractors]);
@@ -85,7 +96,7 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
     if (allWords.length > 0) {
       generateQuizQuestions();
     }
-  }, [allWords, generateQuizQuestions]);
+  }, [allWords, generateQuizQuestions, quizSetNumber]); // Regenerate if quizSetNumber changes
 
   const handleAnswerSelect = (option: string) => {
     if (isAnswerSubmitted) return;
@@ -109,14 +120,41 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
       setIsAnswerSubmitted(false);
     } else {
       setQuizPhase('finished');
+      // Save score when quiz is finished
+      if (quizSetNumber !== null && quizQuestions.length > 0) {
+        const userId = user?.uid || 'anonymous';
+        const storageKey = `${READING_QUIZ_SCORES_STORAGE_KEY_PREFIX}${userId}`;
+        const finalStars = Math.round((score / quizQuestions.length) * 5);
+        
+        try {
+            const allScores = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            allScores[quizSetNumber] = { 
+              score: score, 
+              totalQuestions: quizQuestions.length,
+              stars: finalStars 
+            };
+            localStorage.setItem(storageKey, JSON.stringify(allScores));
+        } catch (error) {
+            console.error("Error saving quiz score to localStorage:", error);
+        }
+      }
     }
   };
 
-  if (quizPhase === 'loading' || (quizPhase === 'playing' && quizQuestions.length === 0)) {
+  if (quizSetNumber === null) {
+    return (
+      <div className="p-4 md:p-6 flex flex-col items-center justify-center min-h-[calc(100vh-250px)]">
+        <p className="text-destructive">Error: Quiz set number not provided.</p>
+        <Button onClick={onQuizComplete} className="mt-4">Back to Quiz Selection</Button>
+      </div>
+    );
+  }
+  
+  if (quizPhase === 'loading' || (quizPhase === 'playing' && quizQuestions.length === 0 && allWords.length > 0)) {
     return (
       <div className="p-4 md:p-6 flex flex-col items-center justify-center min-h-[calc(100vh-250px)]">
         <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-        <p className="text-muted-foreground">Loading quiz questions...</p>
+        <p className="text-muted-foreground">Loading quiz questions for Set {quizSetNumber}...</p>
       </div>
     );
   }
@@ -127,7 +165,7 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
       <div className="p-4 md:p-6 max-w-md mx-auto text-center">
         <Card className="shadow-xl">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-primary">Quiz Complete!</CardTitle>
+            <CardTitle className="text-3xl font-bold text-primary">Quiz Set {quizSetNumber} Complete!</CardTitle>
             <CardDescription>Basic: Identify Words</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -155,9 +193,10 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl sm:text-3xl font-bold text-primary tracking-tight text-center mb-4">
-        Basic: Identify Words
+      <h2 className="text-2xl sm:text-3xl font-bold text-primary tracking-tight text-center mb-1">
+        Quiz Set {quizSetNumber}
       </h2>
+      <p className="text-sm text-center text-muted-foreground mb-4">Basic: Identify Words</p>
       <Card className="shadow-lg">
         <CardHeader>
           <div className="flex justify-between items-center mb-2">
@@ -172,7 +211,6 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
             <p className="text-5xl sm:text-6xl font-mono text-accent py-4 bg-secondary/20 rounded-md select-none">
               {currentQuestion.olChikiWord.olChiki}
             </p>
-            {/* Transliteration removed from here */}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

@@ -13,9 +13,9 @@ import GameHub from "@/components/ol-chiki/game-hub";
 import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import PracticeHub from '@/components/ol-chiki/practice-hub';
 import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
-import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
 import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words';
-import ReadingQuizSelectionHub from '@/components/ol-chiki/quizzes/reading-quiz-selection-hub'; // New
+import ReadingQuizSelectionHub from '@/components/ol-chiki/quizzes/reading-quiz-selection-hub';
+import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import { GraduationCap, Sparkles, ClipboardEdit, Gamepad2, Loader2 } from "lucide-react";
@@ -29,7 +29,7 @@ export type ActiveView =
   | 'sentence'
   | 'practice-hub'
   | 'reading-practice-hub'
-  | 'reading-quiz-selection-hub' // New
+  | 'reading-quiz-selection-hub'
   | 'reading-quiz-identify-words'
   | 'writing-practice-hub'
   | 'writing-quiz-basic'
@@ -49,6 +49,7 @@ export default function OlChikiPathPage() {
   const [isClient, setIsClient] = useState(false);
   const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
   const [currentYear, setCurrentYear] = useState<string>('');
+  const [currentQuizSetNumber, setCurrentQuizSetNumber] = useState<number | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -98,7 +99,7 @@ export default function OlChikiPathPage() {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  if (authLoading && isClient) { // Ensure authLoading is checked only after client is confirmed
+  if (authLoading && isClient) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -123,6 +124,11 @@ export default function OlChikiPathPage() {
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];
 
+  const handleSelectReadingQuizSet = (quizNumber: number) => {
+    setCurrentQuizSetNumber(quizNumber);
+    setActiveView('reading-quiz-identify-words');
+  };
+
   let currentComponent;
   switch (activeView) {
     case 'basic-hub':
@@ -146,11 +152,14 @@ export default function OlChikiPathPage() {
     case 'reading-practice-hub':
       currentComponent = <ReadingPracticeHub onLevelSelect={setActiveView} />;
       break;
-    case 'reading-quiz-selection-hub': // New
-      currentComponent = <ReadingQuizSelectionHub onSelectQuiz={() => setActiveView('reading-quiz-identify-words')} onBack={() => setActiveView('reading-practice-hub')} />;
+    case 'reading-quiz-selection-hub':
+      currentComponent = <ReadingQuizSelectionHub onSelectQuiz={handleSelectReadingQuizSet} onBack={() => setActiveView('reading-practice-hub')} />;
       break;
     case 'reading-quiz-identify-words':
-      currentComponent = <ReadingQuizIdentifyWords onQuizComplete={() => setActiveView('reading-quiz-selection-hub')} />;
+      currentComponent = <ReadingQuizIdentifyWords 
+        quizSetNumber={currentQuizSetNumber} 
+        onQuizComplete={() => setActiveView('reading-quiz-selection-hub')} 
+      />;
       break;
     case 'writing-practice-hub':
       currentComponent = <WritingPracticeHub onLevelSelect={setActiveView} />;

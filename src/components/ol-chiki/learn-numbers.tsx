@@ -92,13 +92,13 @@ export default function LearnNumbers() {
         }}>
           <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-2xl overflow-hidden">
             <div className="text-center flex flex-col items-center justify-center h-full">
-              <p className="text-6xl sm:text-7xl md:text-[90px] font-mono text-primary leading-none mb-3 sm:mb-4">
+              <p className="font-mono text-primary leading-none mb-3 sm:mb-4 text-6xl sm:text-7xl md:text-[90px]">
                 {longPressedNumber.olChiki} ({longPressedNumber.digitString})
               </p>
-              <p className="text-xl sm:text-2xl font-semibold text-accent mt-1 sm:mt-2">
+              <p className="font-semibold text-accent mt-1 sm:mt-2 text-xl sm:text-2xl">
                 {longPressedNumber.englishWord}
               </p>
-              <p className="text-lg sm:text-xl text-muted-foreground mt-1">{longPressedNumber.santaliWord}</p>
+              <p className="text-muted-foreground mt-1 text-lg sm:text-xl">{longPressedNumber.santaliWord}</p>
               <Button 
                 variant="ghost" 
                 size="icon" 

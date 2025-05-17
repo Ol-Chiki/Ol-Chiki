@@ -100,12 +100,12 @@ export default function LearnAlphabet() {
         }}>
           <DialogContent className="sm:max-w-sm w-11/12 aspect-[4/5] bg-card text-card-foreground flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-2xl overflow-hidden">
             <div className="text-center flex flex-col items-center justify-center h-full">
-              <p className="text-7xl sm:text-8xl md:text-[100px] font-mono text-primary leading-none mb-3 sm:mb-4">
+              <p className="font-mono text-primary leading-none mb-3 sm:mb-4 text-7xl sm:text-8xl md:text-[100px]">
                 {longPressedCharacter.olChiki}
               </p>
-              <p className="text-2xl sm:text-3xl font-semibold text-accent mt-1 sm:mt-2">{longPressedCharacter.transliteration}</p>
+              <p className="font-semibold text-accent mt-1 sm:mt-2 text-2xl sm:text-3xl">{longPressedCharacter.transliteration}</p>
               {longPressedCharacter.pronunciation && (
-                <p className="text-lg sm:text-xl text-muted-foreground mt-1">({longPressedCharacter.pronunciation})</p>
+                <p className="text-muted-foreground mt-1 text-lg sm:text-xl">({longPressedCharacter.pronunciation})</p>
               )}
               <Button 
                 variant="ghost" 

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,18 +9,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-// olChikiCharacters is not used for the direct key mapping tool anymore, but might be useful for other future tools.
-// import { olChikiCharacters } from '@/lib/ol-chiki-data';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { generateOlchikiSentence, type GenerateOlchikiSentenceInput } from '@/ai/flows/generate-olchiki-sentence';
 import { Loader2, Wand2 } from 'lucide-react';
 
-// Schema for the Direct Key Transliteration Tool
-const directTransliterateFormSchema = z.object({
-  inputText: z.string().min(1, { message: 'Input must be at least 1 character.' }).max(500, { message: 'Input must be 500 characters or less.' }),
-});
-type DirectTransliterateFormData = z.infer<typeof directTransliterateFormSchema>;
+// Direct mapping for common English keys to Ol Chiki characters
+// This map is inspired by typical Santali keyboard layouts.
+const directKeyToOlChikiMap: { [key: string]: string } = {
+  'a': 'ᱚ', 'A': 'ᱟ',
+  't': 'ᱛ', 'T': 'ᱴ', 
+  'g': 'ᱜ', 
+  'm': 'ᱢ', 'M': 'ᱝ', 
+  'l': 'ᱞ',
+  'k': 'ᱠ',
+  'j': 'ᱡ',
+  'w': 'ᱣ', 'W': 'ᱶ', 
+  'i': 'ᱤ',
+  's': 'ᱥ', 
+  'h': 'ᱦ', 'H': 'ᱷ', 
+  'n': 'ᱱ', 
+  'N': 'ᱧ', 
+  'r': 'ᱨ', 'R': 'ᱲ', 
+  'u': 'ᱩ',
+  'c': 'ᱪ',
+  'd': 'ᱫ', 'D': 'ᱰ', 
+  'y': 'ᱭ', 
+  'e': 'ᱮ',
+  'p': 'ᱯ',
+  'b': 'ᱵ',
+  'o': 'ᱳ',
+
+  '.': '᱾', 
+  ',': 'ᱹ', 
+  '?': '<y_bin_358>', 
+
+  '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',
+  '5': '᱕', '6': '᱖', '7': '᱗', '8': '᱘', '9': '᱙',
+};
 
 // Schema for the AI Translator Tool
 const aiTranslatorFormSchema = z.object({
@@ -28,92 +54,32 @@ const aiTranslatorFormSchema = z.object({
 });
 type AiTranslateFormData = z.infer<typeof aiTranslatorFormSchema>;
 
-// Direct mapping for common English keys to Ol Chiki characters
-// This map is inspired by typical Santali keyboard layouts.
-// It's not exhaustive and can be expanded.
-const directKeyToOlChikiMap: { [key: string]: string } = {
-  'a': 'ᱚ', 'A': 'ᱟ',
-  't': 'ᱛ', 'T': 'ᱴ', // T for retroflex ᱴ
-  'g': 'ᱜ', // No common shift variant for g usually
-  'm': 'ᱢ', 'M': 'ᱝ', // M for Ang/Anusvara
-  'l': 'ᱞ',
-  'k': 'ᱠ',
-  'j': 'ᱡ',
-  'w': 'ᱣ', 'W': 'ᱶ', // W for Ov
-  'i': 'ᱤ',
-  's': 'ᱥ', // No common shift variant for s usually
-  'h': 'ᱦ', 'H': 'ᱷ', // H for Oh
-  'n': 'ᱱ', // Standard N
-  // 'Y': 'ᱧ', // Using Y for INY. Could also be Shift+N on some layouts.
-  'N': 'ᱧ', // Using Shift+N for INY as another option
-  'r': 'ᱨ', 'R': 'ᱲ', // R for Err (retroflex R)
-  'u': 'ᱩ',
-  'c': 'ᱪ',
-  'd': 'ᱫ', 'D': 'ᱰ', // D for Edd (retroflex D)
-  'y': 'ᱭ', // y for UY
-  'e': 'ᱮ',
-  'p': 'ᱯ',
-  'b': 'ᱵ',
-  'o': 'ᱳ',
-
-  // Special Characters (approximations or common mappings)
-  '.': '᱾', // Punctuation MUCAK (Full stop)
-  ',': 'ᱹ', // AHAD (often for modifying vowel sounds, sometimes used like comma)
-  '?': '<y_bin_358>', // Punctuation MUCAK TUDAK (Question Mark)
-
-  // Digits (if direct digit to Ol Chiki digit mapping is desired)
-  '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',
-  '5': '᱕', '6': '᱖', '7': '᱗', '8': '᱘', '9': '᱙',
-};
-
 
 export default function SentencePractice() {
-  const [directTransliteratedScript, setDirectTransliteratedScript] = useState<string | null>(null);
+  const [directInputText, setDirectInputText] = useState<string>('');
+  const [directTransliteratedScript, setDirectTransliteratedScript] = useState<string>('');
   const { toast } = useToast();
-
-  const directTransliterateForm = useForm<DirectTransliterateFormData>({
-    resolver: zodResolver(directTransliterateFormSchema),
-    defaultValues: {
-      inputText: '',
-    },
-  });
 
   // Transliteration function using the directKeyToOlChikiMap
   const doDirectKeyTransliterate = (inputText: string): string => {
     let result = '';
     for (let i = 0; i < inputText.length; i++) {
       const char = inputText[i];
-      result += directKeyToOlChikiMap[char] || char; // If char in map, use Ol Chiki, else original char
+      result += directKeyToOlChikiMap[char] || char; 
     }
     return result;
   };
 
-  const onDirectTransliterateSubmit: SubmitHandler<DirectTransliterateFormData> = async (data) => {
-    try {
-      const result = doDirectKeyTransliterate(data.inputText);
+  // Real-time conversion for the direct transliteration tool
+  useEffect(() => {
+    if (directInputText) {
+      const result = doDirectKeyTransliterate(directInputText);
       setDirectTransliteratedScript(result);
-      if (result === data.inputText) {
-         toast({
-          title: "Transliteration Notice",
-          description: "No direct Ol Chiki character mappings found for the input. Input shown as is.",
-          variant: "default",
-        });
-      } else {
-        toast({
-          title: "Text Transliterated!",
-          description: "Input characters have been mapped to Ol Chiki script.",
-        });
-      }
-    } catch (error) {
-      console.error('Error transliterating text:', error);
-      setDirectTransliteratedScript('Failed to transliterate text. Please try again.');
-      toast({
-        title: "Error",
-        description: "Could not complete transliteration.",
-        variant: "destructive",
-      });
+    } else {
+      setDirectTransliteratedScript(''); // Clear output if input is empty
     }
-  };
+  }, [directInputText]);
+
 
   // AI Translator States
   const [aiOutputScript, setAiOutputScript] = useState<string | null>(null);
@@ -138,7 +104,7 @@ export default function SentencePractice() {
         setAiOutputScript(result.sentence);
         toast({
           title: "AI Translation Successful!",
-          description: "English sentence translated to Ol Chiki script.",
+          description: "English/Hindi sentence translated to Ol Chiki script.",
         });
       } else {
         throw new Error("AI model did not return the expected output format.");
@@ -164,55 +130,39 @@ export default function SentencePractice() {
         <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">Ol Chiki Direct Typing Tool</h2>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>English Keyboard to Ol Chiki Script</CardTitle>
+            <CardTitle>English Keyboard to Ol Chiki Script (Real-time)</CardTitle>
             <CardDescription>
-              Type English characters to see their corresponding Ol Chiki script.
+              Type English characters to see their corresponding Ol Chiki script instantly.
               This tool provides a direct character mapping, similar to some Santali keyboards.
               It is not a full language translator and does not process Hindi.
               (e.g., 'a' becomes ᱚ, Shift+A ('A') becomes ᱟ, 't' becomes ᱛ).
             </CardDescription>
           </CardHeader>
-          <Form {...directTransliterateForm}>
-            <form onSubmit={directTransliterateForm.handleSubmit(onDirectTransliterateSubmit)}>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={directTransliterateForm.control}
-                  name="inputText"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Enter English Text</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Ol Chiki Lipi" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit" className="w-full">
-                  Convert to Ol Chiki
-                </Button>
-              </CardFooter>
-            </form>
-          </Form>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="direct-input">Enter English Text</Label>
+              <Input 
+                id="direct-input"
+                placeholder="e.g., Ol Chiki Lipi" 
+                value={directInputText}
+                onChange={(e) => setDirectInputText(e.target.value)}
+              />
+            </div>
+            {directInputText && ( // Only show output area if there's input
+              <div className="mt-4">
+                <Label className="text-accent font-semibold">Ol Chiki Script Output (Direct Mapping):</Label>
+                <div className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center mt-2">
+                  {directTransliteratedScript || <span className="text-muted-foreground">Type above to see Ol Chiki...</span>}
+                </div>
+              </div>
+            )}
+          </CardContent>
         </Card>
-
-        {directTransliteratedScript && (
-          <Card className="mt-6 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-accent">Ol Chiki Script Output (Direct Mapping):</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center">{directTransliteratedScript}</p>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       <Separator className="my-8" />
 
-      {/* Tool 2: AI-Powered English to Santali (Ol Chiki) Translator */}
+      {/* Tool 2: AI-Powered English/Hindi to Santali (Ol Chiki) Translator */}
       <div>
         <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">AI-Powered English/Hindi to Santali (Ol Chiki) Translator</h2>
         <Card className="shadow-lg">

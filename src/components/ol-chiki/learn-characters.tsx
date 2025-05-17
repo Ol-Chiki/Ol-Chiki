@@ -5,19 +5,25 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function LearnCharacters() {
   return (
-    <div className="p-4 md:p-6">
-      <h2 className="text-3xl font-bold mb-6 text-primary tracking-tight">Ol Chiki Characters</h2>
-      <ScrollArea className="h-[calc(100vh-200px)]">
-        <div className="grid grid-cols-5 gap-4">
+    <div className="p-2 sm:p-4 md:p-6">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-primary tracking-tight">Ol Chiki Characters</h2>
+      <ScrollArea className="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6 xl:gap-4">
           {olChikiCharacters.map((char) => (
-            <Card key={char.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="p-4">
-                <CardTitle className="text-5xl text-center font-mono text-accent">{char.olChiki}</CardTitle>
+            <Card key={char.id} className="shadow-md hover:shadow-lg transition-shadow duration-200 flex flex-col justify-between">
+              <CardHeader className="p-2 sm:p-3 text-center">
+                <CardTitle className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl text-center font-mono text-accent leading-tight">
+                  {char.olChiki}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 text-center">
-                <p className="text-lg font-semibold text-primary">{char.transliteration}</p>
+              <CardContent className="p-2 pt-1 sm:p-3 sm:pt-1 text-center">
+                <p className="text-sm sm:text-base md:text-lg font-semibold text-primary">
+                  {char.transliteration}
+                </p>
                 {char.pronunciation && (
-                  <CardDescription className="text-sm text-muted-foreground">{char.pronunciation}</CardDescription>
+                  <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-1">
+                    {char.pronunciation}
+                  </CardDescription>
                 )}
               </CardContent>
             </Card>

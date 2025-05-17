@@ -1,11 +1,11 @@
 import type { OlChikiCharacter, OlChikiWord } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
-  { id: 's1', olChiki: 'Ə', transliteration: 'A', pronunciation: '' },
-  { id: 's2', olChiki: 'O', transliteration: 'At', pronunciation: '' },
-  { id: 's3', olChiki: 'Ꮆ', transliteration: 'Ag', pronunciation: '' },
-  { id: 's4', olChiki: 'δ', transliteration: 'Ang', pronunciation: '' },
-  { id: 's5', olChiki: 'ƿ', transliteration: 'Al', pronunciation: '' },
+  { id: 's1', olChiki: 'T', transliteration: 'A', pronunciation: '' },
+  { id: 's2', olChiki: 'Ṭ', transliteration: 'At', pronunciation: '' },
+  { id: 's3', olChiki: 'T̥', transliteration: 'Ag', pronunciation: '' },
+  { id: 's4', olChiki: 'T̰', transliteration: 'Ang', pronunciation: '' },
+  { id: 's5', olChiki: 'Ṯ', transliteration: 'Al', pronunciation: '' },
   { id: 's6', olChiki: 'æ', transliteration: 'Aa', pronunciation: '' },
   { id: 's7', olChiki: 'ɓ', transliteration: 'Aak', pronunciation: '' },
   { id: 's8', olChiki: 'ɖ', transliteration: 'Aaj', pronunciation: '' },

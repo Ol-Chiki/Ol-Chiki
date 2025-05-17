@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,40 +14,40 @@ import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
-  topic: z.string().min(2, { message: 'Topic must be at least 2 characters.' }).max(50),
+  inputText: z.string().min(2, { message: 'Sentence must be at least 2 characters.' }).max(200, { message: 'Sentence must be 200 characters or less.' }),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function SentencePractice() {
-  const [generatedSentence, setGeneratedSentence] = useState<string | null>(null);
+  const [translatedSentence, setTranslatedSentence] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      topic: '',
+      inputText: '',
     },
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     setIsLoading(true);
-    setGeneratedSentence(null);
+    setTranslatedSentence(null);
     try {
-      const input: GenerateOlchikiSentenceInput = { topic: data.topic };
+      const input: GenerateOlchikiSentenceInput = { inputText: data.inputText };
       const result = await generateOlchikiSentence(input);
-      setGeneratedSentence(result.sentence);
+      setTranslatedSentence(result.sentence);
       toast({
-        title: "Sentence Generated!",
-        description: "A new Ol Chiki sentence has been created.",
+        title: "Sentence Translated!",
+        description: "The sentence has been translated into Ol Chiki.",
       });
     } catch (error) {
-      console.error('Error generating sentence:', error);
-      setGeneratedSentence('Failed to generate sentence. Please try again.');
+      console.error('Error translating sentence:', error);
+      setTranslatedSentence('Failed to translate sentence. Please try again.');
       toast({
         title: "Error",
-        description: "Could not generate sentence. Check console for details.",
+        description: "Could not translate sentence. Check console for details.",
         variant: "destructive",
       });
     } finally {
@@ -56,23 +57,23 @@ export default function SentencePractice() {
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-primary tracking-tight">Sentence Practice</h2>
+      <h2 className="text-3xl font-bold mb-6 text-primary tracking-tight">Ol Chiki Translator</h2>
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Generate an Ol Chiki Sentence</CardTitle>
-          <CardDescription>Enter a topic, and we'll generate a simple sentence in Ol Chiki for you to practice.</CardDescription>
+          <CardTitle>Translate to Ol Chiki</CardTitle>
+          <CardDescription>Enter a sentence in Hindi or English, and we'll translate it into Ol Chiki script for you.</CardDescription>
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardContent className="space-y-4">
               <FormField
                 control={form.control}
-                name="topic"
+                name="inputText"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Topic</FormLabel>
+                    <FormLabel>Enter Hindi/English Sentence</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., 'family', 'nature', 'food'" {...field} />
+                      <Input placeholder="e.g., 'My name is...', 'मेरा नाम है...'" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -84,10 +85,10 @@ export default function SentencePractice() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
+                    Translating...
                   </>
                 ) : (
-                  'Generate Sentence'
+                  'Translate to Ol Chiki'
                 )}
               </Button>
             </CardFooter>
@@ -95,13 +96,13 @@ export default function SentencePractice() {
         </Form>
       </Card>
 
-      {generatedSentence && (
+      {translatedSentence && (
         <Card className="mt-6 shadow-md">
           <CardHeader>
-            <CardTitle className="text-accent">Generated Sentence:</CardTitle>
+            <CardTitle className="text-accent">Translated Ol Chiki Sentence:</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center">{generatedSentence}</p>
+            <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center">{translatedSentence}</p>
           </CardContent>
         </Card>
       )}

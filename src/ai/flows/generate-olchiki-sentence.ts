@@ -3,9 +3,9 @@
 'use server';
 
 /**
- * @fileOverview A flow for generating simple sentences in Ol Chiki based on a user-provided topic.
+ * @fileOverview A flow for translating English or Hindi sentences into Ol Chiki script.
  *
- * - generateOlchikiSentence - A function that generates sentences in Ol Chiki.
+ * - generateOlchikiSentence - A function that translates sentences into Ol Chiki.
  * - GenerateOlchikiSentenceInput - The input type for the generateOlchikiSentence function.
  * - GenerateOlchikiSentenceOutput - The return type for the generateOlchikiSentence function.
  */
@@ -14,13 +14,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateOlchikiSentenceInputSchema = z.object({
-  topic: z.string().describe('The topic for the Ol Chiki sentence.'),
+  inputText: z.string().describe('The Hindi or English sentence to translate into Ol Chiki script.'),
 });
 
 export type GenerateOlchikiSentenceInput = z.infer<typeof GenerateOlchikiSentenceInputSchema>;
 
 const GenerateOlchikiSentenceOutputSchema = z.object({
-  sentence: z.string().describe('A simple sentence in Ol Chiki related to the topic.'),
+  sentence: z.string().describe('The translated sentence in Ol Chiki script.'),
 });
 
 export type GenerateOlchikiSentenceOutput = z.infer<typeof GenerateOlchikiSentenceOutputSchema>;
@@ -30,10 +30,13 @@ export async function generateOlchikiSentence(input: GenerateOlchikiSentenceInpu
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateOlchikiSentencePrompt',
+  name: 'translateToOlchikiPrompt',
   input: {schema: GenerateOlchikiSentenceInputSchema},
   output: {schema: GenerateOlchikiSentenceOutputSchema},
-  prompt: `You are an expert in the Ol Chiki language. Generate a simple sentence in Ol Chiki about the following topic: {{{topic}}}`,
+  prompt: `You are an expert linguist specializing in translating Hindi and English sentences into the Ol Chiki script.
+Translate the following sentence into Ol Chiki script:
+{{{inputText}}}
+Provide only the Ol Chiki script as the output. Ensure the translation is accurate and grammatically correct in Santali using Ol Chiki.`,
 });
 
 const generateOlchikiSentenceFlow = ai.defineFlow(

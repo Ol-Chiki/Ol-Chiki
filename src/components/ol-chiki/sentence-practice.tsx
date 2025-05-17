@@ -43,7 +43,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
 
   '.': '᱾', // MUCAAD (Ol Chiki Full Stop)
   ',': 'ᱹ', // AHAD (Ol Chiki Comma/Separator)
-  '?': ' কিভাবে', // DOUBLE MUCAAD (Often used as a question mark or emphasis)
+  '?': '<y_bin_358>', // CORRECTED: DOUBLE MUCAAD (Often used as a question mark or emphasis)
 
   // Digits
   '0': '᱐', '1': '᱑', '2': '᱒', '3': '᱓', '4': '᱔',

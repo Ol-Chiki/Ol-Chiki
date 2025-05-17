@@ -18,13 +18,15 @@ interface BottomNavigationProps {
   onProfileClick: () => void;
 }
 
+// Define unique vibrant colors for inactive icons
 const iconColorClasses: Record<string, string> = {
-  alphabet: 'text-accent', // Muted Olive Green
-  numbers: 'text-chart-3', // Complementary Brown
-  words: 'text-secondary-foreground', // Darker Olive
-  sentence: 'text-chart-4', // Lighter Olive/Beige
-  quiz: 'text-chart-5', // Earthy Tone
-  game: 'text-primary/80', // Slightly desaturated primary
+  alphabet: 'text-rose-500', // Example: Rose
+  numbers: 'text-sky-500',    // Example: Sky Blue
+  words: 'text-emerald-500', // Example: Emerald Green
+  sentence: 'text-fuchsia-500', // Example: Fuchsia
+  quiz: 'text-amber-500',   // Example: Amber
+  game: 'text-violet-500',  // Example: Violet
+  // Add more mappings if you have more items, or adjust colors as preferred
 };
 
 export default function BottomNavigation({
@@ -37,7 +39,9 @@ export default function BottomNavigation({
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t bg-card text-card-foreground shadow-[0_-2px_5px_-1px_rgba(0,0,0,0.1)]">
       {navItems.map((item) => {
         const isActive = activeView === item.id;
+        // Use the specific vibrant color if inactive, otherwise use primary color
         const iconColor = isActive ? 'text-primary' : (iconColorClasses[item.id] || 'text-accent');
+        // Active label uses primary color, inactive labels use accent color for consistency
         const labelColor = isActive ? 'text-primary' : 'text-accent';
 
         return (

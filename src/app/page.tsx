@@ -10,23 +10,24 @@ import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
+import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub"; // New import
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { Languages, Type, ListOrdered, FileText, Sparkles, Puzzle, Gamepad2, User, Loader2 } from "lucide-react"; // Ensured Loader2 is here
+import { GraduationCap, FileText, Sparkles, Puzzle, Gamepad2, Loader2 } from "lucide-react"; // Changed Type and ListOrdered to GraduationCap
 import type { LucideIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
+// Define ActiveView type to be more specific
+export type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
-interface PageView {
-  id: ActiveView;
+interface NavItemConfig {
+  id: Exclude<ActiveView, 'alphabet' | 'numbers'>; // Items for bottom nav bar
   label: string;
   icon: LucideIcon;
-  component: JSX.Element;
 }
 
 export default function OlChikiPathPage() {
-  const [activeView, setActiveView] = useState<ActiveView>('alphabet');
+  const [activeView, setActiveView] = useState<ActiveView>('basic-hub'); // Default to basic-hub
   const { user, loading: authLoading, hasSkippedAuth } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -53,19 +54,43 @@ export default function OlChikiPathPage() {
     }
   }, [user, authLoading, hasSkippedAuth, router, splashSeenThisSession]);
 
-  const pageViews: PageView[] = [
-    { id: 'alphabet', label: 'Alphabet', icon: Type, component: <LearnAlphabet /> },
-    { id: 'numbers', label: 'Numbers', icon: ListOrdered, component: <LearnNumbers /> },
-    { id: 'words', label: 'Words', icon: FileText, component: <LearnWords /> },
-    { id: 'sentence', label: 'Sentence AI', icon: Sparkles, component: <SentencePractice /> },
-    { id: 'quiz', label: 'Quiz', icon: Puzzle, component: <CharacterQuiz /> },
-    { id: 'game', label: 'Game Zone', icon: Gamepad2, component: <GameHub /> },
+  const bottomNavItems: NavItemConfig[] = [
+    { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
+    { id: 'words', label: 'Words', icon: FileText },
+    { id: 'sentence', label: 'Sentence AI', icon: Sparkles },
+    { id: 'quiz', label: 'Quiz', icon: Puzzle },
+    { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];
 
-  const activeComponent = pageViews.find(view => view.id === activeView)?.component;
+  let currentComponent;
+  switch (activeView) {
+    case 'basic-hub':
+      currentComponent = <BasicLearningHub onSectionSelect={setActiveView} />;
+      break;
+    case 'alphabet':
+      currentComponent = <LearnAlphabet />;
+      break;
+    case 'numbers':
+      currentComponent = <LearnNumbers />;
+      break;
+    case 'words':
+      currentComponent = <LearnWords />;
+      break;
+    case 'sentence':
+      currentComponent = <SentencePractice />;
+      break;
+    case 'quiz':
+      currentComponent = <CharacterQuiz />;
+      break;
+    case 'game':
+      currentComponent = <GameHub />;
+      break;
+    default:
+      currentComponent = <BasicLearningHub onSectionSelect={setActiveView} />;
+  }
 
   const handleProfileNavigation = () => {
-    router.push('/profile'); // Always navigate to profile page
+    router.push('/profile');
   };
 
   if (typeof window !== 'undefined' && !splashSeenThisSession) {
@@ -81,8 +106,8 @@ export default function OlChikiPathPage() {
     );
   }
 
-  if (!user && !hasSkippedAuth) { // This condition implies splashSeenThisSession is true
-     return ( // This is the second loading block
+  if (!user && !hasSkippedAuth) {
+     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
         <p className="mt-4 text-lg text-muted-foreground">Redirecting...</p>
@@ -94,7 +119,7 @@ export default function OlChikiPathPage() {
     <div className="min-h-screen flex flex-col bg-background">
       <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-40 h-18">
         <div className="flex items-center gap-1 sm:gap-2">
-          <Languages className="h-6 w-6" />
+          <GraduationCap className="h-6 w-6" />
           <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">Let's Learn Ol Chiki</h1>
         </div>
         {user && (
@@ -103,13 +128,13 @@ export default function OlChikiPathPage() {
       </header>
 
       <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4 pb-20">
-        {activeComponent}
+        {currentComponent}
       </main>
 
       <BottomNavigation
-        navItems={pageViews.map(item => ({id: item.id, label: item.label, icon: item.icon}))}
+        navItems={bottomNavItems}
         activeView={activeView}
-        onNavChange={setActiveView}
+        onNavChange={(id) => setActiveView(id as ActiveView)} // Cast id to ActiveView
         onProfileClick={handleProfileNavigation}
       />
 

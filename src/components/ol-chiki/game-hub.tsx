@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { StarRating } from '@/components/ui/star-rating';
 import TranscriptionChallenge from '@/components/ol-chiki/games/transcription-challenge';
+import { useAuth } from '@/contexts/auth-context'; // Import useAuth
 import { 
   Type, ListChecks, Lock, Play, ChevronDown, Puzzle, FilePenLine, CaseUpper,
   AudioLines, AudioWaveform, Shuffle, ALargeSmall, Milestone, CheckSquare, SquarePen,
@@ -145,7 +146,7 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     id: 'type-olchiki-word-from-english',
     title: 'Type Ol Chiki Word (from English)',
     description: 'See an English word, type its Ol Chiki translation.',
-    icon: Keyboard, // Changed from KeyboardMouse
+    icon: Keyboard,
     isLocked: true,
     questionCount: 15,
     gameComponentIdentifier: 'TypeOlChikiWordFromEnglish',
@@ -215,29 +216,44 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
   },
 ];
 
+const getLocalStorageKey = (userId: string | null | undefined) => {
+  return userId ? `olChikiGameLevels_${userId}` : 'olChikiGameLevels_anonymous';
+};
 
 export default function GameHub() {
+  const { user } = useAuth(); // Get user from AuthContext
   const [levels, setLevels] = useState<GameLevel[]>(() => 
     initialGameLevelsData.map(level => ({...level, stars: 0}))
   );
   const [activeGameLevelId, setActiveGameLevelId] = useState<string | null>(null);
+  const [localStorageKey, setLocalStorageKey] = useState<string>(getLocalStorageKey(user?.uid));
 
   useEffect(() => {
-    const storedLevelsData = localStorage.getItem('olChikiGameLevels');
+    setLocalStorageKey(getLocalStorageKey(user?.uid));
+  }, [user]);
+
+  useEffect(() => {
+    // Load data from localStorage when the key changes (user logs in/out or on initial load)
+    const storedLevelsData = localStorage.getItem(localStorageKey);
     if (storedLevelsData) {
       try {
         const storedStarsArray: Array<{ id: string; stars: number }> = JSON.parse(storedLevelsData);
         setLevels(currentLevels =>
-          currentLevels.map(level => {
-            const storedData = storedStarsArray.find(s => s.id === level.id);
-            return storedData ? { ...level, stars: storedData.stars } : level;
+          initialGameLevelsData.map(initialLevel => { // Reset to initial data structure
+            const storedData = storedStarsArray.find(s => s.id === initialLevel.id);
+            return { ...initialLevel, stars: storedData ? storedData.stars : 0 };
           })
         );
       } catch (error) {
-        console.error("Failed to parse game levels from localStorage", error);
+        console.error("Failed to parse game levels from localStorage for key:", localStorageKey, error);
+         // If parsing fails, reset to initial state for the current user type
+        setLevels(initialGameLevelsData.map(level => ({ ...level, stars: 0 })));
       }
+    } else {
+      // No data for this user/key, set to initial state
+      setLevels(initialGameLevelsData.map(level => ({ ...level, stars: 0 })));
     }
-  }, []);
+  }, [localStorageKey]); // Rerun when localStorageKey changes
 
   const handleGameStart = (levelId: string) => {
     const levelToStart = levels.find(l => l.id === levelId);
@@ -256,10 +272,9 @@ export default function GameHub() {
       );
       try {
         const levelsToStore = newLevelsState.map(l => ({ id: l.id, stars: l.stars }));
-        localStorage.setItem('olChikiGameLevels', JSON.stringify(levelsToStore));
-      } catch (error)
-{
-        console.error("Failed to save game levels to localStorage", error);
+        localStorage.setItem(localStorageKey, JSON.stringify(levelsToStore));
+      } catch (error) {
+        console.error("Failed to save game levels to localStorage for key:", localStorageKey, error);
       }
       return newLevelsState;
     });
@@ -294,7 +309,6 @@ export default function GameHub() {
         />
       );
     } else if (!implementedGameIdentifiers.includes(activeGame.gameComponentIdentifier) && !activeGame.isLocked) {
-      // Placeholder for new/unimplemented games if they are somehow unlocked
       return (
         <div className="p-4 md:p-6 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
           <Gamepad2 className="w-16 h-16 text-primary mb-4" />
@@ -305,7 +319,6 @@ export default function GameHub() {
         </div>
       );
     }
-    // Fallback for any other unhandled game identifiers or locked games being accessed directly (should not happen)
     return (
       <div className="p-4 md:p-6 text-center">
         <h3 className="text-2xl font-bold mb-4 text-destructive">Error</h3>
@@ -323,9 +336,7 @@ export default function GameHub() {
       <div className="w-full max-w-xl mx-auto">
         {levels.map((level, index) => (
           <React.Fragment key={level.id}>
-            {/* Level Item Row */}
             <div className={`flex w-full py-2.5 ${index % 2 === 0 ? 'justify-start' : 'sm:justify-end justify-center'}`}>
-              {/* Spacer for right-aligned cards on sm screens and up */}
               {index % 2 !== 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>}
               
               <Card 
@@ -336,12 +347,12 @@ export default function GameHub() {
                 tabIndex={level.isLocked ? -1 : 0}
               >
                 <CardHeader className="flex flex-row items-center justify-between p-4 space-x-4">
-                  <div className="flex items-center space-x-3.5 min-w-0"> {/* Added min-w-0 here */}
+                  <div className="flex items-center space-x-3.5 min-w-0">
                     <div className={`p-2.5 rounded-full ${level.isLocked ? 'bg-muted' : 'bg-primary/10'}`}>
                        <level.icon className={`h-9 w-9 ${level.isLocked ? 'text-muted-foreground' : 'text-primary'}`} />
                     </div>
                     <div className="min-w-0 flex-grow"> 
-                      <CardTitle className="text-lg font-semibold text-accent leading-tight truncate">{level.title}</CardTitle> {/* Added truncate to title */}
+                      <CardTitle className="text-lg font-semibold text-accent leading-tight truncate">{level.title}</CardTitle>
                       <CardDescription className="text-xs text-muted-foreground mt-0.5 truncate">{level.description}</CardDescription>
                       {!level.isLocked && <StarRating rating={level.stars} size={18} className="mt-1.5"/>}
                       {level.isLocked && <p className="text-xs text-muted-foreground mt-1.5">Locked</p>}
@@ -367,11 +378,9 @@ export default function GameHub() {
                 </CardHeader>
               </Card>
               
-              {/* Spacer for left-aligned cards on sm screens and up*/}
               {index % 2 === 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>}
             </div>
 
-            {/* Connector Section */}
             {index < levels.length - 1 && (
               <div className={`flex h-14 w-full items-center justify-center`}>
                  <ChevronDown className="h-10 w-10 text-primary/40" />
@@ -383,4 +392,3 @@ export default function GameHub() {
     </div>
   );
 }
-

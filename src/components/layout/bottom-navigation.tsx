@@ -3,6 +3,7 @@
 
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
+import { User } from 'lucide-react'; // Import User icon specifically for profile
 
 interface BottomNavItem {
   id: string;
@@ -14,9 +15,8 @@ interface BottomNavigationProps {
   navItems: BottomNavItem[];
   activeView: string;
   onNavChange: (viewId: string) => void;
-  onProfileClick: () => void;
-  ProfileIconComponent: LucideIcon;
-  profileLabel: string;
+  onProfileClick: () => void; 
+  // ProfileIconComponent and profileLabel are no longer dynamic from props here
 }
 
 export default function BottomNavigation({
@@ -24,8 +24,6 @@ export default function BottomNavigation({
   activeView,
   onNavChange,
   onProfileClick,
-  ProfileIconComponent,
-  profileLabel,
 }: BottomNavigationProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t bg-card text-card-foreground shadow-[0_-2px_5px_-1px_rgba(0,0,0,0.1)]">
@@ -47,12 +45,11 @@ export default function BottomNavigation({
         onClick={onProfileClick}
         className={cn(
           'flex h-full flex-1 flex-col items-center justify-center p-2 transition-colors duration-200 ease-in-out hover:bg-accent/20 text-muted-foreground'
-          // Could add active state if on a profile page
         )}
-        aria-label={profileLabel}
+        aria-label="Profile"
       >
-        <ProfileIconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
-        <span className="mt-1 text-[10px] sm:text-xs leading-tight">{profileLabel}</span>
+        <User className="h-5 w-5 sm:h-6 sm:w-6" /> 
+        <span className="mt-1 text-[10px] sm:text-xs leading-tight">Profile</span>
       </button>
     </nav>
   );

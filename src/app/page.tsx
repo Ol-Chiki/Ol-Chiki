@@ -11,8 +11,8 @@ import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
 import GameHub from "@/components/ol-chiki/game-hub";
 import SplashScreen from '@/components/splash-screen';
-import BottomNavigation from '@/components/layout/bottom-navigation'; // New import
-import { Languages, Type, ListOrdered, FileText, Sparkles, Puzzle, Gamepad2, User, LogIn, Loader2 } from "lucide-react";
+import BottomNavigation from '@/components/layout/bottom-navigation';
+import { Languages, Type, ListOrdered, FileText, Sparkles, Puzzle, Gamepad2, User, Loader2 } from "lucide-react"; // Ensured Loader2 is here
 import type { LucideIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -27,7 +27,7 @@ interface PageView {
 
 export default function OlChikiPathPage() {
   const [activeView, setActiveView] = useState<ActiveView>('alphabet');
-  const { user, loading: authLoading, hasSkippedAuth, logOut } = useAuth();
+  const { user, loading: authLoading, hasSkippedAuth } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
@@ -65,11 +65,7 @@ export default function OlChikiPathPage() {
   const activeComponent = pageViews.find(view => view.id === activeView)?.component;
 
   const handleProfileNavigation = () => {
-    if (user) {
-      logOut(); // If user is logged in, profile icon logs them out
-    } else {
-      router.push('/auth'); // If not logged in, navigates to auth page
-    }
+    router.push('/profile'); // Always navigate to profile page
   };
 
   if (typeof window !== 'undefined' && !splashSeenThisSession) {
@@ -84,9 +80,9 @@ export default function OlChikiPathPage() {
       </div>
     );
   }
-  
-  if (!user && !hasSkippedAuth) {
-     return (
+
+  if (!user && !hasSkippedAuth) { // This condition implies splashSeenThisSession is true
+     return ( // This is the second loading block
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
         <p className="mt-4 text-lg text-muted-foreground">Redirecting...</p>
@@ -106,7 +102,7 @@ export default function OlChikiPathPage() {
         )}
       </header>
 
-      <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4 pb-20"> {/* Added pb-20 for bottom nav */}
+      <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4 pb-20">
         {activeComponent}
       </main>
 
@@ -115,11 +111,9 @@ export default function OlChikiPathPage() {
         activeView={activeView}
         onNavChange={setActiveView}
         onProfileClick={handleProfileNavigation}
-        ProfileIconComponent={user ? User : LogIn}
-        profileLabel={user ? 'Logout' : 'Login'}
       />
 
-      <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto"> {/* Ensured footer is at bottom if content is short, above nav */}
+      <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto">
         <p>&copy; {new Date().getFullYear()} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
       </footer>
     </div>

@@ -142,10 +142,10 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
           </CardContent>
           <CardFooter className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
             <Button onClick={generateQuizQuestions} variant="outline" className="w-full sm:w-auto">
-              <RefreshCw className="mr-2 h-4 w-4" /> Play Again
+              <RefreshCw className="mr-2 h-4 w-4" /> Play New Set
             </Button>
             <Button onClick={onQuizComplete} className="w-full sm:w-auto">
-              Back to Reading Hub <ArrowRight className="ml-2 h-4 w-4" />
+              Back to Reading Levels <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
         </Card>
@@ -222,3 +222,5 @@ export default function ReadingQuizIdentifyWords({ onQuizComplete }: ReadingQuiz
     </div>
   );
 }
+
+    

@@ -1,104 +1,169 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Textarea } from '@/components/ui/textarea'; // Using Textarea for more space
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { olChikiCharacters } from '@/lib/ol-chiki-data';
+import { RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'; // Added for potential use
 
-// Direct mapping for common English keys to Ol Chiki characters
-// This map should be consistent with the one in sentence-practice.tsx if functionality is identical
-const directKeyToOlChikiMap: { [key: string]: string } = {
-  'a': 'ᱚ', 'A': 'ᱟ',
-  't': 'ᱛ', 'T': 'ᱴ',
-  'g': 'ᱜ',
-  'm': 'ᱢ', 'M': 'ᱝ',
-  'l': 'ᱞ',
-  'k': 'ᱠ',
-  'j': 'ᱡ',
-  'w': 'ᱣ', 'W': 'ᱶ',
-  'i': 'ᱤ',
-  's': 'ᱥ',
-  'h': 'ᱦ', 'H': 'ᱷ',
-  'n': 'ᱱ',
-  'N': 'ᱧ', 
-  'r': 'ᱨ', 'R': 'ᱲ', 
-  'u': 'ᱩ',
-  'c': 'ᱪ',
-  'd': 'ᱫ', 'D': 'ᱰ', 
-  'y': 'ᱭ',
-  'e': 'ᱮ',
-  'p': 'ᱯ',
-  'b': 'ᱵ',
-  'o': 'ᱳ',
-
-  '.': '᱾', 
-  ',': 'ᱹ', 
-  '?': '?',
-  // Add other mappings as needed, e.g., for numbers or combined characters if desired
-};
+// Sample sentences - can be moved to ol-chiki-data.ts later
+const sampleOlChikiSentences = [
+  "ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?", // What is your name?
+  "ᱚᱞ ᱪᱤᱠᱤ ᱞᱤᱯᱤ ᱥᱮᱪᱮᱫ ᱢᱮ",  // Learn Ol Chiki Script
+  "ᱱᱚᱣᱟ ᱫᱚ ᱢᱤᱫᱴᱟᱹᱝ ᱚᱲᱟᱜ ᱠᱟᱱᱟ", // This is a house
+  "ᱥᱮᱛᱟᱜ ᱵᱮᱨᱮᱫ ᱢᱮ", // Wake up in the morning
+];
 
 export default function WritingPractice() {
-  const [inputText, setInputText] = useState<string>('');
-  const [transliteratedScript, setTransliteratedScript] = useState<string>('');
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [typedOlChiki, setTypedOlChiki] = useState('');
+  const [englishTransliteration, setEnglishTransliteration] = useState('');
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  const doDirectKeyTransliterate = useCallback((currentInput: string): string => {
-    let result = '';
-    for (let i = 0; i < currentInput.length; i++) {
-      const char = currentInput[i];
-      result += directKeyToOlChikiMap[char] || char; // If no map, append original char
-    }
-    return result;
-  }, []); 
+  const olChikiToEngMap = useMemo(() => {
+    const map = new Map<string, string>();
+    olChikiCharacters.forEach(char => {
+      // Prioritize shorter transliterations if an Ol Chiki char somehow had multiple in data
+      if (!map.has(char.olChiki) || char.transliteration.length < (map.get(char.olChiki)?.length ?? Infinity)) {
+        map.set(char.olChiki, char.transliteration);
+      }
+    });
+    return map;
+  }, []);
 
   useEffect(() => {
-    const result = doDirectKeyTransliterate(inputText);
-    setTransliteratedScript(result);
-  }, [inputText, doDirectKeyTransliterate]);
+    let transliterationResult = '';
+    for (let i = 0; i < typedOlChiki.length; i++) {
+      const char = typedOlChiki[i];
+      transliterationResult += (olChikiToEngMap.get(char) || char);
+      // Add a space after each transliterated unit, unless it's a space itself or the last character
+      if (char !== ' ' && i < typedOlChiki.length -1 && typedOlChiki[i+1] !== ' ') {
+         transliterationResult += ' ';
+      }
+    }
+    setEnglishTransliteration(transliterationResult.trim().replace(/ +/g, ' ')); // Trim and normalize multiple spaces
+  }, [typedOlChiki, olChikiToEngMap]);
+
+  const handleCharacterInput = useCallback((char: string) => {
+    setTypedOlChiki(prev => prev + char);
+  }, []);
+
+  const handleBackspace = useCallback(() => {
+    setTypedOlChiki(prev => prev.slice(0, -1));
+  }, []);
+
+  const handleSpace = useCallback(() => {
+    setTypedOlChiki(prev => prev + ' ');
+  }, []);
+
+  const nextSentence = useCallback(() => {
+    setCurrentSentenceIndex(prev => (prev + 1) % sampleOlChikiSentences.length);
+    setTypedOlChiki(''); 
+  }, []);
+
+  const prevSentence = useCallback(() => {
+    setCurrentSentenceIndex(prev => (prev - 1 + sampleOlChikiSentences.length) % sampleOlChikiSentences.length);
+    setTypedOlChiki('');
+  }, []);
+  
+  const clearInput = useCallback(() => {
+    setTypedOlChiki('');
+  }, []);
+
+
+  // Basic keyboard layout: 3 rows of 10 characters from olChikiCharacters
+  const keyboardRows = useMemo(() => [
+    olChikiCharacters.slice(0, 10),
+    olChikiCharacters.slice(10, 20),
+    olChikiCharacters.slice(20, 30),
+  ], []);
 
   return (
-    <div className="p-4 md:p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-primary tracking-tight text-center">
+    <div className="p-4 md:p-6 max-w-3xl mx-auto flex flex-col space-y-4">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-primary tracking-tight text-center">
         Ol Chiki Writing Practice
       </h2>
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle>Practice Your Ol Chiki Typing</CardTitle>
-          <CardDescription>
-            Use your English keyboard to type Ol Chiki characters. The script will appear in the box below as you type.
-            Common punctuation like '.', ',', and '?' are mapped. Other symbols and emojis will appear as typed.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="writing-input" className="text-lg font-medium">Type here (using English keys):</Label>
-            <Textarea
-              id="writing-input"
-              placeholder="e.g., amaag nyutum chet kana? (ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?)"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className="mt-2 text-lg min-h-[100px] sm:min-h-[150px] focus:ring-primary focus:border-primary"
-              rows={5}
-            />
+
+      <Card className="shadow-md">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-lg sm:text-xl text-primary">Practice This Sentence:</CardTitle>
+          <div className="flex space-x-2">
+            <Button onClick={prevSentence} variant="outline" size="icon" aria-label="Previous sentence">
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button onClick={nextSentence} variant="outline" size="icon" aria-label="Next sentence">
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
-          
-          {inputText && (
-            <div className="mt-4">
-              <Label className="text-lg font-medium text-accent">Ol Chiki Script Output:</Label>
-              <div 
-                className="text-2xl sm:text-3xl font-mono p-4 bg-secondary/30 rounded-md mt-2 min-h-[100px] sm:min-h-[150px] break-words whitespace-pre-wrap text-center"
-                aria-live="polite"
-              >
-                {transliteratedScript || <span className="text-muted-foreground">Your Ol Chiki text will appear here...</span>}
-              </div>
-            </div>
-          )}
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl sm:text-3xl font-mono text-center p-3 sm:p-4 bg-secondary/20 rounded-md min-h-[3em] select-text">
+            {sampleOlChikiSentences[currentSentenceIndex]}
+          </p>
         </CardContent>
       </Card>
-       <p className="text-sm text-muted-foreground mt-6 text-center">
-        Tip: Refer to the 'Alphabet' and 'Numbers' sections if you need a reminder of the characters and their English key mappings.
-      </p>
+
+      <Card className="shadow-md">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-lg sm:text-xl text-primary">Your Ol Chiki Typing:</CardTitle>
+          <Button onClick={clearInput} variant="outline" size="sm">
+            <RefreshCw className="mr-2 h-4 w-4" /> Clear
+          </Button>
+        </CardHeader>
+        <CardContent
+          className="text-2xl sm:text-3xl font-mono p-3 sm:p-4 border border-input rounded-md min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary cursor-text bg-background"
+          onClick={() => setIsKeyboardVisible(true)}
+          tabIndex={0} 
+          aria-label="Ol Chiki typing area, click to show virtual keyboard"
+        >
+          {typedOlChiki || <span className="text-muted-foreground text-lg">Click here to start typing...</span>}
+        </CardContent>
+      </Card>
+
+      {isKeyboardVisible && (
+        <Card className="mt-2 p-2 sm:p-4 shadow-lg sticky bottom-16 md:bottom-auto bg-card border-2 border-primary/50 z-20">
+          <div className="flex justify-between items-center mb-2">
+            <CardTitle className="text-center text-md sm:text-lg text-primary">Ol Chiki Virtual Keyboard</CardTitle>
+            <Button variant="ghost" size="sm" onClick={() => setIsKeyboardVisible(false)} className="text-muted-foreground hover:text-primary">Hide</Button>
+          </div>
+          <div className="space-y-1 sm:space-y-2">
+            {keyboardRows.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex justify-center space-x-1 sm:space-x-1.5">
+                {row.map(charData => (
+                  <Button
+                    key={charData.id}
+                    variant="outline"
+                    className="p-1.5 sm:p-2 text-base sm:text-lg font-mono flex-1 min-w-[28px] sm:min-w-[36px] h-10 sm:h-12 hover:bg-primary/10 active:bg-primary/20"
+                    onClick={() => handleCharacterInput(charData.olChiki)}
+                    title={charData.transliteration}
+                  >
+                    {charData.olChiki}
+                  </Button>
+                ))}
+              </div>
+            ))}
+            <div className="flex justify-center space-x-1 sm:space-x-2 pt-1 sm:pt-2">
+              <Button variant="default" className="flex-grow-[3] p-2 text-sm sm:text-base h-10 sm:h-12" onClick={handleSpace}>Space</Button>
+              <Button variant="destructive" className="flex-grow-[2] p-2 text-sm sm:text-base h-10 sm:h-12" onClick={handleBackspace}>Backspace</Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {typedOlChiki && (
+         <Card className="mt-2 shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base sm:text-lg text-accent">Your Input (English Transliteration):</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm sm:text-md p-3 bg-secondary/10 rounded-md text-center min-h-[2em] select-text">
+              {englishTransliteration || <span className="text-muted-foreground">Transliteration will appear here...</span>}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+       <div className="h-16"></div> {/* Spacer for bottom nav */}
     </div>
   );
 }

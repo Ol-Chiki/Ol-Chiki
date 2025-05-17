@@ -3,8 +3,8 @@
 
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
-import { User as UserIconLucide, LogIn } from 'lucide-react'; // Renamed to avoid conflict
-import type { User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser type
+import { User as UserIconLucide, LogIn } from 'lucide-react';
+import type { User as FirebaseUser } from 'firebase/auth';
 
 interface BottomNavItem {
   id: string;
@@ -17,14 +17,15 @@ interface BottomNavigationProps {
   activeView: string;
   onNavChange: (viewId: string) => void;
   onProfileClick: () => void;
-  currentUser: FirebaseUser | null; // Add currentUser prop
+  currentUser: FirebaseUser | null;
 }
 
+// Define distinct colors for each inactive icon
 const iconColorClasses: Record<string, string> = {
   'basic-hub': 'text-teal-500', 
   words: 'text-emerald-500', 
   sentence: 'text-fuchsia-500', 
-  quiz: 'text-amber-500',   
+  'writing-practice': 'text-sky-500', // New color for Writing Practice
   game: 'text-violet-500',
 };
 
@@ -33,12 +34,12 @@ export default function BottomNavigation({
   activeView,
   onNavChange,
   onProfileClick,
-  currentUser, // Destructure currentUser
+  currentUser,
 }: BottomNavigationProps) {
   const profileLabel = currentUser?.displayName 
     ? (currentUser.displayName.split(' ')[0].length > 10 ? currentUser.displayName.split(' ')[0].substring(0,8) + '...' : currentUser.displayName.split(' ')[0])
     : 'Profile';
-  const ProfileIcon = UserIconLucide; // Always User icon, functionality handled on profile page
+  const ProfileIcon = UserIconLucide; 
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t bg-card text-card-foreground shadow-[0_-2px_5px_-1px_rgba(0,0,0,0.1)]">
@@ -47,7 +48,7 @@ export default function BottomNavigation({
                          (activeView === 'alphabet' && item.id === 'basic-hub') ||
                          (activeView === 'numbers' && item.id === 'basic-hub');
         
-        const iconColor = isActive ? 'text-primary' : (iconColorClasses[item.id] || 'text-accent');
+        const iconColor = isActive ? 'text-primary' : (iconColorClasses[item.id] || 'text-accent'); // Fallback to accent if no specific color
         const labelColor = isActive ? 'text-primary' : 'text-accent';
 
         return (

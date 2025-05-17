@@ -8,15 +8,15 @@ import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
 import LearnNumbers from "@/components/ol-chiki/learn-numbers";
 import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
-import CharacterQuiz from "@/components/ol-chiki/character-quiz";
+import WritingPractice from "@/components/ol-chiki/writing-practice"; // New import
 import GameHub from "@/components/ol-chiki/game-hub";
 import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
 import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
-import { GraduationCap, FileText, Sparkles, Puzzle, Gamepad2, Loader2 } from "lucide-react";
+import { GraduationCap, FileText, Sparkles, FilePenLine, Gamepad2, Loader2 } from "lucide-react"; // Replaced Puzzle with FilePenLine
 import type { LucideIcon } from 'lucide-react';
 
-export type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
+export type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'writing-practice' | 'game'; // Updated
 
 interface NavItemConfig {
   id: Exclude<ActiveView, 'alphabet' | 'numbers'>;
@@ -30,11 +30,12 @@ export default function OlChikiPathPage() {
   const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
-  const [splashSeenThisSession, setSplashSeenThisSession] = useState(false); // Default to false
+  const [splashSeenThisSession, setSplashSeenThisSession] = useState(false);
   const [currentYear, setCurrentYear] = useState<string>('');
 
   useEffect(() => {
-    setIsClient(true);
+    setIsClient(true); // Signals that the component has mounted on the client
+    // Determine splash screen status and current year only on the client
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
         setSplashSeenThisSession(true);
@@ -55,14 +56,13 @@ export default function OlChikiPathPage() {
 
   useEffect(() => {
     if (!isClient) {
-      return; // Don't run auth checks until client has mounted and determined splash status
+      return; 
     }
 
     if (!splashSeenThisSession) {
-      return; // If splash hasn't been seen/completed, wait for it
+      return; 
     }
 
-    // Proceed with auth checks only after client mount and splash completion
     if (!authLoading && !user && !hasSkippedAuth) {
       router.push('/auth');
     }
@@ -104,7 +104,7 @@ export default function OlChikiPathPage() {
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
     { id: 'words', label: 'Words', icon: FileText },
     { id: 'sentence', label: 'Santad AI', icon: Sparkles },
-    { id: 'quiz', label: 'Quiz', icon: Puzzle },
+    { id: 'writing-practice', label: 'Write', icon: FilePenLine }, // Changed from Quiz
     { id: 'game', label: 'Game Zone', icon: Gamepad2 },
   ];
 
@@ -125,8 +125,8 @@ export default function OlChikiPathPage() {
     case 'sentence':
       currentComponent = <SentencePractice />;
       break;
-    case 'quiz':
-      currentComponent = <CharacterQuiz />;
+    case 'writing-practice': // Changed from 'quiz'
+      currentComponent = <WritingPractice />;
       break;
     case 'game':
       currentComponent = <GameHub />;
@@ -160,7 +160,7 @@ export default function OlChikiPathPage() {
         activeView={activeView}
         onNavChange={(id) => setActiveView(id as ActiveView)}
         onProfileClick={handleProfileNavigation}
-        currentUser={user} // Pass the user object
+        currentUser={user}
       />
 
       <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto">

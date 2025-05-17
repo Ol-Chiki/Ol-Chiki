@@ -5,14 +5,16 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { olChikiCharacters } from '@/lib/ol-chiki-data';
-import { RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'; // Added for potential use
+import { RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Sample sentences - can be moved to ol-chiki-data.ts later
-const sampleOlChikiSentences = [
-  "ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ ᱠᱟᱱᱟ?", // What is your name?
-  "ᱚᱞ ᱪᱤᱠᱤ ᱞᱤᱯᱤ ᱥᱮᱪᱮᱫ ᱢᱮ",  // Learn Ol Chiki Script
-  "ᱱᱚᱣᱟ ᱫᱚ ᱢᱤᱫᱴᱟᱹᱝ ᱚᱲᱟᱜ ᱠᱟᱱᱟ", // This is a house
-  "ᱥᱮᱛᱟᱜ ᱵᱮᱨᱮᱫ ᱢᱮ", // Wake up in the morning
+// Sample English sentences for users to translate and type in Ol Chiki
+const sampleEnglishSentences = [
+  "What is your name?",
+  "Learn Ol Chiki Script",
+  "This is a house",
+  "Wake up in the morning",
+  "The dog is barking.",
+  "I am reading a book."
 ];
 
 export default function WritingPractice() {
@@ -24,7 +26,6 @@ export default function WritingPractice() {
   const olChikiToEngMap = useMemo(() => {
     const map = new Map<string, string>();
     olChikiCharacters.forEach(char => {
-      // Prioritize shorter transliterations if an Ol Chiki char somehow had multiple in data
       if (!map.has(char.olChiki) || char.transliteration.length < (map.get(char.olChiki)?.length ?? Infinity)) {
         map.set(char.olChiki, char.transliteration);
       }
@@ -37,12 +38,11 @@ export default function WritingPractice() {
     for (let i = 0; i < typedOlChiki.length; i++) {
       const char = typedOlChiki[i];
       transliterationResult += (olChikiToEngMap.get(char) || char);
-      // Add a space after each transliterated unit, unless it's a space itself or the last character
       if (char !== ' ' && i < typedOlChiki.length -1 && typedOlChiki[i+1] !== ' ') {
          transliterationResult += ' ';
       }
     }
-    setEnglishTransliteration(transliterationResult.trim().replace(/ +/g, ' ')); // Trim and normalize multiple spaces
+    setEnglishTransliteration(transliterationResult.trim().replace(/ +/g, ' '));
   }, [typedOlChiki, olChikiToEngMap]);
 
   const handleCharacterInput = useCallback((char: string) => {
@@ -58,12 +58,12 @@ export default function WritingPractice() {
   }, []);
 
   const nextSentence = useCallback(() => {
-    setCurrentSentenceIndex(prev => (prev + 1) % sampleOlChikiSentences.length);
+    setCurrentSentenceIndex(prev => (prev + 1) % sampleEnglishSentences.length);
     setTypedOlChiki(''); 
   }, []);
 
   const prevSentence = useCallback(() => {
-    setCurrentSentenceIndex(prev => (prev - 1 + sampleOlChikiSentences.length) % sampleOlChikiSentences.length);
+    setCurrentSentenceIndex(prev => (prev - 1 + sampleEnglishSentences.length) % sampleEnglishSentences.length);
     setTypedOlChiki('');
   }, []);
   
@@ -71,8 +71,6 @@ export default function WritingPractice() {
     setTypedOlChiki('');
   }, []);
 
-
-  // Basic keyboard layout: 3 rows of 10 characters from olChikiCharacters
   const keyboardRows = useMemo(() => [
     olChikiCharacters.slice(0, 10),
     olChikiCharacters.slice(10, 20),
@@ -87,7 +85,7 @@ export default function WritingPractice() {
 
       <Card className="shadow-md">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg sm:text-xl text-primary">Practice This Sentence:</CardTitle>
+          <CardTitle className="text-lg sm:text-xl text-primary">Translate and Type This English Sentence:</CardTitle>
           <div className="flex space-x-2">
             <Button onClick={prevSentence} variant="outline" size="icon" aria-label="Previous sentence">
               <ChevronLeft className="h-4 w-4" />
@@ -98,8 +96,8 @@ export default function WritingPractice() {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl sm:text-3xl font-mono text-center p-3 sm:p-4 bg-secondary/20 rounded-md min-h-[3em] select-text">
-            {sampleOlChikiSentences[currentSentenceIndex]}
+          <p className="text-lg sm:text-xl font-sans text-center p-3 sm:p-4 bg-secondary/20 rounded-md min-h-[3em] select-text">
+            {sampleEnglishSentences[currentSentenceIndex]}
           </p>
         </CardContent>
       </Card>

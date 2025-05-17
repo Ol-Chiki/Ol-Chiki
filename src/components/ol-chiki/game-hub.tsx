@@ -7,7 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { StarRating } from '@/components/ui/star-rating';
 import TranscriptionChallenge from '@/components/ol-chiki/games/transcription-challenge';
-import { Type, ListChecks, Lock, Play, ChevronDown, Puzzle, MessageSquareText, CaseUpper, FilePenLine } from 'lucide-react'; 
+import { 
+  Type, ListChecks, Lock, Play, ChevronDown, Puzzle, FilePenLine, CaseUpper,
+  AudioLines, AudioWaveform, Shuffle, ALargeSmall, Milestone, CheckSquare, SquarePen,
+  SearchSlash, Keyboard, TextSelect, Pipette, Eraser, Gauge, Timer,
+  MessageSquareText, BookText, Gamepad2
+} from 'lucide-react'; 
 
 const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
   {
@@ -24,7 +29,7 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     title: 'Number Transcription',
     description: 'Transcribe Ol Chiki numbers to their English transliterations.',
     icon: ListChecks,
-    isLocked: false, // Unlocking for now, assuming it's ready or for placeholder
+    isLocked: false, 
     questionCount: 10,
     gameComponentIdentifier: 'TranscriptionChallengeNumbers',
   },
@@ -55,7 +60,161 @@ const initialGameLevelsData: Omit<GameLevel, 'stars'>[] = [
     questionCount: 10,
     gameComponentIdentifier: 'SentenceScrambleGame',
   },
+  {
+    id: 'char-sound-match',
+    title: 'Character Sound Match',
+    description: 'Match Ol Chiki characters to their sounds.',
+    icon: AudioLines,
+    isLocked: true,
+    questionCount: 15,
+    gameComponentIdentifier: 'CharacterSoundMatch',
+  },
+  {
+    id: 'number-sound-match',
+    title: 'Number Sound Match',
+    description: 'Match Ol Chiki numbers to their spoken names.',
+    icon: AudioWaveform,
+    isLocked: true,
+    questionCount: 15,
+    gameComponentIdentifier: 'NumberSoundMatch',
+  },
+  {
+    id: 'word-scramble-olchiki',
+    title: 'Ol Chiki Word Scramble',
+    description: 'Unscramble letters to form Ol Chiki words.',
+    icon: Shuffle,
+    isLocked: true,
+    questionCount: 10,
+    gameComponentIdentifier: 'WordScrambleOlChiki',
+  },
+  {
+    id: 'form-word-from-letters',
+    title: 'Form Word from Letters',
+    description: 'Use given Ol Chiki letters to make a valid word.',
+    icon: ALargeSmall,
+    isLocked: true,
+    questionCount: 10,
+    gameComponentIdentifier: 'FormWordFromLetters',
+  },
+  {
+    id: 'form-sentence-from-words',
+    title: 'Form Sentence from Words',
+    description: 'Arrange Ol Chiki words to form a correct sentence.',
+    icon: Milestone,
+    isLocked: true,
+    questionCount: 8,
+    gameComponentIdentifier: 'FormSentenceFromWords',
+  },
+  {
+    id: 'select-correct-transliteration-mcq',
+    title: 'Select Transliteration (MCQ)',
+    description: 'Choose the correct English transliteration for an Ol Chiki character.',
+    icon: CheckSquare,
+    isLocked: true,
+    questionCount: 20,
+    gameComponentIdentifier: 'SelectCorrectTransliterationMCQ',
+  },
+  {
+    id: 'select-correct-olchiki-mcq',
+    title: 'Select Ol Chiki (MCQ)',
+    description: 'Choose the correct Ol Chiki character for an English transliteration.',
+    icon: SquarePen,
+    isLocked: true,
+    questionCount: 20,
+    gameComponentIdentifier: 'SelectCorrectOlChikiMCQ',
+  },
+  {
+    id: 'find-the-imposter-char',
+    title: 'Find The Imposter Character',
+    description: 'Identify the Ol Chiki character that doesn\'t belong in a set.',
+    icon: SearchSlash,
+    isLocked: true,
+    questionCount: 10,
+    gameComponentIdentifier: 'FindTheImposterChar',
+  },
+  {
+    id: 'type-english-word-from-olchiki',
+    title: 'Type English Word (from Ol Chiki)',
+    description: 'See an Ol Chiki word, type its English translation.',
+    icon: Keyboard,
+    isLocked: true,
+    questionCount: 15,
+    gameComponentIdentifier: 'TypeEnglishWordFromOlChiki',
+  },
+  {
+    id: 'type-olchiki-word-from-english',
+    title: 'Type Ol Chiki Word (from English)',
+    description: 'See an English word, type its Ol Chiki translation.',
+    icon: Keyboard, // Changed from KeyboardMouse
+    isLocked: true,
+    questionCount: 15,
+    gameComponentIdentifier: 'TypeOlChikiWordFromEnglish',
+  },
+  {
+    id: 'sentence-translation-match-game',
+    title: 'Sentence Translation Match',
+    description: 'Match Ol Chiki sentences to their English translations.',
+    icon: TextSelect,
+    isLocked: true,
+    questionCount: 10,
+    gameComponentIdentifier: 'SentenceTranslationMatchGame',
+  },
+  {
+    id: 'fill-blank-char-in-word',
+    title: 'Fill Blank: Character in Word',
+    description: 'Complete an Ol Chiki word by filling in the missing character.',
+    icon: Pipette,
+    isLocked: true,
+    questionCount: 15,
+    gameComponentIdentifier: 'FillBlankCharInWord',
+  },
+  {
+    id: 'fill-blank-word-in-sentence',
+    title: 'Fill Blank: Word in Sentence',
+    description: 'Complete an Ol Chiki sentence by filling in the missing word.',
+    icon: Eraser,
+    isLocked: true,
+    questionCount: 10,
+    gameComponentIdentifier: 'FillBlankWordInSentence',
+  },
+  {
+    id: 'speed-transcribe-chars-timed',
+    title: 'Speed Transcribe Characters (Timed)',
+    description: 'Transcribe as many characters as you can in a limited time.',
+    icon: Gauge,
+    isLocked: true,
+    questionCount: 25, 
+    gameComponentIdentifier: 'SpeedTranscribeCharsTimed',
+  },
+  {
+    id: 'speed-match-words-timed',
+    title: 'Speed Match Words (Timed)',
+    description: 'Quickly match Ol Chiki words to their English translations.',
+    icon: Timer,
+    isLocked: true,
+    questionCount: 20, 
+    gameComponentIdentifier: 'SpeedMatchWordsTimed',
+  },
+  {
+    id: 'dialogue-completion-game',
+    title: 'Dialogue Completion',
+    description: 'Complete short Ol Chiki dialogues.',
+    icon: MessageSquareText,
+    isLocked: true,
+    questionCount: 8,
+    gameComponentIdentifier: 'DialogueCompletionGame',
+  },
+  {
+    id: 'story-comprehension-quiz-game',
+    title: 'Story Comprehension Quiz',
+    description: 'Read a short Ol Chiki story and answer questions.',
+    icon: BookText,
+    isLocked: true,
+    questionCount: 5, 
+    gameComponentIdentifier: 'StoryComprehensionQuizGame',
+  },
 ];
+
 
 export default function GameHub() {
   const [levels, setLevels] = useState<GameLevel[]>(() => 
@@ -98,7 +257,8 @@ export default function GameHub() {
       try {
         const levelsToStore = newLevelsState.map(l => ({ id: l.id, stars: l.stars }));
         localStorage.setItem('olChikiGameLevels', JSON.stringify(levelsToStore));
-      } catch (error) {
+      } catch (error)
+{
         console.error("Failed to save game levels to localStorage", error);
       }
       return newLevelsState;
@@ -111,6 +271,8 @@ export default function GameHub() {
   };
 
   const activeGame = levels.find(level => level.id === activeGameLevelId);
+
+  const implementedGameIdentifiers = ['TranscriptionChallengeChars', 'TranscriptionChallengeNumbers'];
 
   if (activeGame) {
     if (activeGame.gameComponentIdentifier === 'TranscriptionChallengeChars') {
@@ -131,24 +293,23 @@ export default function GameHub() {
           challengeType="numbers"
         />
       );
-    } else if (activeGame.gameComponentIdentifier === 'WordMatchingGame' || 
-               activeGame.gameComponentIdentifier === 'GuessTheLetterGame' ||
-               activeGame.gameComponentIdentifier === 'SentenceScrambleGame') {
-      // Placeholder for new games
+    } else if (!implementedGameIdentifiers.includes(activeGame.gameComponentIdentifier) && !activeGame.isLocked) {
+      // Placeholder for new/unimplemented games if they are somehow unlocked
       return (
-        <div className="p-4 md:p-6 text-center">
+        <div className="p-4 md:p-6 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+          <Gamepad2 className="w-16 h-16 text-primary mb-4" />
           <h3 className="text-2xl font-bold mb-4 text-primary">{activeGame.title}</h3>
           <p className="text-muted-foreground mb-6">This game is under construction. Check back soon!</p>
-          <img data-ai-hint="construction work" src="https://placehold.co/300x200.png" alt="Under Construction" className="mx-auto mb-6 rounded shadow-md" />
+          <img data-ai-hint="construction worker" src="https://placehold.co/300x200.png" alt="Under Construction" className="mx-auto mb-6 rounded shadow-md" />
           <Button onClick={handleExitGame} variant="outline">Back to Game Hub</Button>
         </div>
       );
     }
-    // Fallback for any other unhandled game identifiers
+    // Fallback for any other unhandled game identifiers or locked games being accessed directly (should not happen)
     return (
       <div className="p-4 md:p-6 text-center">
         <h3 className="text-2xl font-bold mb-4 text-destructive">Error</h3>
-        <p className="text-muted-foreground mb-6">Game component for "{activeGame.title}" not found.</p>
+        <p className="text-muted-foreground mb-6">Game component for "{activeGame.title}" not found or game is locked.</p>
         <Button onClick={handleExitGame} variant="outline">Back to Game Hub</Button>
       </div>
     );
@@ -159,13 +320,13 @@ export default function GameHub() {
       <h2 className="text-3xl font-bold mb-4 text-primary tracking-tight text-center">Game Zone Path</h2>
       <p className="text-muted-foreground mb-10 text-center">Follow the winding path to test your Ol Chiki skills!</p>
       
-      <div className="w-full max-w-xl mx-auto"> {/* Increased max-width for slightly larger cards */}
+      <div className="w-full max-w-xl mx-auto">
         {levels.map((level, index) => (
           <React.Fragment key={level.id}>
             {/* Level Item Row */}
             <div className={`flex w-full py-2.5 ${index % 2 === 0 ? 'justify-start' : 'sm:justify-end justify-center'}`}>
               {/* Spacer for right-aligned cards on sm screens and up */}
-              {index % 2 !== 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>} {/* Adjusted spacer width */}
+              {index % 2 !== 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>}
               
               <Card 
                 className={`w-full sm:w-2/3 shadow-lg transition-shadow duration-300 
@@ -174,13 +335,13 @@ export default function GameHub() {
                 aria-disabled={level.isLocked}
                 tabIndex={level.isLocked ? -1 : 0}
               >
-                <CardHeader className="flex flex-row items-center justify-between p-4 space-x-4"> {/* Increased padding */}
-                  <div className="flex items-center space-x-3.5"> {/* Increased space */}
-                    <div className={`p-2.5 rounded-full ${level.isLocked ? 'bg-muted' : 'bg-primary/10'}`}> {/* Slightly larger icon bg */}
-                       <level.icon className={`h-9 w-9 ${level.isLocked ? 'text-muted-foreground' : 'text-primary'}`} /> {/* Larger icon */}
+                <CardHeader className="flex flex-row items-center justify-between p-4 space-x-4">
+                  <div className="flex items-center space-x-3.5 min-w-0"> {/* Added min-w-0 here */}
+                    <div className={`p-2.5 rounded-full ${level.isLocked ? 'bg-muted' : 'bg-primary/10'}`}>
+                       <level.icon className={`h-9 w-9 ${level.isLocked ? 'text-muted-foreground' : 'text-primary'}`} />
                     </div>
                     <div className="min-w-0 flex-grow"> 
-                      <CardTitle className="text-lg font-semibold text-accent leading-tight">{level.title}</CardTitle> {/* Larger title */}
+                      <CardTitle className="text-lg font-semibold text-accent leading-tight truncate">{level.title}</CardTitle> {/* Added truncate to title */}
                       <CardDescription className="text-xs text-muted-foreground mt-0.5 truncate">{level.description}</CardDescription>
                       {!level.isLocked && <StarRating rating={level.stars} size={18} className="mt-1.5"/>}
                       {level.isLocked && <p className="text-xs text-muted-foreground mt-1.5">Locked</p>}
@@ -192,7 +353,7 @@ export default function GameHub() {
                       <Button 
                         variant="default" 
                         size="sm" 
-                        className="h-10 w-10 p-0 rounded-full shadow-md"  // Slightly larger button
+                        className="h-10 w-10 p-0 rounded-full shadow-md"
                         onClick={(e) => { e.stopPropagation(); !level.isLocked && handleGameStart(level.id); }}
                         aria-label={`Play ${level.title}`}
                       >
@@ -200,20 +361,20 @@ export default function GameHub() {
                       </Button>
                     )}
                     {level.isLocked && (
-                      <Lock className="h-7 w-7 text-muted-foreground" /> // Slightly larger lock
+                      <Lock className="h-7 w-7 text-muted-foreground" />
                     )}
                   </div>
                 </CardHeader>
               </Card>
               
               {/* Spacer for left-aligned cards on sm screens and up*/}
-              {index % 2 === 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>} {/* Adjusted spacer width */}
+              {index % 2 === 0 && <div className="w-1/3 flex-shrink-0 hidden sm:block"></div>}
             </div>
 
             {/* Connector Section */}
             {index < levels.length - 1 && (
-              <div className={`flex h-14 w-full items-center justify-center`}> {/* Increased height for connector */}
-                 <ChevronDown className="h-10 w-10 text-primary/40" /> {/* Larger chevron */}
+              <div className={`flex h-14 w-full items-center justify-center`}>
+                 <ChevronDown className="h-10 w-10 text-primary/40" />
               </div>
             )}
           </React.Fragment>
@@ -222,3 +383,4 @@ export default function GameHub() {
     </div>
   );
 }
+

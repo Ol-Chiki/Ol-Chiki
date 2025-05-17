@@ -2,7 +2,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { StarRating } from '@/components/ui/star-rating';
 import { ArrowRight, BookOpenCheck } from 'lucide-react';
@@ -53,10 +53,8 @@ export default function ReadingQuizSelectionHub({ onSelectQuiz, onBack }: Readin
           &larr; Back to Reading Levels
         </Button>
       </div>
-      <CardDescription className="mb-6 text-center text-muted-foreground">
-        Choose one of the {TOTAL_QUIZZES} quiz sets below. Each set contains 10 questions. Previously played sets will show your score.
-      </CardDescription>
-      <ScrollArea className="h-[calc(100vh-300px)] pr-3">
+      {/* Removed CardDescription from here */}
+      <ScrollArea className="h-[calc(100vh-250px)] pr-3"> {/* Adjusted height slightly */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {quizNumbers.map((num) => {
             const scoreData = quizScores[num];

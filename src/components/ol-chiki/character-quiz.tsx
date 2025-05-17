@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -81,7 +82,7 @@ export default function CharacterQuiz() {
       }
     }
   };
-  
+
   useEffect(() => {
     if (selectedOlChiki && selectedTransliteration) {
       setIsChecking(true);
@@ -137,6 +138,9 @@ export default function CharacterQuiz() {
         <Sparkles className="w-16 h-16 text-primary mb-4" />
         <h2 className="text-3xl font-bold mb-4 text-primary">Round Complete!</h2>
         <p className="text-xl mb-6 text-foreground">Your score: {score} / {QUIZ_SIZE}</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          Quiz results contribute to your overall ranking! (Leaderboard coming soon)
+        </p>
         <Button onClick={setupQuiz} size="lg">
           <RefreshCw className="mr-2 h-5 w-5" />
           Play Again
@@ -149,7 +153,7 @@ export default function CharacterQuiz() {
     <div className="p-4 md:p-6">
       <h2 className="text-3xl font-bold mb-2 text-primary tracking-tight">Character Matching Quiz</h2>
       <p className="text-muted-foreground mb-6">Match the Ol Chiki characters with their English transliterations. Current Score: {score}</p>
-      
+
       <div className="grid grid-cols-2 gap-4 md:gap-8 items-start">
         <div className="space-y-3">
           <h3 className="text-xl font-semibold text-center text-accent">Ol Chiki Characters</h3>

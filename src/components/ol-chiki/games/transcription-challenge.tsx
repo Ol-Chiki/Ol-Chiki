@@ -34,7 +34,7 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
     } else { // 'numbers'
       sourceData = olChikiNumbers.filter(n => n.value <= 100); // Use all numbers up to 100
     }
-    
+
     const shuffledData = shuffleArray(sourceData);
     const questionCount = Math.min(level.questionCount, shuffledData.length); // Ensure we don't ask for more questions than available
 
@@ -103,6 +103,9 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
             <Award className="h-20 w-20 text-yellow-500 mx-auto" />
             <p className="text-xl font-semibold">Your Score: {score} / {questions.length}</p>
             <StarRating rating={finalStars} size={32} className="justify-center" />
+            <p className="text-xs text-muted-foreground pt-2">
+              Your performance contributes to your overall ranking! (Leaderboard coming soon)
+            </p>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button onClick={() => onGameComplete(finalStars)} className="w-full">
@@ -135,7 +138,7 @@ export default function TranscriptionChallenge({ level, onGameComplete, onExit, 
               {currentQuestion.olChiki}
             </p>
           </div>
-          
+
           {gamePhase === 'feedback' && feedback === 'correct' && (
             <div className="flex items-center justify-center p-3 rounded-md bg-green-100 dark:bg-green-900 border border-green-500 text-green-700 dark:text-green-300">
               <CheckCircle className="h-6 w-6 mr-2" /> Correct!

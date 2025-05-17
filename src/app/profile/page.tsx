@@ -35,7 +35,7 @@ export default function ProfilePage() {
       // Placeholder: In a real app, upload selectedFile to Firebase Storage, get the URL,
       // then call updateUserProfilePhoto(storageURL)
       // For demonstration, if you had a direct URL, you could do:
-      // await updateUserProfilePhoto("https://placehold.co/96x96.png"); 
+      // await updateUserProfilePhoto("https://placehold.co/96x96.png");
       console.log("Attempting to upload:", selectedFile.name);
       // Reset after "upload"
       setSelectedFile(null);
@@ -100,20 +100,20 @@ export default function ProfilePage() {
           <CardHeader className="items-center text-center">
             <div className="relative mb-4">
               {previewImage ? (
-                  <Image 
-                    src={previewImage} 
-                    alt="Selected profile preview" 
-                    width={96} 
-                    height={96} 
-                    className="mx-auto h-24 w-24 rounded-full border-2 border-primary object-cover shadow-sm" 
+                  <Image
+                    src={previewImage}
+                    alt="Selected profile preview"
+                    width={96}
+                    height={96}
+                    className="mx-auto h-24 w-24 rounded-full border-2 border-primary object-cover shadow-sm"
                   />
               ) : user.photoURL ? (
-                <Image 
-                  src={user.photoURL} 
-                  alt={user.displayName || 'User Profile Picture'} 
-                  width={96} 
-                  height={96} 
-                  className="mx-auto h-24 w-24 rounded-full border-2 border-primary object-cover shadow-sm" 
+                <Image
+                  src={user.photoURL}
+                  alt={user.displayName || 'User Profile Picture'}
+                  width={96}
+                  height={96}
+                  className="mx-auto h-24 w-24 rounded-full border-2 border-primary object-cover shadow-sm"
                 />
               ) : (
                 <UserCircle className="mx-auto h-24 w-24 text-primary" />
@@ -123,7 +123,7 @@ export default function ProfilePage() {
                 <Input id="photoUpload" type="file" accept="image/*" className="sr-only" onChange={handleFileChange} />
               </label>
             </div>
-            
+
             <CardTitle className="mt-2 text-3xl font-bold">
               {user.displayName || 'Your Profile'}
             </CardTitle>
@@ -168,7 +168,7 @@ export default function ProfilePage() {
       <h2 className="text-2xl font-semibold text-center text-primary my-6">
         {user ? "Your Learning Dashboard" : "Learning Dashboard"}
       </h2>
-      
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 max-w-2xl mx-auto">
         {/* Day Streak Card */}
         <Card className={`bg-card/80 backdrop-blur-sm ${!user ? 'opacity-70' : ''}`}>
@@ -220,12 +220,12 @@ export default function ProfilePage() {
             {user ? (
               <>
                 <div data-ai-hint="leaderboard medal" className="text-2xl font-bold">View Rank</div>
-                <p className="text-xs text-muted-foreground">Feature coming soon!</p>
+                <p className="text-xs text-muted-foreground">Leaderboard coming soon!</p>
               </>
             ) : (
               <>
                 <div className="text-2xl font-bold text-muted-foreground">N/A</div>
-                <p className="text-xs text-muted-foreground">Log in for ranking.</p>
+                <p className="text-xs text-muted-foreground">Log in for ranking details.</p>
               </>
             )}
           </CardContent>

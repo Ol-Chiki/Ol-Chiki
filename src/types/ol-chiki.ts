@@ -11,3 +11,10 @@ export interface OlChikiWord {
   transliteration: string;
   english: string;
 }
+
+export interface OlChikiNumber {
+  id: string;
+  olChiki: string; // Ol Chiki numeral glyph
+  transliteration: string; // e.g., "0", "1"
+  value: number; // The actual numeric value
+}

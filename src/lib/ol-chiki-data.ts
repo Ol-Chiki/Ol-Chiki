@@ -1,4 +1,4 @@
-import type { OlChikiCharacter, OlChikiWord } from '@/types/ol-chiki';
+import type { OlChikiCharacter, OlChikiWord, OlChikiNumber } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 's1', olChiki: 'ᱚ', transliteration: 'A', pronunciation: '' },
@@ -43,6 +43,25 @@ export const olChikiExampleWords: OlChikiWord[] = [
   { id: 'w7', olChiki: 'ᱠᱤᱛᱟᱹᱵ', transliteration: 'kitāb', english: 'book' },
   { id: 'w8', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'cow' },
 ];
+
+export const olChikiNumbers: OlChikiNumber[] = [
+  { id: 'n0', olChiki: '᱐', transliteration: '0', value: 0 },
+  { id: 'n1', olChiki: '᱑', transliteration: '1', value: 1 },
+  { id: 'n2', olChiki: '᱒', transliteration: '2', value: 2 },
+  { id: 'n3', olChiki: '᱓', transliteration: '3', value: 3 },
+  { id: 'n4', olChiki: '᱔', transliteration: '4', value: 4 },
+  { id: 'n5', olChiki: '᱕', transliteration: '5', value: 5 },
+  { id: 'n6', olChiki: '᱖', transliteration: '6', value: 6 },
+  { id: 'n7', olChiki: '᱗', transliteration: '7', value: 7 },
+  { id: 'n8', olChiki: '᱘', transliteration: '8', value: 8 },
+  { id: 'n9', olChiki: '᱙', transliteration: '9', value: 9 },
+  { id: 'n10', olChiki: '᱑᱐', transliteration: '10', value: 10 },
+  { id: 'n11', olChiki: '᱑᱑', transliteration: '11', value: 11 },
+  { id: 'n12', olChiki: '᱑᱒', transliteration: '12', value: 12 },
+  { id: 'n13', olChiki: '᱑᱓', transliteration: '13', value: 13 },
+  { id: 'n14', olChiki: '᱑᱔', transliteration: '14', value: 14 },
+];
+
 
 // Helper function to shuffle an array (Fisher-Yates shuffle)
 export function shuffleArray<T>(array: T[]): T[] {

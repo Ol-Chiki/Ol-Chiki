@@ -12,25 +12,40 @@ import {
   SidebarMenuButton,
   SidebarTrigger,
   SidebarInset,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
 } from "@/components/ui/sidebar";
-import LearnCharacters from "@/components/ol-chiki/learn-characters";
+import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
+import LearnNumbers from "@/components/ol-chiki/learn-numbers";
 import LearnWords from "@/components/ol-chiki/learn-words";
 import SentencePractice from "@/components/ol-chiki/sentence-practice";
 import CharacterQuiz from "@/components/ol-chiki/character-quiz";
-import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft } from "lucide-react";
+import { Languages, BookOpenText, FileText, Sparkles, Puzzle, PanelLeft, Type, ListOrdered } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
-type ActiveView = 'characters' | 'words' | 'sentence' | 'quiz';
+type ActiveView = 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz';
+
+interface PageView {
+  id: ActiveView;
+  label: string;
+  icon: React.ElementType;
+  component: JSX.Element;
+  isSubItem?: boolean;
+}
 
 export default function OlChikiPathPage() {
-  const [activeView, setActiveView] = useState<ActiveView>('characters');
+  const [activeView, setActiveView] = useState<ActiveView>('alphabet');
 
-  const menuItems = [
-    { id: 'characters', label: 'Characters', icon: BookOpenText, component: <LearnCharacters /> },
+  const pageViews: PageView[] = [
+    { id: 'alphabet', label: 'Alphabet', icon: Type, component: <LearnAlphabet />, isSubItem: true },
+    { id: 'numbers', label: 'Numbers', icon: ListOrdered, component: <LearnNumbers />, isSubItem: true },
     { id: 'words', label: 'Example Words', icon: FileText, component: <LearnWords /> },
     { id: 'sentence', label: 'Sentence AI', icon: Sparkles, component: <SentencePractice /> },
     { id: 'quiz', label: 'Quiz', icon: Puzzle, component: <CharacterQuiz /> },
   ];
+
+  const activeComponent = pageViews.find(view => view.id === activeView)?.component;
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -61,7 +76,30 @@ export default function OlChikiPathPage() {
             </SidebarHeader>
             <SidebarContent>
               <SidebarMenu>
-                {menuItems.map((item) => (
+                <SidebarGroup>
+                  <SidebarGroupLabel>
+                    <BookOpenText className="mr-2 h-5 w-5"/> Characters
+                  </SidebarGroupLabel>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {pageViews.filter(item => item.isSubItem).map((item) => (
+                        <SidebarMenuItem key={item.id}>
+                          <SidebarMenuButton
+                            onClick={() => setActiveView(item.id as ActiveView)}
+                            isActive={activeView === item.id}
+                            tooltip={{ children: item.label, side: "right", align: "center" }}
+                            className="justify-start"
+                          >
+                            <item.icon className="h-5 w-5" />
+                            <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </SidebarGroup>
+
+                {pageViews.filter(item => !item.isSubItem).map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       onClick={() => setActiveView(item.id as ActiveView)}
@@ -80,7 +118,7 @@ export default function OlChikiPathPage() {
 
           <SidebarInset>
             <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4">
-              {menuItems.find(item => item.id === activeView)?.component}
+              {activeComponent}
             </main>
           </SidebarInset>
         </div>

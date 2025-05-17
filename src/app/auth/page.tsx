@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, LogIn, UserPlus, ExternalLink, SkipForward } from 'lucide-react';
+import { Loader2, LogIn, UserPlus, SkipForward, CalendarIcon, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 // Simple SVG for Google icon
@@ -25,9 +25,14 @@ export default function AuthPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(true); // To toggle between Sign In and Sign Up for email
+  const [displayName, setDisplayName] = useState('');
+  const [dob, setDob] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setStateName] = useState(''); // Renamed to avoid conflict with React's state
 
-  if (loading && !user) { // Show loading only if not yet determined user state
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signup');
+
+  if (loading && !user) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -37,15 +42,16 @@ export default function AuthPage() {
   }
   
   if (user) {
-    router.push('/'); // Already logged in, redirect to home
+    router.push('/'); 
     return null;
   }
 
-
   const handleEmailAuth = async (e: FormEvent) => {
     e.preventDefault();
-    if (isSignUp) {
-      await signUpWithEmail(email, password);
+    if (authMode === 'signup') {
+      // Pass displayName, dob, city, state to signUpWithEmail
+      // For now, dob, city, state are collected but not fully utilized in Firebase Auth profile directly
+      await signUpWithEmail(email, password, displayName); 
     } else {
       await signInWithEmail(email, password);
     }
@@ -55,8 +61,12 @@ export default function AuthPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold tracking-tight text-primary">Welcome!</CardTitle>
-          <CardDescription>Sign in or create an account to track your progress.</CardDescription>
+          <CardTitle className="text-3xl font-bold tracking-tight text-primary">
+            {authMode === 'signup' ? 'Create Account' : 'Welcome Back!'}
+          </CardTitle>
+          <CardDescription>
+            {authMode === 'signup' ? 'Join us to track your Ol Chiki learning journey.' : 'Sign in to continue your progress.'}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="email" className="w-full">
@@ -65,8 +75,8 @@ export default function AuthPage() {
               <TabsTrigger value="social">Social</TabsTrigger>
             </TabsList>
             <TabsContent value="email">
-              <form onSubmit={handleEmailAuth} className="space-y-6">
-                <div className="space-y-2">
+              <form onSubmit={handleEmailAuth} className="space-y-4">
+                <div className="space-y-1.5">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
@@ -78,7 +88,71 @@ export default function AuthPage() {
                     disabled={loading}
                   />
                 </div>
-                <div className="space-y-2">
+                {authMode === 'signup' && (
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="displayName">Display Name (Optional)</Label>
+                      <Input
+                        id="displayName"
+                        type="text"
+                        placeholder="Your Name"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        disabled={loading}
+                      />
+                    </div>
+                     <div className="space-y-1.5">
+                      <Label htmlFor="dob">Date of Birth (Optional)</Label>
+                      <div className="relative">
+                        <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="dob"
+                          type="text" // Consider using type="date" or a date picker component
+                          placeholder="YYYY-MM-DD"
+                          value={dob}
+                          onChange={(e) => setDob(e.target.value)}
+                          disabled={loading}
+                          className="pl-10"
+                        />
+                      </div>
+                       <p className="text-xs text-muted-foreground">Used for potential username suggestions. Not stored publicly.</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="city">City (Optional)</Label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="city"
+                            type="text"
+                            placeholder="e.g., Ranchi"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            disabled={loading}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="state">State (Optional)</Label>
+                         <div className="relative">
+                           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="state"
+                            type="text"
+                            placeholder="e.g., Jharkhand"
+                            value={state}
+                            onChange={(e) => setStateName(e.target.value)}
+                            disabled={loading}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                     <p className="text-xs text-muted-foreground">Location helps us tailor content (future). Not stored publicly.</p>
+                  </>
+                )}
+                <div className="space-y-1.5">
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
@@ -91,19 +165,21 @@ export default function AuthPage() {
                     disabled={loading}
                   />
                 </div>
-                {isSignUp ? (
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserPlus className="mr-2 h-4 w-4" />}
-                    Sign Up
-                  </Button>
-                ) : (
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}
-                    Sign In
-                  </Button>
-                )}
-                <Button variant="link" type="button" onClick={() => setIsSignUp(!isSignUp)} className="w-full text-sm" disabled={loading}>
-                  {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+                
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
+                   (authMode === 'signup' ? <UserPlus className="mr-2 h-4 w-4" /> : <LogIn className="mr-2 h-4 w-4" />)
+                  }
+                  {authMode === 'signup' ? 'Sign Up' : 'Sign In'}
+                </Button>
+                <Button 
+                  variant="link" 
+                  type="button" 
+                  onClick={() => setAuthMode(authMode === 'signup' ? 'signin' : 'signup')} 
+                  className="w-full text-sm" 
+                  disabled={loading}
+                >
+                  {authMode === 'signup' ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
                 </Button>
               </form>
             </TabsContent>
@@ -113,10 +189,6 @@ export default function AuthPage() {
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
                   Sign in with Google
                 </Button>
-                {/* Placeholder for Facebook login if ever implemented */}
-                {/* <Button className="w-full" variant="outline" disabled={true}>
-                  <ExternalLink className="mr-2 h-4 w-4" /> Sign in with Facebook (Coming Soon)
-                </Button> */}
               </div>
             </TabsContent>
           </Tabs>
@@ -131,3 +203,4 @@ export default function AuthPage() {
     </div>
   );
 }
+

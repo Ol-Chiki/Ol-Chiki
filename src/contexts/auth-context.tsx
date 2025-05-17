@@ -10,6 +10,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  updateProfile,
   type UserCredential,
 } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
@@ -20,12 +21,13 @@ interface AuthContextType {
   user: FirebaseUser | null;
   loading: boolean;
   signInWithGoogle: () => Promise<UserCredential | null>;
-  signUpWithEmail: (email: string, pass: string) => Promise<UserCredential | null>;
+  signUpWithEmail: (email: string, pass: string, displayName?: string, dob?: string, city?: string, state?: string) => Promise<UserCredential | null>;
   signInWithEmail: (email: string, pass: string) => Promise<UserCredential | null>;
   logOut: () => Promise<void>;
   hasSkippedAuth: boolean;
   skipAuth: () => void;
   clearSkipAuth: () => void;
+  updateUserProfilePhoto: (photoURL: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(currentUser);
       setLoading(false);
       if (currentUser) {
-        // If user logs in, clear the skip status
         localStorage.removeItem('hasSkippedAuth');
         setHasSkippedAuth(false);
       }
@@ -73,12 +74,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUpWithEmail = async (email: string, pass: string): Promise<UserCredential | null> => {
+  const signUpWithEmail = async (email: string, pass: string, displayName?: string, dob?: string, city?: string, state?: string): Promise<UserCredential | null> => {
     setLoading(true);
     try {
       const result = await createUserWithEmailAndPassword(auth, email, pass);
-      setUser(result.user);
-      toast({ title: 'Signed up successfully!', description: `Welcome ${result.user.email}!` });
+      let finalDisplayName = displayName;
+      if (!finalDisplayName && email) {
+        finalDisplayName = email.split('@')[0]; // Basic display name from email
+      }
+      if (finalDisplayName) {
+        await updateProfile(result.user, { displayName: finalDisplayName });
+      }
+      // DOB, City, State are collected but not directly stored on Firebase Auth user object by default.
+      // This would typically involve writing to a Firestore database.
+      // For now, we're just updating the displayName.
+      
+      // Manually update the user state to include the displayName immediately
+      const updatedUser = { ...result.user, displayName: finalDisplayName || null };
+      setUser(updatedUser as FirebaseUser);
+
+
+      toast({ title: 'Signed up successfully!', description: `Welcome ${finalDisplayName || result.user.email}!` });
       router.push('/');
       return result;
     } catch (error: any) {
@@ -95,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const result = await signInWithEmailAndPassword(auth, email, pass);
       setUser(result.user);
-      toast({ title: 'Signed in successfully!', description: `Welcome back ${result.user.email}!` });
+      toast({ title: 'Signed in successfully!', description: `Welcome back ${result.user.displayName || result.user.email}!` });
       router.push('/');
       return result;
     } catch (error: any) {
@@ -113,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await firebaseSignOut(auth);
       setUser(null);
       toast({ title: 'Signed out', description: 'You have been signed out.' });
-      router.push('/auth'); // Redirect to auth page on logout
+      router.push('/auth'); 
     } catch (error: any) {
       console.error('Sign out error:', error);
       toast({ title: 'Sign Out Error', description: error.message || 'Failed to sign out.', variant: 'destructive' });
@@ -133,8 +149,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setHasSkippedAuth(false);
   }
 
+  const updateUserProfilePhoto = async (photoURL: string) => {
+    if (auth.currentUser) {
+      try {
+        await updateProfile(auth.currentUser, { photoURL });
+        setUser({ ...auth.currentUser, photoURL }); // Update local user state
+        toast({ title: 'Profile Photo Updated', description: 'Your new profile photo has been set.' });
+      } catch (error: any) {
+        console.error('Error updating profile photo:', error);
+        toast({ title: 'Photo Update Error', description: error.message || 'Failed to update photo.', variant: 'destructive' });
+      }
+    }
+  };
+
+
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, logOut, hasSkippedAuth, skipAuth, clearSkipAuth }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, logOut, hasSkippedAuth, skipAuth, clearSkipAuth, updateUserProfilePhoto }}>
       {children}
     </AuthContext.Provider>
   );

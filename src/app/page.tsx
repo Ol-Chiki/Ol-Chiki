@@ -15,7 +15,6 @@ import SplashScreen from '@/components/splash-screen';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import { GraduationCap, FileText, Sparkles, Puzzle, Gamepad2, Loader2 } from "lucide-react";
 import type { LucideIcon } from 'lucide-react';
-// import { useToast } from '@/hooks/use-toast'; // Not currently used
 
 export type ActiveView = 'basic-hub' | 'alphabet' | 'numbers' | 'words' | 'sentence' | 'quiz' | 'game';
 
@@ -29,33 +28,32 @@ export default function OlChikiPathPage() {
   const [activeView, setActiveView] = useState<ActiveView>('basic-hub');
   const { user, loading: authLoading, hasSkippedAuth } = useAuth();
   const router = useRouter();
-  // const { toast } = useToast(); // Not currently used
 
   const [isClient, setIsClient] = useState(false);
-  // Default to true (splash seen) for SSR; client useEffect will correct this from sessionStorage.
-  const [splashSeenThisSession, setSplashSeenThisSession] = useState(true);
+  const [splashSeenThisSession, setSplashSeenThisSession] = useState(true); 
   const [currentYear, setCurrentYear] = useState<string>('');
 
   useEffect(() => {
-    setIsClient(true); // Component has mounted on the client
-    if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
-      setSplashSeenThisSession(true);
-    } else {
-      setSplashSeenThisSession(false); // Splash has not been seen this session
+    setIsClient(true); 
+    if (typeof window !== 'undefined') {
+      if (sessionStorage.getItem('splashSeenOlChiki') === 'true') {
+        setSplashSeenThisSession(true);
+      } else {
+        setSplashSeenThisSession(false); 
+      }
+      setCurrentYear(new Date().getFullYear().toString());
     }
-    setCurrentYear(new Date().getFullYear().toString()); // Set year on client
   }, []);
 
   const handleSplashComplete = () => {
-    // This function is called from SplashScreen, which is client-side only
-    sessionStorage.setItem('splashSeenOlChiki', 'true');
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('splashSeenOlChiki', 'true');
+    }
     setSplashSeenThisSession(true);
   };
 
   useEffect(() => {
-    // This effect handles redirection to auth if needed, AFTER client check and splash screen logic
     if (!isClient || !splashSeenThisSession) {
-      // If not client yet, or splash screen is supposed to be showing, don't redirect yet
       return;
     }
 
@@ -64,10 +62,7 @@ export default function OlChikiPathPage() {
     }
   }, [isClient, splashSeenThisSession, user, authLoading, hasSkippedAuth, router]);
 
-  // --- Initial Render Logic for SSR and First Client Pass ---
   if (!isClient) {
-    // Consistent minimal loader for server-side render and initial client render before useEffect runs
-    // This ensures the server and client render the same initial HTML structure.
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -76,13 +71,10 @@ export default function OlChikiPathPage() {
     );
   }
 
-  // --- Client-Side Render Logic from here ---
   if (!splashSeenThisSession) {
-    // Only render SplashScreen on the client if it hasn't been seen this session
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // If splash has been seen (or wasn't needed based on sessionStorage), proceed with auth loading checks
   if (authLoading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
@@ -92,9 +84,6 @@ export default function OlChikiPathPage() {
     );
   }
   
-  // This check is for after authLoading is false.
-  // If redirection to /auth is needed, the useEffect above should handle it.
-  // This block acts as a UI placeholder during the brief period redirection might take.
   if (!user && !hasSkippedAuth) {
      return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
@@ -104,7 +93,6 @@ export default function OlChikiPathPage() {
     );
   }
 
-  // --- Main App Content Rendering ---
   const bottomNavItems: NavItemConfig[] = [
     { id: 'basic-hub', label: 'Basic', icon: GraduationCap },
     { id: 'words', label: 'Words', icon: FileText },
@@ -165,6 +153,7 @@ export default function OlChikiPathPage() {
         activeView={activeView}
         onNavChange={(id) => setActiveView(id as ActiveView)}
         onProfileClick={handleProfileNavigation}
+        currentUser={user} // Pass the user object
       />
 
       <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm mt-auto">

@@ -2,36 +2,36 @@
 import type { OlChikiCharacter, OlChikiWord, OlChikiNumber } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
-  { id: 's1', olChiki: 'ᱛ', transliteration: 'A', pronunciation: '' },
-  { id: 's2', olChiki: 'ᑖ', transliteration: 'At', pronunciation: '' },
-  { id: 's3', olChiki: 'ᱚᱜ', transliteration: 'Ag', pronunciation: '' },
-  { id: 's4', olChiki: 'ᱚᱝ', transliteration: 'Ang', pronunciation: '' },
-  { id: 's5', olChiki: 'ᱞ', transliteration: 'Al', pronunciation: '' },
-  { id: 's6', olChiki: 'ᱟ', transliteration: 'Aa', pronunciation: '' },
-  { id: 's7', olChiki: 'ᱠ', transliteration: 'Aak', pronunciation: '' },
-  { id: 's8', olChiki: 'ᱡ', transliteration: 'Aaj', pronunciation: '' },
-  { id: 's9', olChiki: 'ᱢ', transliteration: 'Aam', pronunciation: '' },
-  { id: 's10', olChiki: 'ᱣ', transliteration: 'Aaw', pronunciation: '' },
-  { id: 's11', olChiki: 'ᱤ', transliteration: 'I', pronunciation: '' },
-  { id: 's12', olChiki: 'ᱥ', transliteration: 'Is', pronunciation: '' },
-  { id: 's13', olChiki: 'ᱦ', transliteration: 'Ih', pronunciation: '' },
-  { id: 's14', olChiki: 'ᱧ', transliteration: 'Iny', pronunciation: '' },
-  { id: 's15', olChiki: 'ᱨ', transliteration: 'Ir', pronunciation: '' },
-  { id: 's16', olChiki: 'ᱩ', transliteration: 'U', pronunciation: '' },
-  { id: 's17', olChiki: 'ᱪ', transliteration: 'Uch', pronunciation: '' },
-  { id: 's18', olChiki: 'ᱫ', transliteration: 'Ud', pronunciation: '' },
-  { id: 's19', olChiki: 'ᱬ', transliteration: 'Unn', pronunciation: '' },
-  { id: 's20', olChiki: 'ᱭ', transliteration: 'Uy', pronunciation: '' },
-  { id: 's21', olChiki: 'ᱮ', transliteration: 'E', pronunciation: '' },
-  { id: 's22', olChiki: 'ᱯ', transliteration: 'Ep', pronunciation: '' },
-  { id: 's23', olChiki: 'ᱰ', transliteration: 'Edd', pronunciation: '' },
-  { id: 's24', olChiki: 'ᱱ', transliteration: 'En', pronunciation: '' },
-  { id: 's25', olChiki: 'ᱲ', transliteration: 'Err', pronunciation: '' },
-  { id: 's26', olChiki: 'ᱳ', transliteration: 'O', pronunciation: '' },
-  { id: 's27', olChiki: 'ᱴ', transliteration: 'Ott', pronunciation: '' },
-  { id: 's28', olChiki: 'ᱵ', transliteration: 'Ob', pronunciation: '' },
-  { id: 's29', olChiki: 'ᱶ', transliteration: 'Ov', pronunciation: '' },
-  { id: 's30', olChiki: 'ᱷ', transliteration: 'Oh', pronunciation: '' },
+  { id: 'c1', olChiki: 'ᱚ', transliteration: 'LA', pronunciation: '/ɔ/' },
+  { id: 'c2', olChiki: 'ᱛ', transliteration: 'AT', pronunciation: '/t/' },
+  { id: 'c3', olChiki: 'ᱜ', transliteration: 'AG', pronunciation: '/g/' },
+  { id: 'c4', olChiki: 'ᱝ', transliteration: 'ANG', pronunciation: '/ŋ/' },
+  { id: 'c5', olChiki: 'ᱞ', transliteration: 'AL', pronunciation: '/l/' },
+  { id: 'c6', olChiki: 'ᱟ', transliteration: 'LAA', pronunciation: '/a/' },
+  { id: 'c7', olChiki: 'ᱠ', transliteration: 'AAK', pronunciation: '/k/' },
+  { id: 'c8', olChiki: 'ᱡ', transliteration: 'AAJ', pronunciation: '/dʒ/' },
+  { id: 'c9', olChiki: 'ᱢ', transliteration: 'AAM', pronunciation: '/m/' },
+  { id: 'c10', olChiki: 'ᱣ', transliteration: 'AAW', pronunciation: '/w/' },
+  { id: 'c11', olChiki: 'ᱤ', transliteration: 'LI', pronunciation: '/i/' },
+  { id: 'c12', olChiki: 'ᱥ', transliteration: 'IS', pronunciation: '/s/' },
+  { id: 'c13', olChiki: 'ᱦ', transliteration: 'IH', pronunciation: '/h/, /ʔ/' },
+  { id: 'c14', olChiki: 'ᱧ', transliteration: 'INY', pronunciation: '/ɲ/' },
+  { id: 'c15', olChiki: 'ᱨ', transliteration: 'IR', pronunciation: '/r/' },
+  { id: 'c16', olChiki: 'ᱩ', transliteration: 'LU', pronunciation: '/u/' },
+  { id: 'c17', olChiki: 'ᱪ', transliteration: 'UCH', pronunciation: '/tʃ/' },
+  { id: 'c18', olChiki: 'ᱫ', transliteration: 'UD', pronunciation: '/d/' },
+  { id: 'c19', olChiki: 'ᱬ', transliteration: 'UNN', pronunciation: '/ɳ/' },
+  { id: 'c20', olChiki: 'ᱭ', transliteration: 'UY', pronunciation: '/j/' },
+  { id: 'c21', olChiki: 'ᱮ', transliteration: 'LE', pronunciation: '/e/' },
+  { id: 'c22', olChiki: 'ᱯ', transliteration: 'EP', pronunciation: '/p/' },
+  { id: 'c23', olChiki: 'ᱰ', transliteration: 'EDD', pronunciation: '/ɖ/' },
+  { id: 'c24', olChiki: 'ᱱ', transliteration: 'EN', pronunciation: '/n/' },
+  { id: 'c25', olChiki: 'ᱲ', transliteration: 'ERR', pronunciation: '/ɽ/' },
+  { id: 'c26', olChiki: 'ᱳ', transliteration: 'LO', pronunciation: '/o/' },
+  { id: 'c27', olChiki: 'ᱴ', transliteration: 'OTT', pronunciation: '/ʈ/' },
+  { id: 'c28', olChiki: 'ᱵ', transliteration: 'OB', pronunciation: '/b/' },
+  { id: 'c29', olChiki: 'ᱶ', transliteration: 'OV', pronunciation: '/w̃/' },
+  { id: 'c30', olChiki: 'ᱷ', transliteration: 'OH', pronunciation: '/ʰ/' },
 ];
 
 export const olChikiExampleWords: OlChikiWord[] = [
@@ -46,7 +46,6 @@ export const olChikiExampleWords: OlChikiWord[] = [
 ];
 
 const olChikiUnitGlyphs = ["᱐", "᱑", "᱒", "᱓", "᱔", "᱕", "᱖", "᱗", "᱘", "᱙"];
-const digitUnitStrings = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 const santaliUnitWords = ["Sun", "Mit’", "Bar", "Pe", "Pun", "Mɔ̃ṇe", "Turuy", "Eyai", "Irăl", "Are"];
 const englishUnitWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
@@ -73,23 +72,25 @@ function getSantaliWord(n: number): string {
 
   if (n === 0) return santaliUnitWords[0];
   if (n > 0 && n < 10) return santaliUnitWords[n];
+  
   if (n === 10) return "Gel";
   if (n > 10 && n < 20) return `Gel ${santaliUnitWords[n % 10]}`;
+  
   if (n === 20) return "Isi";
   if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`;
   
-  if (n >= 30 && n < 100) {
-    const tensDigit = Math.floor(n / 10);
-    const unitDigit = n % 10;
-    const tensSantali = santaliUnitWords[tensDigit];
-    if (unitDigit === 0) {
-      return `${tensSantali} Gel`;
-    }
-    return `${tensSantali} Gel ${santaliUnitWords[unitDigit]}`;
+  const tensDigit = Math.floor(n / 10);
+  const unitDigit = n % 10;
+
+  if (unitDigit === 0 && n >=30 && n < 100) { // For 30, 40, ..., 90
+    return `${santaliUnitWords[tensDigit]} Gel`;
+  }
+  if (n >= 30 && n < 100) { // For 31-39, 41-49 etc.
+    return `${santaliUnitWords[tensDigit]} Gel ${santaliUnitWords[unitDigit]}`;
   }
   
   if (n === 100) return "Say";
-  return ""; // Should not happen for 0-100
+  return ""; // Should not happen for 0-100 with current logic
 }
 
 function getOlChikiNumeral(n: number): string {

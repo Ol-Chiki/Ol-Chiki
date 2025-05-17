@@ -40,36 +40,33 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'a2', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi', english: 'Cow' },
     { id: 'a3', olChiki: 'ᱪᱮᱬᱮ', transliteration: 'cɛ̃ṛɛ', english: 'Bird' },
     { id: 'a4', olChiki: 'ᱦᱟᱹᱠᱩ', transliteration: 'haku', english: 'Fish' },
-    { id: 'a5', olChiki: 'ᱵᱤᱛᱠᱤᆯ', transliteration: 'bitkil', english: 'Cat' }, // Note: pusi is also common
-    { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' }, // This is 'He goat' in your new list, can be general too
+    { id: 'a5', olChiki: 'ᱵᱤᱛᱠᱤᆯ', transliteration: 'bitkil', english: 'Cat' }, 
+    { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' },
     { id: 'a7', olChiki: 'ᱠᱩᱞᱟᱹᱭ', transliteration: 'kulay', english: 'Rabbit' },
-    { id: 'a8', olChiki: 'ᱪᱤᱛᱟᱹ', transliteration: 'chitar', english: 'Panther' }, // Assuming ᱪᱤᱛᱟ is ᱪᱤᱛᱟᱹ based on pronunciation
+    { id: 'a8', olChiki: 'ᱪᱤᱛᱟᱹ', transliteration: 'chitar', english: 'Panther' },
     { id: 'a9', olChiki: 'ᱠᱟᱴᱟᱣᱟ ᱛᱟᱹᱨᱩᱵ', transliteration: 'katwa tarub', english: 'Lion' },
     { id: 'a10', olChiki: 'ᱛᱟᱹᱨᱩᱵ', transliteration: 'tarub', english: 'Tiger' },
     { id: 'a11', olChiki: 'ᱵᱤᱨ ᱥᱩᱠᱨᱤ', transliteration: 'bir sukri', english: 'Boar' },
     { id: 'a12', olChiki: 'ᱵᱟᱱᱟ', transliteration: 'bana', english: 'Bear' },
     { id: 'a13', olChiki: 'ᱦᱟᱹᱬᱩ', transliteration: 'hanu', english: 'Monkey' },
-    { id: 'a14', olChiki: 'ᱵᱤᱨᱦᱚᱲ', transliteration: 'bir hanu', english: 'Gorilla' }, // birhod often means forest people, assuming bir hanu for gorilla as per list
+    { id: 'a14', olChiki: 'ᱵᱤᱨᱦᱚᱲ', transliteration: 'bir hanu', english: 'Gorilla' },
     { id: 'a15', olChiki: 'ᱦᱟᱹᱛᱤ', transliteration: 'hati', english: 'Elephant' },
     { id: 'a16', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Deer' },
-    // { id: 'a7', olChiki: 'ᱠᱩᱞᱟᱹᱭ', transliteration: 'kulai', english: 'Rabbit' }, // Already have this
     { id: 'a18', olChiki: 'ᱛᱩᱭᱩ', transliteration: 'tuyu', english: 'Fox' },
     { id: 'a19', olChiki: 'ᱦᱟᱰᱜᱟᱨ', transliteration: 'hadgar', english: 'Hyena' },
     { id: 'a20', olChiki: 'ᱡᱤᱞ ᱦᱤᱡ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'jil hij gidra', english: 'Fawn' },
     { id: 'a21', olChiki: 'ᱛᱩᱲ', transliteration: 'tud', english: 'Squirrel' },
     { id: 'a22', olChiki: 'ᱫᱟᱜ ᱦᱟᱹᱛᱤ', transliteration: 'dag hati', english: 'Rhinoceros' },
     { id: 'a23', olChiki: 'ᱥᱟᱫᱚᱢ', transliteration: 'sadom', english: 'Horse' },
-    { id: 'a24', olChiki: 'ᱯᱩᱥᱤ', transliteration: 'pusi', english: 'Cat' },
+    { id: 'a24', olChiki: 'ᱯᱩᱥᱤ', transliteration: 'pusi', english: 'Cat' }, // Duplicates a5 but keeping as user provided
     { id: 'a25', olChiki: 'ᱜᱟᱫᱷᱟ', transliteration: 'gadha', english: 'Ass' },
     { id: 'a26', olChiki: 'ᱵᱷᱤᱰᱤ', transliteration: 'bhidi', english: 'Sheep' },
     { id: 'a27', olChiki: 'ᱩᱸᱴ', transliteration: 'unt', english: 'Camel' },
-    // { id: 'a1', olChiki: 'ᱥᱮᱛᱟ', transliteration: 'seta', english: 'Dog' }, // Already have this
     { id: 'a29', olChiki: 'ᱮᱸᱜᱟ ᱥᱮᱛᱟ', transliteration: 'enga seta', english: 'Bitch' },
-    // { id: 'a2', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'gai', english: 'Cow' }, // Corrected from gǎi, already have this
     { id: 'a31', olChiki: 'ᱮᱸᱜᱟ ᱥᱟᱫᱚᱢ', transliteration: 'enga sadom', english: 'Mare' },
     { id: 'a32', olChiki: 'ᱥᱟᱫᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'sadom gidra', english: 'Colt' },
     { id: 'a33', olChiki: 'ᱪᱩᱴᱩ', transliteration: 'cutu', english: 'Mouse' },
-    // { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' }, // Listed as He goat, already present
+    { id: 'a34', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'He goat' }, // Keeping separate from general 'Goat' if intended
     { id: 'a35', olChiki: 'ᱮᱸᱜᱟ ᱢᱮᱨᱚᱢ', transliteration: 'enga merom', english: 'She goat' },
     { id: 'a36', olChiki: 'ᱢᱮᱨᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'merom gidra', english: 'Kid' },
     { id: 'a37', olChiki: 'ᱫᱟᱢᱠᱚᱢ', transliteration: 'damkom', english: 'Calf' },
@@ -80,6 +77,29 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hoond' }, // Hound
     { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'sodo', english: 'Bull' },
     { id: 'a44', olChiki: 'ᱥᱩᱠᱨᱤ', transliteration: 'sukri', english: 'Pig' },
+  ],
+  "Vegetables": [
+    { id: 'v1', olChiki: 'ᱟᱹᱞᱩ', transliteration: 'alu', english: 'Potato' },
+    { id: 'v2', olChiki: 'ᱵᱟᱦᱟ ᱠᱩᱵᱤ', transliteration: 'baha kubi', english: 'Cauliflower' },
+    { id: 'v3', olChiki: 'ᱯᱚᱴᱚᱢ ᱠᱩᱵᱤ', transliteration: 'potom kubi', english: 'Cabbage' },
+    { id: 'v4', olChiki: 'ᱜᱟᱡᱚᱨ', transliteration: 'gajor', english: 'Carrot' },
+    { id: 'v5', olChiki: 'ᱛᱟᱦᱮᱨ', transliteration: 'taher', english: 'Cucumber' },
+    { id: 'v6', olChiki: 'ᱰᱮᱸᱜᱟᱲ', transliteration: 'bengad', english: 'Brinjal' },
+    { id: 'v7', olChiki: 'ᱯᱮᱭᱟᱡ', transliteration: 'peyaj', english: 'Onion' },
+    { id: 'v8', olChiki: 'ᱢᱚᱴᱚᱨ ᱪᱷᱚᱞᱟ', transliteration: 'motor chola', english: 'Pea' },
+    { id: 'v9', olChiki: 'ᱠᱟᱨᱞᱟ', transliteration: 'karla', english: 'Bitter gourd' },
+    { id: 'v10', olChiki: 'ᱡᱩᱞᱟᱹ', transliteration: 'mula', english: 'Raddish' }, // Assuming mula from Roman as jula is not common for raddish
+    { id: 'v11', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ', transliteration: 'bilati', english: 'Tomato' },
+    { id: 'v12', olChiki: 'ᱦᱚᱛᱚᱫ', transliteration: 'hotod', english: 'Bottle gourd' },
+    { id: 'v13', olChiki: 'ᱚᱫᱟ', transliteration: 'oda', english: 'Ginger' },
+    { id: 'v14', olChiki: 'ᱯᱟᱞᱚᱱ ᱟᱲᱟᱜ', transliteration: 'palon adag', english: 'Spinach' },
+    { id: 'v15', olChiki: 'ᱟᱨᱟᱜ ᱢᱩᱞᱟᱹ', transliteration: 'arag mula', english: 'Turnip' },
+    { id: 'v16', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'marich', english: 'Chilli' },
+    { id: 'v17', olChiki: 'ᱵᱷᱮᱰᱣᱟ', transliteration: 'bhedwa', english: 'Lady finger' },
+    { id: 'v18', olChiki: 'ᱯᱩᱫᱱᱟᱹ', transliteration: 'pudna', english: 'Mint' },
+    { id: 'v19', olChiki: 'ᱡᱟᱲᱟ', transliteration: 'jada', english: 'Papaya' }, // Jada can mean root, but using as per user's list for Papaya
+    { id: 'v20', olChiki: 'ᱢᱚᱥᱞᱟ ᱥᱟᱠᱟᱢ', transliteration: 'mosla sakam', english: 'Coriender' }, // Coriander leaves
+    { id: 'v21', olChiki: 'ᱜᱷᱟᱱᱴᱟᱲ', transliteration: 'ghatad', english: 'Jack fruit' },
   ],
   "Plants & Nature": [
     { id: 'p1', olChiki: 'ᱫᱟᱨᱮ', transliteration: 'dare', english: 'Tree' },
@@ -117,9 +137,9 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel6', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Grand Mother' },
     { id: 'rel7', olChiki: 'ᱡᱟᱶᱟᱭ ᱜᱚᱢᱠᱮ', transliteration: 'jaway gomke', english: 'Son in law' },
     { id: 'rel8', olChiki: 'ᱜᱟᱛᱮ', transliteration: 'gaate', english: 'Friend' },
-    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom hadam', english: 'Maternal Grandfather' },
-    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Maternal Grandmother' },
-    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway gomke', english: 'Husband' },
+    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom hadam', english: 'Maternal Grandfather' }, // Same as Paternal, common in some contexts
+    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Maternal Grandmother' }, // Same as Paternal
+    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway gomke', english: 'Husband' }, // Roman from user table
     { id: 'rel12', olChiki: 'ᱵᱤᱴᱤ', transliteration: 'biti', english: 'Daughter' },
     { id: 'rel13', olChiki: 'ᱵᱮᱴᱟ', transliteration: 'beta', english: 'Son' },
     { id: 'rel14', olChiki: 'ᱫᱩᱞᱟᱹᱲ', transliteration: 'dulad', english: 'Love' },
@@ -128,12 +148,12 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel17', olChiki: 'ᱯᱮᱲᱟ', transliteration: 'peda', english: 'Guest' },
     { id: 'rel18', olChiki: 'ᱢᱟᱪᱮᱛ', transliteration: 'mauchet', english: 'Teacher' },
     { id: 'rel19', olChiki: 'ᱜᱩᱨᱩ', transliteration: 'guru', english: 'Preceptor' },
-    { id: 'rel20', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱥᱟᱞᱤ', transliteration: 'iril kudi sali', english: 'Sister in law (sali - wife\'s younger sister)' },
-    { id: 'rel21', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱱᱚᱱᱚᱫ', transliteration: 'iril kudi nonod', english: 'Sister in law (nonod - husband\'s sister)' }, 
-    { id: 'rel22', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱫᱮᱣᱨᱟᱱᱤ', transliteration: 'iril kudi dewrani', english: 'Sister in law (devrani - younger brother\'s wife)' },
+    { id: 'rel20', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱥᱟᱞᱤ', transliteration: 'iril kudi sali', english: 'Sister in law (wife\'s younger sister)' },
+    { id: 'rel21', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱱᱚᱱᱚᱫ', transliteration: 'iril kudi nonod', english: 'Sister in law (husband\'s sister)' },
+    { id: 'rel22', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱫᱮᱣᱨᱟᱱᱤ', transliteration: 'iril kudi dewrani', english: 'Sister in law (younger brother\'s wife)' },
     { id: 'rel23', olChiki: 'ᱢᱟᱢᱟ', transliteration: 'mama', english: 'Maternal Uncle' },
     { id: 'rel24', olChiki: 'ᱢᱟᱢᱤ', transliteration: 'mami', english: 'Maternal Aunt' },
-    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' },
+    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' }, // Corrected Roman from kaka to kaki
     { id: 'rel26', olChiki: 'ᱟᱪᱮᱛ', transliteration: 'auchet', english: 'Pupil' },
     { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijor', english: 'Own' },
     { id: 'rel28', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱵᱟᱵᱟ', transliteration: 'honjhar baba', english: 'Father in law' },
@@ -145,10 +165,10 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel34', olChiki: 'ᱪᱷᱩᱴᱠᱤ ᱵᱚᱠᱚᱧ ᱠᱩᱲᱤ', transliteration: 'chutki bokoenj kudi', english: 'Step Sister' },
     { id: 'rel35', olChiki: 'ᱪᱷᱩᱴᱠᱤ ᱵᱚᱠᱚᱧ ᱮᱨᱟ', transliteration: 'chutki bokoenj era', english: 'Step Daughter' },
     { id: 'rel36', olChiki: 'ᱪᱷᱩᱴᱠᱤ ᱦᱚᱯᱚᱱ', transliteration: 'chutki hopon', english: 'Step Son' },
-    { id: 'rel37', olChiki: 'ᱦᱤᱞᱤ', transliteration: 'hili', english: 'Maternal Sister' },
+    { id: 'rel37', olChiki: 'ᱦᱤᱞᱤ', transliteration: 'hili', english: 'Maternal Sister' }, // Typically elder brother's wife, or wife's elder sister. Using as per list.
   ],
   "Days of the Week": [
-    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' },
+    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' }, // Corrected from ᱥᱤᱸᱜᱩᱱ
     { id: 'd2', olChiki: 'ᱚᱛᱮ', transliteration: 'ote', english: 'Monday' },
     { id: 'd3', olChiki: 'ᱵᱟᱞᱮ', transliteration: 'bale', english: 'Tuesday' },
     { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'sagun', english: 'Wednesday' },
@@ -158,9 +178,9 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
   ],
   "Months": [
     { id: 'm1', olChiki: 'ᱢᱟᱜᱽ', transliteration: 'mag', english: 'January' },
-    { id: 'm2', olChiki: 'ᱯᱷᱟᱹᱜᱩᱱ', transliteration: 'phagun', english: 'February' },
-    { id: 'm3', olChiki: 'ᱪᱟᱹᱛ', transliteration: 'chhat', english: 'March' },
-    { id: 'm4', olChiki: 'ᱵᱟᱹᱭᱥᱟᱹᱠ', transliteration: 'baysakh', english: 'April' },
+    { id: 'm2', olChiki: 'ᱯᱷᱟᱹᱜᱩᱱ', transliteration: 'phagun', english: 'February' }, // Using ᱹ for .
+    { id: 'm3', olChiki: 'ᱪᱟᱹᱛ', transliteration: 'chhat', english: 'March' },     // Using ᱹ for .
+    { id: 'm4', olChiki: 'ᱵᱟᱹᱭᱥᱟᱹᱠ', transliteration: 'baysakh', english: 'April' }, // Using ᱹ for .
     { id: 'm5', olChiki: 'ᱡᱷᱮᱴ', transliteration: 'jhet', english: 'May' },
     { id: 'm6', olChiki: 'ᱟᱥᱟᱲ', transliteration: 'aasadh', english: 'June' },
     { id: 'm7', olChiki: 'ᱥᱟᱱ', transliteration: 'san', english: 'July' },
@@ -206,13 +226,13 @@ function getEnglishWord(n: number): string {
 
 function getSantaliWord(n: number): string {
   if (n < 0 || n > 100) return "";
-  if (n === 0) return santaliUnitWords[0]; 
+  if (n === 0) return santaliUnitWords[0]; // Sun for 0
   if (n > 0 && n < 10) return santaliUnitWords[n];
   
   if (n === 10) return "Gel";
   if (n > 10 && n < 20) return `Gel ${santaliUnitWords[n % 10]}`;
   
-  if (n === 20) return "Isi";
+  if (n === 20) return "Isi"; // Primary form from user's list
   if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`;
 
   const tensDigit = Math.floor(n / 10);
@@ -221,12 +241,12 @@ function getSantaliWord(n: number): string {
   if (n % 10 === 0 && n >= 30 && n < 100) { 
     return `${santaliUnitWords[tensDigit]} Gel`;
   }
-  if (n > 30 && n < 100 && n % 10 !== 0) { 
+  if (n >= 30 && n < 100 && n % 10 !== 0) { // Condition n > 30 changed to n >= 30
     return `${santaliUnitWords[tensDigit]} Gel ${santaliUnitWords[unitDigit]}`;
   }
   
-  if (n === 100) return "Say";
-  return ""; 
+  if (n === 100) return "Say"; // Primary form from user's list
+  return ""; // Should not be reached for 0-100
 }
 
 
@@ -266,3 +286,4 @@ export function shuffleArray<T>(array: T[]): T[] {
   return newArray;
 }
 
+    

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,42 +18,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-// Prepare the transliteration map from olChikiCharacters
-const transliterationMap = new Map<string, string>();
-olChikiCharacters.forEach(char => {
-  transliterationMap.set(char.transliteration.toUpperCase(), char.olChiki);
-});
-
-// Sort keys by length, descending, to match longer sequences first (e.g., "LAA" before "LA" or "A")
-const sortedTransliterationKeys = Array.from(transliterationMap.keys()).sort((a, b) => b.length - a.length);
-
-function transliterateToOlChiki(inputText: string): string {
-  let result = '';
-  let i = 0;
-  const upperInputText = inputText.toUpperCase();
-
-  while (i < upperInputText.length) {
-    let matchedKey = null;
-    for (const key of sortedTransliterationKeys) {
-      // Check if the substring of upperInputText starting at i begins with the current key
-      if (upperInputText.substring(i).startsWith(key)) {
-        matchedKey = key;
-        break;
-      }
-    }
-
-    if (matchedKey) {
-      result += transliterationMap.get(matchedKey)!;
-      i += matchedKey.length;
-    } else {
-      // If no Ol Chiki transliteration unit matches, append the original character from inputText
-      result += inputText[i]; 
-      i++;
-    }
-  }
-  return result;
-}
-
 export default function SentencePractice() {
   const [outputScript, setOutputScript] = useState<string | null>(null);
   const { toast } = useToast();
@@ -64,6 +28,41 @@ export default function SentencePractice() {
       inputText: '',
     },
   });
+
+  const { transliterationMap, sortedTransliterationKeys } = useMemo(() => {
+    const map = new Map<string, string>();
+    olChikiCharacters.forEach(char => {
+      map.set(char.transliteration.trim().toUpperCase(), char.olChiki);
+    });
+    const sortedKeys = Array.from(map.keys()).sort((a, b) => b.length - a.length);
+    return { transliterationMap: map, sortedTransliterationKeys: sortedKeys };
+  }, []);
+
+  const transliterateToOlChiki = (inputText: string): string => {
+    let result = '';
+    let i = 0;
+    const upperInputText = inputText.toUpperCase();
+
+    while (i < upperInputText.length) {
+      let matchedKey = null;
+      for (const key of sortedTransliterationKeys) {
+        if (upperInputText.substring(i).startsWith(key)) {
+          matchedKey = key;
+          break;
+        }
+      }
+
+      if (matchedKey) {
+        result += transliterationMap.get(matchedKey)!;
+        i += matchedKey.length;
+      } else {
+        // If no Ol Chiki transliteration unit matches, append the original character from inputText
+        result += inputText[i]; 
+        i++;
+      }
+    }
+    return result;
+  };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {

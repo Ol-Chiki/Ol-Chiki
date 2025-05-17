@@ -36,12 +36,12 @@ export default function OlChikiPathPage() {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex flex-col bg-background">
         <header className="bg-primary text-primary-foreground p-4 shadow-md flex items-center justify-between sticky top-0 z-50 h-18">
-          <div className="flex items-center gap-3">
-            <SidebarTrigger className="md:hidden mr-2">
+          <div className="flex items-center gap-2 sm:gap-3"> {/* Adjusted gap for potentially tighter space */}
+            <SidebarTrigger className="md:hidden mr-1 sm:mr-2"> {/* Adjusted margin */}
               <PanelLeft />
             </SidebarTrigger>
-            <Languages className="h-8 w-8 sm:h-10 sm:w-10" />
-            <h1 className="text-xl sm:text-3xl font-bold tracking-tight">Ol Chiki Path</h1>
+            <Languages className="h-7 w-7 sm:h-8 sm:w-8" /> {/* Slightly smaller icon on smallest screens */}
+            <h1 className="text-lg sm:text-2xl font-bold tracking-tight whitespace-nowrap">Let's Learn Ol Chiki</h1> {/* Adjusted text size, added whitespace-nowrap */}
           </div>
         </header>
 
@@ -87,7 +87,7 @@ export default function OlChikiPathPage() {
 
         <Toaster />
         <footer className="bg-secondary text-secondary-foreground p-4 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Ol Chiki Path. Learn and explore the Ol Chiki script.</p>
+          <p>&copy; {new Date().getFullYear()} Let's Learn Ol Chiki. Learn and explore the Ol Chiki script.</p>
         </footer>
       </div>
     </SidebarProvider>

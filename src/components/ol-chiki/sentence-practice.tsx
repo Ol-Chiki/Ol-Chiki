@@ -495,7 +495,7 @@ export default function SentencePractice() {
                     <Card key={index} className="p-3 bg-secondary/20 shadow-sm">
                       <p className="text-xl font-mono text-primary">{name.olChiki}</p>
                       <p className="text-md text-accent">
-                        <span className="font-semibold text-accent/80">Roman:</span> {name.transliteration}
+                        {name.transliteration}
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
                         <span className="font-semibold text-muted-foreground/80">Meaning:</span> {name.meaning}

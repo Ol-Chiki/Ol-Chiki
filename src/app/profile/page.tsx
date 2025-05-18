@@ -5,15 +5,17 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input'; // For file input
-import { Label } from '@/components/ui/label'; // For file input label
-import { Loader2, LogIn, LogOut, UserCircle, Languages, TrendingUp, CalendarDays, BarChart3, Star, ClipboardCheck, Camera, ImagePlus, Palette } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2, LogIn, LogOut, UserCircle, Languages, TrendingUp, CalendarDays, BarChart3, Star, ClipboardCheck, Camera, ImagePlus, Palette, Share2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
   const { user, loading, logOut, updateUserProfilePhoto } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -31,7 +33,10 @@ export default function ProfilePage() {
 
   const handleUploadPhoto = async () => {
     if (selectedFile && user) {
-      alert("Photo upload functionality is a placeholder. In a real app, this would upload to Firebase Storage and update the user's photoURL.");
+      toast({
+        title: "Demo Feature",
+        description: "Photo upload is a placeholder. In a real app, this would upload to Firebase Storage and update the user's photoURL.",
+      });
       // Placeholder: In a real app, upload selectedFile to Firebase Storage, get the URL,
       // then call updateUserProfilePhoto(storageURL)
       // For demonstration, if you had a direct URL, you could do:
@@ -45,7 +50,10 @@ export default function ProfilePage() {
 
   const handleSelectPredefinedAvatar = (avatarUrl: string) => {
      if (user) {
-      alert(`Predefined avatar selection is a placeholder. Would set photoURL to: ${avatarUrl}`);
+      toast({
+        title: "Demo Feature",
+        description: `Predefined avatar selection is a placeholder. Would set photoURL to: ${avatarUrl}`,
+      });
       // In a real app: await updateUserProfilePhoto(avatarUrl);
       console.log("Selected predefined avatar:", avatarUrl);
      }
@@ -56,6 +64,31 @@ export default function ProfilePage() {
     { id: 'avatar2', url: 'https://placehold.co/96x96/2196F3/FFFFFF.png?text=P2', name: 'Blue P2' },
     { id: 'avatar3', url: 'https://placehold.co/96x96/4CAF50/FFFFFF.png?text=P3', name: 'Green P3' },
   ];
+
+  const handleShareApp = async () => {
+    const shareData = {
+      title: "Let's Learn Ol Chiki",
+      text: "Check out this app to learn the Ol Chiki script for the Santali language!",
+      url: window.location.origin, // Shares the base URL of the app
+    };
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        toast({ title: "Thanks for sharing!", description: "App link shared successfully." });
+      } else {
+        // Fallback for browsers that don't support Web Share API or can't share the data
+        navigator.clipboard.writeText(shareData.url).then(() => {
+          toast({ title: "Link Copied!", description: "App link copied to clipboard. You can paste it to share."});
+        }).catch(err => {
+          console.error('Could not copy text: ', err);
+          toast({ title: "Share Error", description: "Could not copy link. Please share the URL manually.", variant: "destructive"});
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      toast({ title: "Share Error", description: "There was an error trying to share the app.", variant: "destructive"});
+    }
+  };
 
 
   if (loading) {
@@ -148,7 +181,7 @@ export default function ProfilePage() {
                     <Image src={avatar.url} alt={avatar.name} width={48} height={48} className="rounded-full object-cover"/>
                   </Button>
                 ))}
-                 <Button variant="outline" size="icon" className="h-12 w-12 rounded-full" onClick={() => alert("More avatars coming soon!")} title="More Avatars">
+                 <Button variant="outline" size="icon" className="h-12 w-12 rounded-full" onClick={() => toast({title: "Coming Soon!", description: "More avatars will be available in a future update."})} title="More Avatars">
                     <Palette className="h-6 w-6"/>
                   </Button>
               </div>
@@ -251,10 +284,14 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
-       <div className="text-center mt-8">
-         <p className="text-muted-foreground text-sm">
+       <div className="text-center mt-8 max-w-2xl mx-auto">
+         <p className="text-muted-foreground text-sm mb-6">
            {user ? "More dashboard features and profile customization coming soon!" : "Log in to unlock these features and track your progress."}
          </p>
+         <Button onClick={handleShareApp} variant="default" className="w-full sm:w-auto">
+            <Share2 className="mr-2 h-4 w-4" />
+            Share this App with Friends
+         </Button>
       </div>
     </div>
   );

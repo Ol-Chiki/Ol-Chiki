@@ -7,10 +7,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Label as ShadcnLabel } from '@/components/ui/label'; // Renamed to avoid conflict
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel as RHFFormLabel, FormMessage } from '@/components/ui/form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; // Added for new name generator UI
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { generateOlchikiSentence, type GenerateOlchikiSentenceInput, type GenerateOlchikiSentenceOutput } from '@/ai/flows/generate-olchiki-sentence';
@@ -30,7 +30,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   's': 'ᱥ',
   'h': 'ᱦ', 'H': 'ᱷ',
   'n': 'ᱱ',
-  'N': 'ᱧ', 
+  'N': 'ᱧ',
   'r': 'ᱨ', 'R': 'ᱲ',
   'u': 'ᱩ',
   'c': 'ᱪ',
@@ -39,12 +39,12 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   'e': 'ᱮ',
   'p': 'ᱯ',
   'b': 'ᱵ',
-  'o': 'ᱳ', 
-  '.': '᱾', 
-  ',': 'ᱹ', 
-  '?': '?', 
-  '!': '!', 
-  ' ': ' ', 
+  'o': 'ᱳ',
+  '.': '᱾',
+  ',': 'ᱹ',
+  '?': '?',
+  '!': '!',
+  ' ': ' ',
 };
 
 const aiTranslatorFormSchema = z.object({
@@ -77,7 +77,7 @@ export default function SentencePractice() {
     let result = '';
     for (let i = 0; i < currentInput.length; i++) {
       const char = currentInput[i];
-      result += directKeyToOlChikiMap[char] || char; 
+      result += directKeyToOlChikiMap[char] || char;
     }
     return result;
   }, []);
@@ -157,7 +157,7 @@ export default function SentencePractice() {
     const foundWord = allVocabularyWords.find(word =>
       word.olChiki.toLowerCase() === term ||
       word.transliteration.toLowerCase() === term ||
-      word.english.toLowerCase().includes(term) 
+      word.english.toLowerCase().includes(term)
     );
 
     if (foundWord) {
@@ -173,6 +173,8 @@ export default function SentencePractice() {
   const [nameCurrentPage, setNameCurrentPage] = useState(1);
   const [totalNamePages, setTotalNamePages] = useState(0);
   const [isNameSearching, setIsNameSearching] = useState(false);
+  const [searchTypeUsed, setSearchTypeUsed] = useState<'none' | 'letter' | 'keyword'>('none');
+
 
   const letterForm = useForm<NameByLetterData>({
     resolver: zodResolver(nameByLetterSchema),
@@ -183,12 +185,13 @@ export default function SentencePractice() {
     resolver: zodResolver(nameByKeywordSchema),
     defaultValues: { keyword: '' },
   });
-  
+
   const handleSearchByLetter: SubmitHandler<NameByLetterData> = (data) => {
     setIsNameSearching(true);
+    setSearchTypeUsed('letter');
     const letter = data.initialLetter.toLowerCase();
-    const filteredNames = santaliFirstNamesSample.filter(name => 
-      name.transliteration.toLowerCase().startsWith(letter)
+    const filteredNames = santaliFirstNamesSample.filter(namePart =>
+      namePart.transliteration.toLowerCase().startsWith(letter)
     );
     setNameResults(filteredNames);
     setNameCurrentPage(1);
@@ -198,9 +201,10 @@ export default function SentencePractice() {
 
   const handleSearchByKeyword: SubmitHandler<NameByKeywordData> = (data) => {
     setIsNameSearching(true);
+    setSearchTypeUsed('keyword');
     const keyword = data.keyword.toLowerCase();
-    const filteredNames = santaliFirstNamesSample.filter(name =>
-      name.meaning.toLowerCase().includes(keyword)
+    const filteredNames = santaliFirstNamesSample.filter(namePart =>
+      namePart.meaning.toLowerCase().includes(keyword)
     );
     setNameResults(filteredNames);
     setNameCurrentPage(1);
@@ -230,10 +234,10 @@ export default function SentencePractice() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="direct-input">Enter English Text</Label>
+              <ShadcnLabel htmlFor="direct-input">Enter English Text</ShadcnLabel>
               <Input
                 id="direct-input"
-                placeholder="e.g., Ol Chiki Lipi ? 👍"
+                placeholder="e.g., Ol Chiki Lipi ?"
                 value={directInputText}
                 onChange={(e) => setDirectInputText(e.target.value)}
                 className="text-lg"
@@ -241,7 +245,7 @@ export default function SentencePractice() {
             </div>
             {directInputText && (
               <div className="mt-4">
-                <Label className="text-accent font-semibold">Ol Chiki Script Output (Direct Mapping):</Label>
+                <ShadcnLabel className="text-accent font-semibold">Ol Chiki Script Output (Direct Mapping):</ShadcnLabel>
                 <div className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center mt-2 min-h-[3em] break-words">
                   {directTransliteratedScript || <span className="text-muted-foreground">Type above to see Ol Chiki...</span>}
                 </div>
@@ -320,11 +324,11 @@ export default function SentencePractice() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <Label className="text-sm text-muted-foreground">Ol Chiki Script:</Label>
+                <ShadcnLabel className="text-sm text-muted-foreground">Ol Chiki Script:</ShadcnLabel>
                 <p className="text-2xl font-mono p-4 bg-secondary/30 rounded-md text-center break-words min-h-[3em]">{aiOutputScript.sentence}</p>
               </div>
               <div>
-                <Label className="text-sm text-muted-foreground">English Transliteration:</Label>
+                <ShadcnLabel className="text-sm text-muted-foreground">English Transliteration:</ShadcnLabel>
                 <p className="text-lg p-3 bg-secondary/20 rounded-md text-center break-words min-h-[2.5em]">{aiOutputScript.englishTransliteration}</p>
               </div>
             </CardContent>
@@ -389,15 +393,15 @@ export default function SentencePractice() {
                     ) : (
                       <>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Ol Chiki Script:</Label>
+                          <ShadcnLabel className="text-xs text-muted-foreground">Ol Chiki Script:</ShadcnLabel>
                           <p className="text-2xl font-mono p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).olChiki}</p>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">Roman Transliteration:</Label>
+                          <ShadcnLabel className="text-xs text-muted-foreground">Roman Transliteration:</ShadcnLabel>
                           <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).transliteration}</p>
                         </div>
                         <div>
-                          <Label className="text-xs text-muted-foreground">English Meaning:</Label>
+                          <ShadcnLabel className="text-xs text-muted-foreground">English Meaning:</ShadcnLabel>
                           <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).english}</p>
                         </div>
                       </>
@@ -418,7 +422,7 @@ export default function SentencePractice() {
           <CardHeader>
             <CardTitle>Find Santali First Names</CardTitle>
             <CardDescription>
-              Search for Santali first names by their initial letter (Roman) or by keywords in their meaning. 
+              Search for Santali first names by their initial letter (Roman) or by keywords in their meaning.
               The current name database is a small sample.
             </CardDescription>
           </CardHeader>
@@ -490,15 +494,19 @@ export default function SentencePractice() {
                   {paginatedNameResults.map((name, index) => (
                     <Card key={index} className="p-3 bg-secondary/20 shadow-sm">
                       <p className="text-xl font-mono text-primary">{name.olChiki}</p>
-                      <p className="text-md text-accent-foreground">{name.transliteration}</p>
-                      <p className="text-sm text-muted-foreground mt-1">Meaning: {name.meaning}</p>
+                      <p className="text-md text-accent">
+                        <span className="font-semibold text-accent/80">Roman:</span> {name.transliteration}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        <span className="font-semibold text-muted-foreground/80">Meaning:</span> {name.meaning}
+                      </p>
                     </Card>
                   ))}
                 </div>
                 {totalNamePages > 1 && (
                   <div className="mt-4 flex justify-between items-center">
-                    <Button 
-                      onClick={() => setNameCurrentPage(p => Math.max(1, p - 1))} 
+                    <Button
+                      onClick={() => setNameCurrentPage(p => Math.max(1, p - 1))}
                       disabled={nameCurrentPage === 1}
                       variant="outline"
                     >
@@ -507,8 +515,8 @@ export default function SentencePractice() {
                     <span className="text-sm text-muted-foreground">
                       Page {nameCurrentPage} of {totalNamePages}
                     </span>
-                    <Button 
-                      onClick={() => setNameCurrentPage(p => Math.min(totalNamePages, p + 1))} 
+                    <Button
+                      onClick={() => setNameCurrentPage(p => Math.min(totalNamePages, p + 1))}
                       disabled={nameCurrentPage === totalNamePages}
                       variant="outline"
                     >
@@ -518,12 +526,12 @@ export default function SentencePractice() {
                 )}
               </div>
             )}
-            {!isNameSearching && nameResults.length === 0 && (letterForm.formState.isSubmitted || keywordForm.formState.isSubmitted) && (
+            {!isNameSearching && nameResults.length === 0 && searchTypeUsed !== 'none' && (
                  <p className="text-center text-muted-foreground mt-6 p-4 border border-dashed rounded-md">
                     No names found matching your criteria. Try a different letter or keyword.
                   </p>
             )}
-             {!isNameSearching && !letterForm.formState.isSubmitted && !keywordForm.formState.isSubmitted && nameResults.length === 0 && (
+             {!isNameSearching && searchTypeUsed === 'none' && nameResults.length === 0 && (
                 <p className="text-center text-muted-foreground mt-6">
                     Enter a letter or keyword above to search for names.
                 </p>
@@ -534,4 +542,3 @@ export default function SentencePractice() {
     </div>
   );
 }
-

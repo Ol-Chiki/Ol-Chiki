@@ -10,13 +10,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel as RHFFormLabel, FormMessage } from '@/components/ui/form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; // Added for new name generator UI
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { generateOlchikiSentence, type GenerateOlchikiSentenceInput, type GenerateOlchikiSentenceOutput } from '@/ai/flows/generate-olchiki-sentence';
-import { Loader2, Wand2, Search, Shuffle } from 'lucide-react';
-import { categorizedOlChikiWords, type OlChikiWord, santaliFirstNamesSample, santaliSurnamesSample, type SantaliNamePart } from '@/lib/ol-chiki-data';
+import { Loader2, Wand2, Search, Shuffle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { categorizedOlChikiWords, type OlChikiWord, santaliFirstNamesSample, type SantaliNamePart } from '@/lib/ol-chiki-data';
 
-// Direct mapping for common English keys to Ol Chiki characters for the first tool
 const directKeyToOlChikiMap: { [key: string]: string } = {
   'a': 'ᱚ', 'A': 'ᱟ',
   't': 'ᱛ', 'T': 'ᱴ',
@@ -30,8 +30,8 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   's': 'ᱥ',
   'h': 'ᱦ', 'H': 'ᱷ',
   'n': 'ᱱ',
-  'N': 'ᱧ', // For 'INY' like sounds, capital N is a common convention
-  'r': 'ᱨ', 'R': 'ᱲ', // For 'ERR' like sounds
+  'N': 'ᱧ', 
+  'r': 'ᱨ', 'R': 'ᱲ',
   'u': 'ᱩ',
   'c': 'ᱪ',
   'd': 'ᱫ', 'D': 'ᱰ',
@@ -39,30 +39,37 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   'e': 'ᱮ',
   'p': 'ᱯ',
   'b': 'ᱵ',
-  'o': 'ᱳ', // Using LO for 'o' sound
-  '.': '᱾', // MUCAAD
-  ',': 'ᱹ', // AHAD (often used as a separator or comma-like)
-  '?': '?', // Literal question mark
-  '!': '!', // Pass through exclamation
-  ' ': ' ', // Space
-  // Add other punctuation or symbols you want to pass through directly
+  'o': 'ᱳ', 
+  '.': '᱾', 
+  ',': 'ᱹ', 
+  '?': '?', 
+  '!': '!', 
+  ' ': ' ', 
 };
 
-
-// Schema for the AI Translator Tool (Second tool)
 const aiTranslatorFormSchema = z.object({
   englishSentence: z.string().min(3, { message: 'Sentence must be at least 3 characters.' }).max(300, { message: 'Sentence must be 300 characters or less.' }),
 });
 type AiTranslateFormData = z.infer<typeof aiTranslatorFormSchema>;
 
-// Schema for Dictionary Search (Third tool)
 const dictionarySearchSchema = z.object({
   searchTerm: z.string().min(1, { message: "Please enter a word to search."}),
 });
 type DictionarySearchData = z.infer<typeof dictionarySearchSchema>;
 
+const nameByLetterSchema = z.object({
+  initialLetter: z.string().length(1, { message: "Please enter a single letter."}).regex(/^[a-zA-Z]$/, { message: "Please enter a valid letter."}),
+});
+type NameByLetterData = z.infer<typeof nameByLetterSchema>;
+
+const nameByKeywordSchema = z.object({
+  keyword: z.string().min(2, { message: "Keyword must be at least 2 characters."}),
+});
+type NameByKeywordData = z.infer<typeof nameByKeywordSchema>;
+
+const NAMES_PER_PAGE = 5;
+
 export default function SentencePractice() {
-  // ---- Direct Transliteration Tool States & Logic (First tool) ----
   const [directInputText, setDirectInputText] = useState<string>('');
   const [directTransliteratedScript, setDirectTransliteratedScript] = useState<string>('');
 
@@ -70,7 +77,7 @@ export default function SentencePractice() {
     let result = '';
     for (let i = 0; i < currentInput.length; i++) {
       const char = currentInput[i];
-      result += directKeyToOlChikiMap[char] || char; // If no mapping, use original char
+      result += directKeyToOlChikiMap[char] || char; 
     }
     return result;
   }, []);
@@ -80,8 +87,6 @@ export default function SentencePractice() {
     setDirectTransliteratedScript(result);
   }, [directInputText, doDirectKeyTransliterate]);
 
-
-  // ---- AI Translator Tool States & Logic (Second tool) ----
   const { toast } = useToast();
   const [aiOutputScript, setAiOutputScript] = useState<GenerateOlchikiSentenceOutput | null>(null);
   const [isAiTranslating, setIsAiTranslating] = useState(false);
@@ -124,7 +129,6 @@ export default function SentencePractice() {
     }
   };
 
-  // ---- Dictionary Tool States & Logic (Third tool) ----
   const [dictionaryResult, setDictionaryResult] = useState<OlChikiWord | null | { status: 'not_found', term: string }> (null);
   const [isDictionarySearching, setIsDictionarySearching] = useState(false);
 
@@ -153,7 +157,7 @@ export default function SentencePractice() {
     const foundWord = allVocabularyWords.find(word =>
       word.olChiki.toLowerCase() === term ||
       word.transliteration.toLowerCase() === term ||
-      word.english.toLowerCase().includes(term) // Search if English definition includes the term
+      word.english.toLowerCase().includes(term) 
     );
 
     if (foundWord) {
@@ -164,21 +168,50 @@ export default function SentencePractice() {
     setIsDictionarySearching(false);
   };
 
-  // ---- Santali Name Generator Tool States & Logic (Fourth tool) ----
-  const [generatedFirstName, setGeneratedFirstName] = useState<SantaliNamePart | null>(null);
-  const [generatedSurname, setGeneratedSurname] = useState<SantaliNamePart | null>(null);
+  // Name Generator States
+  const [nameResults, setNameResults] = useState<SantaliNamePart[]>([]);
+  const [nameCurrentPage, setNameCurrentPage] = useState(1);
+  const [totalNamePages, setTotalNamePages] = useState(0);
+  const [isNameSearching, setIsNameSearching] = useState(false);
 
+  const letterForm = useForm<NameByLetterData>({
+    resolver: zodResolver(nameByLetterSchema),
+    defaultValues: { initialLetter: '' },
+  });
 
-  const generateNewSantaliName = useCallback(() => {
-    const randomFirstName = santaliFirstNamesSample[Math.floor(Math.random() * santaliFirstNamesSample.length)];
-    const randomSurname = santaliSurnamesSample[Math.floor(Math.random() * santaliSurnamesSample.length)];
-    setGeneratedFirstName(randomFirstName);
-    setGeneratedSurname(randomSurname);
-  }, []);
+  const keywordForm = useForm<NameByKeywordData>({
+    resolver: zodResolver(nameByKeywordSchema),
+    defaultValues: { keyword: '' },
+  });
+  
+  const handleSearchByLetter: SubmitHandler<NameByLetterData> = (data) => {
+    setIsNameSearching(true);
+    const letter = data.initialLetter.toLowerCase();
+    const filteredNames = santaliFirstNamesSample.filter(name => 
+      name.transliteration.toLowerCase().startsWith(letter)
+    );
+    setNameResults(filteredNames);
+    setNameCurrentPage(1);
+    setTotalNamePages(Math.ceil(filteredNames.length / NAMES_PER_PAGE));
+    setIsNameSearching(false);
+  };
 
-  useEffect(() => {
-    generateNewSantaliName();
-  }, [generateNewSantaliName]);
+  const handleSearchByKeyword: SubmitHandler<NameByKeywordData> = (data) => {
+    setIsNameSearching(true);
+    const keyword = data.keyword.toLowerCase();
+    const filteredNames = santaliFirstNamesSample.filter(name =>
+      name.meaning.toLowerCase().includes(keyword)
+    );
+    setNameResults(filteredNames);
+    setNameCurrentPage(1);
+    setTotalNamePages(Math.ceil(filteredNames.length / NAMES_PER_PAGE));
+    setIsNameSearching(false);
+  };
+
+  const paginatedNameResults = useMemo(() => {
+    const startIndex = (nameCurrentPage - 1) * NAMES_PER_PAGE;
+    return nameResults.slice(startIndex, startIndex + NAMES_PER_PAGE);
+  }, [nameResults, nameCurrentPage]);
 
 
   return (
@@ -191,8 +224,8 @@ export default function SentencePractice() {
             <CardTitle>English Keyboard to Ol Chiki Script (Real-time)</CardTitle>
             <CardDescription>
               Type English characters to see their corresponding Ol Chiki script instantly.
-              Mapped punctuation: '.' to ᱾, ',' to ᱹ.
-              Question marks, exclamation marks, and emojis will appear as typed. This is not a full language translator.
+              Mapped punctuation: '.' to ᱾, ',' to ᱹ, '?' to ?.
+              Other symbols like '!' and emojis will appear as typed. This is not a full language translator.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -383,37 +416,122 @@ export default function SentencePractice() {
         <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">Santali Name Generator</h2>
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>Generate a Santali Name</CardTitle>
+            <CardTitle>Find Santali First Names</CardTitle>
             <CardDescription>
-              Click the button to generate a random Santali name using common first names and surnames.
-              Meanings are placeholders for now.
+              Search for Santali first names by their initial letter (Roman) or by keywords in their meaning. 
+              The current name database is a small sample.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 text-center">
-            {(generatedFirstName && generatedSurname) && (
-              <div className="mt-4">
-                <Label className="text-accent font-semibold">Generated Name:</Label>
-                <div className="text-3xl font-mono p-4 bg-secondary/30 rounded-md mt-2 min-h-[3em] break-words flex items-center justify-center">
-                  {generatedFirstName.olChiki} {generatedSurname.olChiki}
-                </div>
-                <div className="mt-2 text-lg text-muted-foreground">
-                  ({generatedFirstName.transliteration} {generatedSurname.transliteration})
-                </div>
-                <div className="mt-3 space-y-1 text-sm">
-                  <p><span className="font-semibold">First Name Meaning:</span> {generatedFirstName.meaning}</p>
-                  <p><span className="font-semibold">Surname Meaning:</span> {generatedSurname.meaning}</p>
-                </div>
+          <CardContent>
+            <Tabs defaultValue="byLetter" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="byLetter">Search by Initial Letter</TabsTrigger>
+                <TabsTrigger value="byKeyword">Search by Keyword in Meaning</TabsTrigger>
+              </TabsList>
+              <TabsContent value="byLetter" className="pt-4">
+                <Form {...letterForm}>
+                  <form onSubmit={letterForm.handleSubmit(handleSearchByLetter)} className="space-y-3">
+                    <FormField
+                      control={letterForm.control}
+                      name="initialLetter"
+                      render={({ field }) => (
+                        <FormItem>
+                          <RHFFormLabel>Enter First Letter (e.g., A, B, S)</RHFFormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter a single letter" {...field} maxLength={1} className="text-lg"/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={isNameSearching}>
+                      {isNameSearching ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
+                      Find Names by Letter
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+              <TabsContent value="byKeyword" className="pt-4">
+                <Form {...keywordForm}>
+                  <form onSubmit={keywordForm.handleSubmit(handleSearchByKeyword)} className="space-y-3">
+                     <FormField
+                      control={keywordForm.control}
+                      name="keyword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <RHFFormLabel>Enter Keyword (e.g., Moon, Flower, Warrior)</RHFFormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter a keyword from meaning" {...field} className="text-lg"/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={isNameSearching}>
+                      {isNameSearching ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
+                      Find Names by Keyword
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+            </Tabs>
+
+            {isNameSearching && (
+              <div className="mt-6 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+                <p className="text-muted-foreground">Searching for names...</p>
               </div>
             )}
+
+            {!isNameSearching && nameResults.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-accent mb-3">Matching Names:</h3>
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                  {paginatedNameResults.map((name, index) => (
+                    <Card key={index} className="p-3 bg-secondary/20 shadow-sm">
+                      <p className="text-xl font-mono text-primary">{name.olChiki}</p>
+                      <p className="text-md text-accent-foreground">{name.transliteration}</p>
+                      <p className="text-sm text-muted-foreground mt-1">Meaning: {name.meaning}</p>
+                    </Card>
+                  ))}
+                </div>
+                {totalNamePages > 1 && (
+                  <div className="mt-4 flex justify-between items-center">
+                    <Button 
+                      onClick={() => setNameCurrentPage(p => Math.max(1, p - 1))} 
+                      disabled={nameCurrentPage === 1}
+                      variant="outline"
+                    >
+                      <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      Page {nameCurrentPage} of {totalNamePages}
+                    </span>
+                    <Button 
+                      onClick={() => setNameCurrentPage(p => Math.min(totalNamePages, p + 1))} 
+                      disabled={nameCurrentPage === totalNamePages}
+                      variant="outline"
+                    >
+                      Next <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            {!isNameSearching && nameResults.length === 0 && (letterForm.formState.isSubmitted || keywordForm.formState.isSubmitted) && (
+                 <p className="text-center text-muted-foreground mt-6 p-4 border border-dashed rounded-md">
+                    No names found matching your criteria. Try a different letter or keyword.
+                  </p>
+            )}
+             {!isNameSearching && !letterForm.formState.isSubmitted && !keywordForm.formState.isSubmitted && nameResults.length === 0 && (
+                <p className="text-center text-muted-foreground mt-6">
+                    Enter a letter or keyword above to search for names.
+                </p>
+            )}
           </CardContent>
-          <CardFooter>
-            <Button onClick={generateNewSantaliName} className="w-full">
-              <Shuffle className="mr-2 h-4 w-4" />
-              Generate New Name
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </div>
   );
 }
+

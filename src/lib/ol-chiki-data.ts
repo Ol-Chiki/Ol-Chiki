@@ -40,40 +40,22 @@ function convertRomanKeyToOlChiki(romanKey: string): string {
   let olChikiString = "";
   const key = romanKey;
 
-  // Order of replacement matters for multi-character sequences
   const romanMap: { [key: string]: string } = {
-    // Specific nasalized vowels from user data (e.g., SA:GIQ)
-    "A:": "ᱟᱸ", "E:": "ᱮᱸ", "I:": "ᱤᱸ", "O:": "ᱳᱸ", "U:": "ᱩᱸ",
-    "a:": "ᱚᱸ", // Assuming lowercase 'a:' maps to short nasalized 'o' sound
-    // Specific INY/UNY endings
+    "A:": "ᱟᱸ", "E:": "ᱮᱸ", "I:": "ᱤᱸ", "O:": "ᱳᱸ", "U:": "ᱩᱸ", "a:": "ᱚᱸ",
     "I~": "ᱤᱧ", "U~": "ᱩᱧ", "E~": "ᱮᱧ",
-    // Common double letters or specific sounds first
-    "NG": "ᱝ", // For ANG sound if written as NG
-    "NJ": "ᱧ", // For INY sound if written as NJ
-    "DD": "ᱰ", // Retroflex D if written as DD
-    "TT": "ᱴ", // Retroflex T if written as TT
-    // General character mappings (case sensitive, more specific first)
+    "NG": "ᱝ", "NJ": "ᱧ", "DD": "ᱰ", "TT": "ᱴ",
     "o": "ᱚ", "T": "ᱴ", "t": "ᱛ", "n": "ᱱ", "L": "ᱞ", "A": "ᱟ", "K": "ᱠ",
     "G": "ᱜ", "g": "ᱜ", "M": "ᱢ", "m": "ᱢ", "R": "ᱨ", "r": "ᱨ", "U": "ᱩ", "u": "ᱩ",
     "Y": "ᱭ", "y": "ᱭ", "S": "ᱥ", "s": "ᱥ", "P": "ᱯ", "p": "ᱯ", "E": "ᱮ", "e": "ᱮ",
-    "D": "ᱰ", // If single D is retroflex
-    "d": "ᱫ", // If single d is dental
-    "J": "ᱡ", "j": "ᱡ",
-    "Q": "ᱧ", // Q as INY as per user's previous data
-    "H": "ᱦ", "h": "ᱦ", "W": "ᱣ", "w": "ᱣ", "B": "ᱵ", "b": "ᱵ", "C": "ᱪ", "c": "ᱪ",
-    "Z": "ᱲ", // Z as ERR as per user's previous data
-    "X": "ᱽ", // X as PHARKA
-    "F": "ᱝ", // F as ANG (for TonoF -> tonong)
-    ".": "ᱹ", // AHAD (used for .)
-    "~": "ᱧ", // Default for ~ if not part of Vowel~ (e.g., KUZI~ -> KUZINY)
-    "_": " ", // Underscore as space
-    // Add more specific mappings as identified. This needs to be robust.
+    "D": "ᱰ", "d": "ᱫ", "J": "ᱡ", "j": "ᱡ",
+    "Q": "ᱧ", "H": "ᱦ", "h": "ᱦ", "W": "ᱣ", "w": "ᱣ", "B": "ᱵ", "b": "ᱵ", "C": "ᱪ", "c": "ᱪ",
+    "Z": "ᱲ", "X": "ᱽ", "F": "ᱝ",
+    ".": "ᱹ", "~": "ᱧ", "_": " ",
   };
 
   let i = 0;
   while (i < key.length) {
     let foundMatch = false;
-    // Check for 2-character sequences first (like A:, I~, NG, DD)
     if (i + 1 < key.length) {
       const twoCharSeq = key.substring(i, i + 2);
       if (romanMap[twoCharSeq]) {
@@ -82,13 +64,12 @@ function convertRomanKeyToOlChiki(romanKey: string): string {
         foundMatch = true;
       }
     }
-    // If no 2-char match, check for 1-character
     if (!foundMatch) {
       const oneChar = key[i];
       if (romanMap[oneChar]) {
         olChikiString += romanMap[oneChar];
       } else {
-        olChikiString += oneChar; // Pass through unmapped characters
+        olChikiString += oneChar;
       }
       i += 1;
     }
@@ -96,12 +77,10 @@ function convertRomanKeyToOlChiki(romanKey: string): string {
   return olChikiString;
 }
 
-
 let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv1', olChiki: convertRomanKeyToOlChiki('oT'), transliteration: 'oT', english: 'n. earth; ground;' },
   { id: 'egv2', olChiki: convertRomanKeyToOlChiki('oTno'), transliteration: 'oTno', english: 'n. geography;' },
   { id: 'egv3', olChiki: convertRomanKeyToOlChiki('oTA'), transliteration: 'oTA', english: 'vt. to press;' },
-  // { id: 'egv4', olChiki: convertRomanKeyToOlChiki('oTno'), transliteration: 'oTno', english: 'n. geography;' }, // Duplicate of egv2
   { id: 'egv5', olChiki: convertRomanKeyToOlChiki('oL'), transliteration: 'oL', english: 'n. writing; vt., vi. to write;' },
   { id: 'egv6', olChiki: convertRomanKeyToOlChiki('oKTo'), transliteration: 'oKTo', english: 'n. time;' },
   { id: 'egv7', olChiki: convertRomanKeyToOlChiki('onoLIYA.'), transliteration: 'onoLIYA.', english: 'n. writer;' },
@@ -121,8 +100,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv21', olChiki: convertRomanKeyToOlChiki('TUYU'), transliteration: 'TUYU', english: 'n. fox;' },
   { id: 'egv22', olChiki: convertRomanKeyToOlChiki('TESAR'), transliteration: 'TESAR', english: 'adj. third;' },
   { id: 'egv23', olChiki: convertRomanKeyToOlChiki('TESARAG'), transliteration: 'TESARAG', english: 'adj. third (pointing to an inanimate object);' },
-  { id: 'egv24', olChiki: convertRomanKeyToOlChiki('TESARIJ'), transliteration: 'TESARIJ', english: 'adj. third (pointing to an animate object);' },
-  // { id: 'egv25', olChiki: convertRomanKeyToOlChiki('TOWA'), transliteration: 'TOWA', english: 'n. milk;' }, // Duplicate of egv10
+  { id: 'egv24', olChiki: convertRomanKeyToOlChiki('TESARIJ'), transliteration: 'TESARIJ', english: 'adj. third (pointing to an inanimate object);' },
   { id: 'egv26', olChiki: convertRomanKeyToOlChiki('THAR'), transliteration: 'THAR', english: 'n. arrangement of objects in a straight line; TINGU THAR – n. column; GITIJ THAR – n. row;' },
   { id: 'egv27', olChiki: convertRomanKeyToOlChiki('GoRon'), transliteration: 'GoRon', english: 'n. person ( in grammar); mAMAF GoRon – n. first person; SAmAF GoRon – n. second person; SA:GIQ GoRon – n. third person;' },
   { id: 'egv28', olChiki: convertRomanKeyToOlChiki('GotAn'), transliteration: 'GotAn', english: 'n. number of a word(in grammar) characterized as noun, pronoun or verb; mID GotAn – n. singular number; BAR GotAn – n. dual number; SANGE GotAn – n. plural number;' },
@@ -263,7 +241,6 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv163', olChiki: convertRomanKeyToOlChiki('hA.tIQ'), transliteration: 'hA.tIQ', english: 'n. share; vt. to divide;' },
   { id: 'egv164', olChiki: convertRomanKeyToOlChiki('hEdEJ'), transliteration: 'hEdEJ', english: 'vt., vi. to boil; adj. boiled;' },
   { id: 'egv165', olChiki: convertRomanKeyToOlChiki('hE:DE.'), transliteration: 'hE:DE.', english: 'adj. black; vt. to blacken; vi. to become black;' },
-  // { id: 'egv166', olChiki: convertRomanKeyToOlChiki('hE:dE.J'), transliteration: 'hE:dE.J', english: 'vt., vi. to boil; adj. boiled;' }, // Likely duplicate
   { id: 'egv167', olChiki: convertRomanKeyToOlChiki('hUdIQ'), transliteration: 'hUdIQ', english: 'adj. small; vt. to make someone or something small; vi. to become small;' },
   { id: 'egv168', olChiki: convertRomanKeyToOlChiki('QAPAm'), transliteration: 'QAPAm', english: 'vi. to meet;' },
   { id: 'egv169', olChiki: convertRomanKeyToOlChiki('QU~'), transliteration: 'QU~', english: 'adj. drinkable; vt. to drink; to smoke;' },
@@ -412,318 +389,11 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv312', olChiki: convertRomanKeyToOlChiki('BHEJA'), transliteration: 'BHEJA', english: 'n. brain; vt. to send;' },
 ];
 
-const newDictionaryData = [
-  { english: "add", pos: "vt.", santaliRoman: "SELED" },
-  { english: "addition", pos: "n.", santaliRoman: "SELED" },
-  { english: "address", pos: "n.", santaliRoman: "BUtA.", santaliRoman2: "tHIKA.nA" },
-  { english: "adjective", pos: "n.", santaliRoman: "GUnUn" },
-  { english: "adverb", pos: "n.", santaliRoman: "TonoZ" },
-  { english: "all", pos: "adj.", santaliRoman: "SAnAm", santaliRoman2: "JoTo", santaliRoman3: "JAKAT" },
-  { english: "angle", pos: "n.", santaliRoman: "KOnA", santaliRoman2: "KoNM" },
-  { english: "animal", pos: "n.", santaliRoman: "JAnWoR" },
-  { english: "association", pos: "n.", santaliRoman: "SEmLED" },
-  { english: "bad", pos: "adj.", santaliRoman: "BA.ZIJ", santaliRoman2: "BAF_tHIK" },
-  { english: "beginning", pos: "ge.", santaliRoman: "ETohoB", santaliRoman2: "EhoB" }, // 'ge.' might be a typo for n. or similar.
-  { english: "big", pos: "adj.", santaliRoman: "SE:MA", santaliRoman2: "mARAF" },
-  { english: "bird", pos: "n.", santaliRoman: "CE:ME." },
-  { english: "black", pos: "adj.", santaliRoman: "hE:DE." },
-  { english: "blacken", pos: "vt.", santaliRoman: "hE:DE." },
-  { english: "blue", pos: "adj.", santaliRoman: "LIL" },
-  { english: "boil", pos: "vt., vi.", santaliRoman: "hE:dE.J", santaliRoman2: "hEdEJ" },
-  { english: "bone", pos: "n.", santaliRoman: "JAF" },
-  { english: "book", pos: "n.", santaliRoman: "PoToB", santaliRoman2: "PUTHI" },
-  { english: "boy", pos: "n.", santaliRoman: "KoZA GIDX_RA.", santaliRoman2: "BA.BU GIDX_RA." },
-  { english: "brain", pos: "n.", santaliRoman: "hATAF", santaliRoman2: "BHEJA" },
-  { english: "break", pos: "vt., vi.", santaliRoman: "RA.PUD" },
-  { english: "bring", pos: "vt.", santaliRoman: "A.GU" },
-  { english: "broken", pos: "adj.", santaliRoman: "RA.PUD" },
-  { english: "cat", pos: "n.", santaliRoman: "PUSI" },
-  { english: "chief minister", pos: "n.", santaliRoman: "SIRA. monTRI" },
-  { english: "child", pos: "n.", santaliRoman: "GIDX_RA.", santaliRoman2: "hoPon" },
-  { english: "collection", pos: "n.", santaliRoman: "JARWA", santaliRoman2: "JAWRA" },
-  { english: "column", pos: "n.", santaliRoman: "TINGU THAR" }, // Simpler for now
-  { english: "colour", pos: "n., vt.", santaliRoman: "RoF" },
-  { english: "complete", pos: "adj.", santaliRoman: "PURA.", santaliRoman2: "SA.T", santaliRoman3: "CABA" }, // Assuming PURA. for adj, SA.T/CABA for vt.
-  { english: "compose", pos: "vt.", santaliRoman: "GABAn" },
-  { english: "composition", pos: "n.", santaliRoman: "GABAn" },
-  { english: "conjunction", pos: "n.", santaliRoman: "TonoF" },
-  { english: "consonant", pos: "n.", santaliRoman: "KECED AZAF" },
-  { english: "continuous", pos: "adj.", santaliRoman: "CoLoT" },
-  { english: "count", pos: "vt.", santaliRoman: "LEKHA" }, // vi. BHoRSA for 'depend/count on'
-  { english: "country", pos: "n., adj.", santaliRoman: "DISom" },
-  { english: "cry", pos: "n., vi.", santaliRoman: "RAG" },
-  { english: "dance", pos: "n., vi.", santaliRoman: "EnEJ" },
-  { english: "decide", pos: "vt.", santaliRoman: "tHA.WKA." },
-  { english: "decision", pos: "n.", santaliRoman: "tHA.WKA." },
-  { english: "depend", pos: "vi.", santaliRoman: "BHoRSA" }, // also 'count on'
-  { english: "digit", pos: "n.", santaliRoman: "EL" },
-  { english: "direction", pos: "n.", santaliRoman: "PAStA", santaliRoman2: "PAhtA", santaliRoman3: "SED", santaliRoman4: "DISA." },
-  { english: "divide", pos: "vt.", santaliRoman: "hA.tIQ", santaliRoman2: "BHAGX", santaliRoman3: "JUZU" },
-  { english: "dividend", pos: "n.", santaliRoman: "hAtAMCA" },
-  { english: "divider", pos: "n.", santaliRoman: "hAtAMhA" },
-  { english: "division", pos: "n.", santaliRoman: "hAtAM", santaliRoman2: "hA.tIQ", santaliRoman3: "BHAGX" },
-  { english: "do", pos: "vt.", santaliRoman: "KoRAW", santaliRoman2: "KA.mI" },
-  { english: "dog", pos: "n.", santaliRoman: "SETA" },
-  { english: "drink", pos: "n.", santaliRoman: "QU~ JInIS", santaliRoman2: "QU~" }, // QU~ JInIS for noun 'drink', QU~ for vt. 'to drink'
-  { english: "drop", pos: "n.", santaliRoman: "tHoP", santaliRoman2: "BUNDX", santaliRoman3: "QUR" }, // QUR for vt/vi
-  { english: "dry", pos: "adj., vt., vi.", santaliRoman: "RohoZ" },
-  { english: "eat", pos: "vt., vi.", santaliRoman: "Jom" },
-  { english: "eatable", pos: "n.", santaliRoman: "Jom", santaliRoman2: "Jom_QU~", santaliRoman3: "JomAG JANhAN Jom DAZEGoG_A" }, // Simplified to Jom for now
-  { english: "eight", pos: "n., adj.", santaliRoman: "IRA.L" },
-  { english: "eighth", pos: "adj.", santaliRoman: "IRA.LAG", santaliRoman2: "IRA.LIJ" },
-  { english: "end", pos: "n., vt., vi.", santaliRoman: "mUCA.D" },
-  { english: "environment", pos: "n.", santaliRoman: "SACARhE" },
-  { english: "example", pos: "n.", santaliRoman: "QECEL" },
-  { english: "fact", pos: "n.", santaliRoman: "SA.RI KATHA" },
-  { english: "fan", pos: "n.", santaliRoman: "PAFKHA" },
-  { english: "far", pos: "adj.", santaliRoman: "SA:GIQ" },
-  { english: "fast", pos: "adv.", santaliRoman: "LoGon" },
-  { english: "fat", pos: "n.", santaliRoman: "ITIL", santaliRoman2: "CoRBI", santaliRoman3: "motA" }, // motA for adj.
-  { english: "fifth", pos: "adj.", santaliRoman: "moMEYAG", santaliRoman2: "moMEYIJ" },
-  { english: "fight", pos: "n., vi.", santaliRoman: "TAPAm" },
-  { english: "figure", pos: "n.", santaliRoman: "RUP", santaliRoman2: "CHoBI" },
-  { english: "finish", pos: "vt.", santaliRoman: "SA.T", santaliRoman2: "CABA" },
-  { english: "fire", pos: "n.", santaliRoman: "SE:GE.L" }, // vi. tHU (to fire at)
-  { english: "first", pos: "adj.", santaliRoman: "mAMAF", santaliRoman2: "mAMAFAG", santaliRoman3: "PUYLUWAG", santaliRoman4: "mAMAFIJ", santaliRoman5: "PUYLUYIJ", santaliRoman6: "mIDAG", santaliRoman7: "mIDIJ" },
-  { english: "fish", pos: "n.", santaliRoman: "hA.KU" },
-  { english: "five", pos: "n.", santaliRoman: "moME", santaliRoman2: "moME GotEJ" }, // moME GotEJ for adj.
-  { english: "fly", pos: "n.", santaliRoman: "Ro~", santaliRoman2: "UdA.W" }, // UdA.W for vi.
-  { english: "food", pos: "n.", santaliRoman: "Jom", santaliRoman2: "Jom_QU~", santaliRoman3: "JomAG", santaliRoman4: "Jom_QUWAG" },
-  { english: "form", pos: "n.", santaliRoman: "RUP", santaliRoman2: "BE.nAW" }, // BE.nAW for vt/vi
-  { english: "four", pos: "n.", santaliRoman: "PUn", santaliRoman2: "PUnYA." }, // PUnYA. for adj.
-  { english: "fourth", pos: "adj.", santaliRoman: "PUnA.G", santaliRoman2: "PUnIJ" },
-  { english: "fox", pos: "n.", santaliRoman: "TUYU" },
-  { english: "frog", pos: "n.", santaliRoman: "RotE" },
-  { english: "fry", pos: "n., vt.", santaliRoman: "BHA.JI" },
-  { english: "function", pos: "n.", santaliRoman: "KA.mI" },
-  { english: "future", pos: "adj.", santaliRoman: "DARAY", santaliRoman2: "AGAm" },
-  { english: "garden", pos: "n.", santaliRoman: "BAGAn" },
-  { english: "gather", pos: "vt., vi.", santaliRoman: "JARWA", santaliRoman2: "JAWRA" },
-  { english: "gender", pos: "n.", santaliRoman: "JAnAF" }, // Sub-definitions for specific genders are complex for current structure
-  { english: "geography", pos: "n.", santaliRoman: "oTno", santaliRoman2: "DoRYATno" },
-  { english: "girl", pos: "n.", santaliRoman: "KUZI~ GIDX_RA.", santaliRoman2: "mA.Y GIDX_RA." },
-  { english: "give", pos: "vt.", santaliRoman: "Em" },
-  { english: "go", pos: "vi.", santaliRoman: "SEn", santaliRoman2: "CALAW" },
-  { english: "good", pos: "adj.", santaliRoman: "BES" },
-  { english: "grammar", pos: "n.", santaliRoman: "RonoZ" },
-  { english: "heap", pos: "n.", santaliRoman: "PUNJI" },
-  { english: "hill", pos: "n.", santaliRoman: "BURU", santaliRoman2: "dUNGX_RI" },
-  { english: "history", pos: "n.", santaliRoman: "nAGAm" },
-  { english: "imprison", pos: "vt.", santaliRoman: "JIhoL" },
-  { english: "include", pos: "vt.", santaliRoman: "ANGoC" },
-  { english: "interjection", pos: "n.", santaliRoman: "hAnAW" },
-  { english: "intransitive", pos: "adj.", santaliRoman: "onoG" },
-  { english: "jail", pos: "n.", santaliRoman: "JIhoL" },
-  { english: "join", pos: "n., vt., vi.", santaliRoman: "KHoNJA" },
-  { english: "joint", pos: "n.", santaliRoman: "KHoNJA" },
-  { english: "keep", pos: "vt.", santaliRoman: "Doho" },
-  { english: "kind (type)", pos: "n.", santaliRoman: "ToRon" },
-  { english: "kind", pos: "adj.", santaliRoman: "DoYALU" }, // For 'type' see above
-  { english: "know", pos: "vt.", santaliRoman: "BAdAY", santaliRoman2: "BAZAY" },
-  { english: "language", pos: "n.", santaliRoman: "RoZ", santaliRoman2: "BHASA" },
-  { english: "laugh", pos: "vi.", santaliRoman: "LANDA" },
-  { english: "law", pos: "n.", santaliRoman: "nIYom", santaliRoman2: "KA.nUn" },
-  { english: "length", pos: "n.", santaliRoman: "JHA.L" },
-  { english: "lengthen", pos: "vt.", santaliRoman: "JHA.L" },
-  { english: "life", pos: "n.", santaliRoman: "JIWI~", santaliRoman2: "JIBon" },
-  { english: "live", pos: "vi.", santaliRoman: "TANhEn" },
-  { english: "line", pos: "n.", santaliRoman: "GAR" },
-  { english: "literature", pos: "n.", santaliRoman: "SAVhED" },
-  { english: "long", pos: "adj.", santaliRoman: "JHA.L" },
-  { english: "lubricate", pos: "vt.", santaliRoman: "SUnUm" },
-  { english: "man (human being)", pos: "n.", santaliRoman: "hoZ" },
-  { english: "man (as a male)", pos: "n.", santaliRoman: "KoZA" },
-  { english: "marriage", pos: "n.", santaliRoman: "BAPLA" },
-  { english: "mathematician", pos: "n.", santaliRoman: "ELKHARIYA." },
-  { english: "mathematics", pos: "n.", santaliRoman: "ELKHA" },
-  { english: "meat", pos: "n.", santaliRoman: "JIL" }, // Note: JIL also appears as 'deer'
-  { english: "medicine", pos: "n.", santaliRoman: "RAn" },
-  { english: "meet", pos: "vi.", santaliRoman: "QAPAm" },
-  { english: "meeting", pos: "n.", santaliRoman: "mIDUn" },
-  { english: "milk", pos: "n.", santaliRoman: "ToWA", santaliRoman2: "DUhA.W" }, // DUhA.W for vt.
-  { english: "motion", pos: "n.", santaliRoman: "CoLoT" },
-  { english: "mountain", pos: "n.", santaliRoman: "BURU" },
-  { english: "mud", pos: "n.", santaliRoman: "LoSoD" },
-  { english: "name", pos: "n., vt.", santaliRoman: "QUTUm" },
-  { english: "news", pos: "n.", santaliRoman: "KHoBoR" },
-  { english: "nine", pos: "n., adj.", santaliRoman: "ARE" },
-  { english: "ninth", pos: "adj.", santaliRoman: "AREYAG", santaliRoman2: "AREYIJ" },
-  { english: "noun", pos: "n.", santaliRoman: "QUnUm" }, // This was UQUm / QUnUm earlier, let's use QUnUm from list
-  { english: "now", pos: "adv.", santaliRoman: "nIToG", santaliRoman2: "nIToF", santaliRoman3: "nIT" },
-  { english: "number (in grammar)", pos: "n.", santaliRoman: "GotAn" }, // complex sub-parts
-  { english: "number (in mathematics)", pos: "n.", santaliRoman: "LEKHA" },
-  { english: "object", pos: "n.", santaliRoman: "JoToS" },
-  { english: "oceanography", pos: "n.", santaliRoman: "DoRYATno" }, // This was geography before
-  { english: "oil", pos: "n., vt.", santaliRoman: "SUnUm" },
-  { english: "old", pos: "adj.", santaliRoman: "mARE", santaliRoman2: "mAREnAG" },
-  { english: "one", pos: "n.", santaliRoman: "mID", santaliRoman2: "mIDtIJ" }, // mIDtIJ for adj.
-  { english: "page", pos: "n.", santaliRoman: "SAhtA" },
-  { english: "parts of speech", pos: "n.", santaliRoman: "PA.RIS" },
-  { english: "past", pos: "n., adj.", santaliRoman: "EnAF", santaliRoman2: "SEDAY", santaliRoman3: "PA.hIL" },
-  { english: "perfect", pos: "adj.", santaliRoman: "SA.TA.n" },
-  { english: "person (in grammar)", pos: "n.", santaliRoman: "GoRon" }, // complex sub-parts
-  { english: "person", pos: "n.", santaliRoman: "hoZ" },
-  { english: "picture", pos: "n.", santaliRoman: "CHoBI" },
-  { english: "place", pos: "n.", santaliRoman: "JAYGA", santaliRoman2: "tHANV" }, // tHANV for vt.
-  { english: "point", pos: "n.", santaliRoman: "tUdA.G", santaliRoman2: "BInDU", santaliRoman3: "UDUG" }, // UDUG for vi.
-  { english: "position", pos: "n.", santaliRoman: "tHANV" },
-  { english: "postposition", pos: "n.", santaliRoman: "GA:nA.t" },
-  { english: "preface", pos: "n.", santaliRoman: "onoZ" },
-  { english: "present", pos: "adj.", santaliRoman: "nITAF", santaliRoman2: "nAhAG" },
-  { english: "president", pos: "n.", santaliRoman: "PARSET" },
-  { english: "press", pos: "vt.", santaliRoman: "oTA" },
-  { english: "previous", pos: "adj.", santaliRoman: "PA.hIL", santaliRoman2: "mAMAF" },
-  { english: "prime minister", pos: "n.", santaliRoman: "mARAF monTRI" },
-  { english: "prison", pos: "n.", santaliRoman: "JIhoL" },
-  { english: "procession", pos: "n.", santaliRoman: "mICHIL" },
-  { english: "pronoun", pos: "n.", santaliRoman: "UQUm", santaliRoman2: "QUnUm" }, // QUnUm is also noun. Using UQUm here
-  { english: "queen", pos: "n.", santaliRoman: "RA.nI" },
-  { english: "quotient", pos: "n.", santaliRoman: "hAZA", santaliRoman2: "JUZU" },
-  { english: "rat", pos: "n.", santaliRoman: "GUdU", santaliRoman2: "CUtU", santaliRoman3: "SARGA", santaliRoman4: "CUNDX" },
-  { english: "recognition", pos: "n.", santaliRoman: "UPURUm" },
-  { english: "red", pos: "adj.", santaliRoman: "ARAG" },
-  { english: "relation", pos: "n.", santaliRoman: "SA.GA.Y" },
-  { english: "remainder", pos: "n.", santaliRoman: "hAtAMSA", santaliRoman2: "SAREJ" },
-  { english: "root", pos: "n.", santaliRoman: "REhED", santaliRoman2: "BUtA", santaliRoman3: "PHEZAT", santaliRoman4: "JAF" },
-  { english: "row", pos: "n.", santaliRoman: "GITIJ THAR", santaliRoman2: "PAnTE" }, // PAnTE for vt/vi
-  { english: "rule", pos: "n.", santaliRoman: "nIYom" },
-  { english: "save", pos: "vt.", santaliRoman: "BAQCAW" },
-  { english: "schedule", pos: "n.", santaliRoman: "DHAP" },
-  { english: "school", pos: "n.", santaliRoman: "ASnA" },
-  { english: "science", pos: "n.", santaliRoman: "SANMES" },
-  { english: "search", pos: "vt., vi.", santaliRoman: "PAnTE" },
-  { english: "second", pos: "adj.", santaliRoman: "BARAG", santaliRoman2: "DoSARIJ", santaliRoman3: "DoSAR" }, // also mID SE.KE.nd SomoY for time
-  { english: "secretary", pos: "n.", santaliRoman: "SUTRET" }, // complex sub-parts
-  { english: "see", pos: "vt., vi.", santaliRoman: "QEL" },
-  { english: "seed", pos: "n.", santaliRoman: "JAF", santaliRoman2: "ITA." },
-  { english: "send", pos: "vt.", santaliRoman: "BHEJA" },
-  { english: "sentence", pos: "n.", santaliRoman: "A.YA.T" },
-  { english: "set", pos: "n.", santaliRoman: "JARWA", santaliRoman2: "JAWRA" },
-  { english: "seven", pos: "n., adj.", santaliRoman: "EYAY" },
-  { english: "seventh", pos: "adj.", santaliRoman: "EYAYAG", santaliRoman2: "EYAYIJ" },
-  { english: "share", pos: "n.", santaliRoman: "JUZU", santaliRoman2: "hA.tIQ", santaliRoman3: "BHAGX", santaliRoman4: "hAZA" }, // hA.tIQ/BHAGX for vt
-  { english: "shoe", pos: "n.", santaliRoman: "PAnAhI", santaliRoman2: "JUTA." },
-  { english: "sin", pos: "n., vi.", santaliRoman: "PAP" },
-  { english: "sinner", pos: "n.", santaliRoman: "PA.PI" },
-  { english: "sit", pos: "vi.", santaliRoman: "DUZUB" },
-  { english: "six", pos: "n., adj.", santaliRoman: "TURUY" },
-  { english: "sixth", pos: "adj.", santaliRoman: "TURUYAG", santaliRoman2: "TURUYIJ" },
-  { english: "sleep", pos: "n., vi.", santaliRoman: "JA.PID" },
-  { english: "slim", pos: "adj., vi.", santaliRoman: "PATLA", santaliRoman2: "moRA" },
-  { english: "small", pos: "adj.", santaliRoman: "hUdIQ" },
-  { english: "smell", pos: "vt.", santaliRoman: "JI~", santaliRoman2: "So~" }, // So~ for n/vi
-  { english: "smile", pos: "n., vi.", santaliRoman: "LANDA" },
-  { english: "smoke", pos: "n.", santaliRoman: "DHUNVA." }, // vi. PUNGI QU~
-  { english: "snake", pos: "n.", santaliRoman: "BIQ" },
-  { english: "society", pos: "n.", santaliRoman: "SAVTA" },
-  { english: "soil", pos: "n., vi.", santaliRoman: "hASA" },
-  { english: "soul", pos: "n.", santaliRoman: "JIWI~" },
-  { english: "sound", pos: "n., vi.", santaliRoman: "SAdE", santaliRoman2: "SAZE" },
-  { english: "space", pos: "n.", santaliRoman: "PHADA", santaliRoman2: "JAYGA" },
-  { english: "speak", pos: "vt., vi.", santaliRoman: "RoZ", santaliRoman2: "mEn" },
-  { english: "student", pos: "n.", santaliRoman: "CETETIYA.", santaliRoman2: "CEDoGIJ" },
-  { english: "subject", pos: "n.", santaliRoman: "mUTA.n" },
-  { english: "subtract", pos: "vt.", santaliRoman: "BHEGED" },
-  { english: "subtraction", pos: "n.", santaliRoman: "BHEGED" },
-  { english: "take", pos: "vt.", santaliRoman: "IDI" },
-  { english: "tall", pos: "adj.", santaliRoman: "USUL" },
-  { english: "talk", pos: "vi.", santaliRoman: "RoZ", santaliRoman2: "BHASon Em" },
-  { english: "tea", pos: "n.", santaliRoman: "CA" },
-  { english: "teach", pos: "vt.", santaliRoman: "PAZhAW" },
-  { english: "teacher", pos: "n.", santaliRoman: "mACET" },
-  { english: "tell", pos: "vt.", santaliRoman: "RoZ", santaliRoman2: "mEn" },
-  { english: "ten", pos: "n., adj.", santaliRoman: "GEL" },
-  { english: "tenth", pos: "adj.", santaliRoman: "GELAG", santaliRoman2: "GELIJ" },
-  { english: "tense", pos: "n.", santaliRoman: "nAF" },
-  { english: "thing", pos: "n.", santaliRoman: "JInIS" },
-  { english: "third", pos: "adj.", santaliRoman: "PEYAG", santaliRoman2: "TESARAG", santaliRoman3: "PEYIJ", santaliRoman4: "TESARIJ", santaliRoman5: "TESAR" },
-  { english: "three", pos: "n.", santaliRoman: "PE", santaliRoman2: "PEYA" }, // PEYA for adj.
-  { english: "throw", pos: "vt.", santaliRoman: "CAPAD" },
-  { english: "tiger", pos: "n.", santaliRoman: "TA.RUB" },
-  { english: "time", pos: "n.", santaliRoman: "ttAZAF", santaliRoman2: "SomoY", santaliRoman3: "oKTo" },
-  { english: "transitive", pos: "adj.", santaliRoman: "EnED" },
-  { english: "two", pos: "n.", santaliRoman: "BAR", santaliRoman2: "BARYA" }, // BARYA for adj.
-  { english: "understand", pos: "vt., vi.", santaliRoman: "BUJHA.W" },
-  { english: "verb", pos: "n.", santaliRoman: "KAnWA" },
-  { english: "village", pos: "n.", santaliRoman: "A.TU" },
-  { english: "vowel", pos: "n.", santaliRoman: "RAhA AZAF" },
-  { english: "volcano", pos: "n.", santaliRoman: "SE:GE.L BURU" },
-  { english: "war", pos: "n.", santaliRoman: "LA.ZhA.Y", santaliRoman2: "JUDXDHo~" },
-  { english: "water", pos: "n.", santaliRoman: "DAG" },
-  { english: "white", pos: "adj.", santaliRoman: "PUNM" },
-  { english: "wire", pos: "n.", santaliRoman: "TAR" },
-  { english: "woman", pos: "n.", santaliRoman: "KUZI~" }, // old woman – n. BUZhI; BUdHI;
-  { english: "old woman", pos: "n.", santaliRoman: "BUZhI", santaliRoman2: "BUdHI" },
-  { english: "word", pos: "n.", santaliRoman: "A.ZA." },
-  { english: "write", pos: "vt., vi.", santaliRoman: "oL" },
-  { english: "writer", pos: "n.", santaliRoman: "onoLIYA." },
-];
+// Santali First Names (Placeholder)
+export const santaliFirstNames: string[] = ["Soma", "Mangal", "Budhu", "Bihari", "Rani", "Fulmoni", "Salge", "Juri"];
 
-// Append these new words to the existing expandedGeneralVocabulary
-// I will use a helper function to process each entry from newDictionaryData
-// and ensure unique IDs.
-
-let currentIdCounter = expandedGeneralVocabulary.length + 1; // Start ID counter after existing words
-
-newDictionaryData.forEach(entry => {
-    // Primary entry
-    expandedGeneralVocabulary.push({
-        id: `genDict_${currentIdCounter++}`,
-        english: entry.english,
-        transliteration: entry.santaliRoman,
-        olChiki: convertRomanKeyToOlChiki(entry.santaliRoman)
-    });
-
-    // Handle alternative Santali Roman forms if they exist
-    if (entry.santaliRoman2) {
-        expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english, // English word remains the same
-            transliteration: entry.santaliRoman2,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman2)
-        });
-    }
-    if (entry.santaliRoman3) {
-         expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english,
-            transliteration: entry.santaliRoman3,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman3)
-        });
-    }
-    if (entry.santaliRoman4) {
-         expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english,
-            transliteration: entry.santaliRoman4,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman4)
-        });
-    }
-     if (entry.santaliRoman5) {
-         expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english,
-            transliteration: entry.santaliRoman5,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman5)
-        });
-    }
-    if (entry.santaliRoman6) {
-         expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english,
-            transliteration: entry.santaliRoman6,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman6)
-        });
-    }
-    if (entry.santaliRoman7) {
-         expandedGeneralVocabulary.push({
-            id: `genDict_${currentIdCounter++}`,
-            english: entry.english,
-            transliteration: entry.santaliRoman7,
-            olChiki: convertRomanKeyToOlChiki(entry.santaliRoman7)
-        });
-    }
-});
+// Santali Surnames (Placeholder)
+export const santaliSurnames: string[] = ["Murmu", "Hansda", "Marndi", "Soren", "Tudu", "Kisku", "Hembram", "Baske"];
 
 
 export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
@@ -734,76 +404,76 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'a4', olChiki: 'ᱦᱟᱹᱠᱩ', transliteration: 'haku', english: 'Fish' },
     { id: 'a5', olChiki: 'ᱵᱤᱛᱠᱤᱞ', transliteration: 'bitkil', english: 'Cat' },
     { id: 'a6', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom', english: 'Goat' },
-    { id: 'a7', olChiki: 'ᱠᱩᱞᱟᱹᱭ', transliteration: 'kulai', english: 'Rabbit' },
+    { id: 'a7', olChiki: 'ᱠᱩᱞᱟᱹᱭ', transliteration: 'kulăi', english: 'Rabbit' },
     { id: 'a8', olChiki: 'ᱪᱤᱛᱟᱹ', transliteration: 'chitar', english: 'Panther' },
     { id: 'a9', olChiki: 'ᱠᱟᱴᱟᱣᱟ ᱛᱟᱹᱨᱩᱵ', transliteration: 'katwa tarub', english: 'Lion' },
     { id: 'a10', olChiki: 'ᱛᱟᱹᱨᱩᱵ', transliteration: 'tarub', english: 'Tiger' },
     { id: 'a11', olChiki: 'ᱵᱤᱨ ᱥᱩᱠᱨᱤ', transliteration: 'bir sukri', english: 'Boar' },
     { id: 'a12', olChiki: 'ᱵᱟᱱᱟ', transliteration: 'bana', english: 'Bear' },
-    { id: 'a13', olChiki: 'ᱦᱟᱹᱬᱩ', transliteration: 'hanu', english: 'Monkey' },
+    { id: 'a13', olChiki: 'ᱦᱟᱹᱬᱩ', transliteration: 'hăṇu', english: 'Monkey' },
     { id: 'a14', olChiki: 'ᱵᱤᱨᱦᱚᱲ', transliteration: 'birhor', english: 'Gorilla' },
-    { id: 'a15', olChiki: 'ᱦᱟᱹᱛᱤ', transliteration: 'hati', english: 'Elephant' },
-    { id: 'a16', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Deer' }, // Note: 'jil' also means 'meat'
+    { id: 'a15', olChiki: 'ᱦᱟᱹᱛᱤ', transliteration: 'hăti', english: 'Elephant' },
+    { id: 'a16', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Deer' },
     { id: 'a18', olChiki: 'ᱛᱩᱭᱩ', transliteration: 'tuyu', english: 'Fox' },
     { id: 'a19', olChiki: 'ᱦᱟᱰᱜᱟᱨ', transliteration: 'hadgar', english: 'Hyena' },
-    { id: 'a20', olChiki: 'ᱡᱤᱞ ᱦᱤᱡ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'jil hij gidra', english: 'Fawn' },
-    { id: 'a21', olChiki: 'ᱛᱩᱲ', transliteration: 'tur', english: 'Squirrel' },
-    { id: 'a22', olChiki: 'ᱫᱟᱜ ᱦᱟᱹᱛᱤ', transliteration: 'dag hati', english: 'Rhinoceros' },
+    { id: 'a20', olChiki: 'ᱡᱤᱞ ᱦᱤᱡ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'jil hij gidră', english: 'Fawn' },
+    { id: 'a21', olChiki: 'ᱛᱩᱲ', transliteration: 'tuṛ', english: 'Squirrel' },
+    { id: 'a22', olChiki: 'ᱫᱟᱜ ᱦᱟᱹᱛᱤ', transliteration: 'dag hăti', english: 'Rhinoceros' },
     { id: 'a23', olChiki: 'ᱥᱟᱫᱚᱢ', transliteration: 'sadom', english: 'Horse' },
     { id: 'a24', olChiki: 'ᱯᱩᱥᱤ', transliteration: 'pusi', english: 'Cat' },
     { id: 'a25', olChiki: 'ᱜᱟᱫᱷᱟ', transliteration: 'gadha', english: 'Ass' },
     { id: 'a26', olChiki: 'ᱵᱷᱤᱰᱤ', transliteration: 'bhidi', english: 'Sheep' },
-    { id: 'a27', olChiki: 'ᱩᱸᱴ', transliteration: 'unt', english: 'Camel' },
+    { id: 'a27', olChiki: 'ᱩᱸᱴ', transliteration: 'uṇṭ', english: 'Camel' },
     { id: 'a29', olChiki: 'ᱮᱸᱜᱟ ᱥᱮᱛᱟ', transliteration: 'enga seta', english: 'Bitch' },
     { id: 'a31', olChiki: 'ᱮᱸᱜᱟ ᱥᱟᱫᱚᱢ', transliteration: 'enga sadom', english: 'Mare' },
-    { id: 'a32', olChiki: 'ᱥᱟᱫᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'sadom gidra', english: 'Colt' },
+    { id: 'a32', olChiki: 'ᱥᱟᱫᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'sadom gidră', english: 'Colt' },
     { id: 'a33', olChiki: 'ᱪᱩᱴᱩ', transliteration: 'cutu', english: 'Mouse' },
     { id: 'a35', olChiki: 'ᱮᱸᱜᱟ ᱢᱮᱨᱚᱢ', transliteration: 'enga merom', english: 'She goat' },
-    { id: 'a36', olChiki: 'ᱢᱮᱨᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'merom gidra', english: 'Kid' },
+    { id: 'a36', olChiki: 'ᱢᱮᱨᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'merom gidră', english: 'Kid' },
     { id: 'a37', olChiki: 'ᱫᱟᱢᱠᱚᱢ', transliteration: 'damkom', english: 'Calf' },
-    { id: 'a38', olChiki: 'ᱯᱩᱥᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'pusi gidra', english: 'Kitten' },
-    { id: 'a39', olChiki: 'ᱰᱟᱝᱨᱟ', transliteration: 'dangra', english: 'Ox' },
-    { id: 'a40', olChiki: 'ᱵᱷᱤᱰᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'bhidi gidra', english: 'Lamb' },
-    { id: 'a41', olChiki: 'ᱠᱟᱲᱟ', transliteration: 'kada', english: 'Buffalo' },
+    { id: 'a38', olChiki: 'ᱯᱩᱥᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'pusi gidră', english: 'Kitten' },
+    { id: 'a39', olChiki: 'ᱰᱟᱝᱨᱟ', transliteration: 'ḍangra', english: 'Ox' },
+    { id: 'a40', olChiki: 'ᱵᱷᱤᱰᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'bhidi gidră', english: 'Lamb' },
+    { id: 'a41', olChiki: 'ᱠᱟᱲᱟ', transliteration: 'kaṛa', english: 'Buffalo' },
     { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hound' },
-    { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'sodo', english: 'Bull' },
+    { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'soṛo', english: 'Bull' },
     { id: 'a44', olChiki: 'ᱥᱩᱠᱨᱤ', transliteration: 'sukri', english: 'Pig' },
   ],
   "Vegetables": [
-    { id: 'v1', olChiki: 'ᱟᱹᱞᱩ', transliteration: 'alu', english: 'Potato' },
+    { id: 'v1', olChiki: 'ᱟᱹᱞᱩ', transliteration: 'ălu', english: 'Potato' },
     { id: 'v2', olChiki: 'ᱵᱟᱦᱟ ᱠᱩᱵᱤ', transliteration: 'baha kubi', english: 'Cauliflower' },
     { id: 'v3', olChiki: 'ᱯᱚᱴᱚᱢ ᱠᱩᱵᱤ', transliteration: 'potom kubi', english: 'Cabbage' },
     { id: 'v4', olChiki: 'ᱜᱟᱡᱚᱨ', transliteration: 'gajor', english: 'Carrot' },
     { id: 'v5', olChiki: 'ᱛᱟᱦᱮᱨ', transliteration: 'taher', english: 'Cucumber' },
-    { id: 'v6', olChiki: 'ᱰᱮᱸᱜᱟᱲ', transliteration: 'bengad', english: 'Brinjal' },
+    { id: 'v6', olChiki: 'ᱰᱮᱸᱜᱟᱲ', transliteration: 'ḍengad', english: 'Brinjal' },
     { id: 'v7', olChiki: 'ᱯᱮᱭᱟᱡ', transliteration: 'peyaj', english: 'Onion' },
     { id: 'v8', olChiki: 'ᱢᱚᱴᱚᱨ ᱪᱷᱚᱞᱟ', transliteration: 'motor chola', english: 'Pea' },
     { id: 'v9', olChiki: 'ᱠᱟᱨᱞᱟ', transliteration: 'karla', english: 'Bitter gourd' },
-    { id: 'v10', olChiki: 'ᱢᱩᱞᱟᱹ', transliteration: 'mula', english: 'Raddish' },
-    { id: 'v11', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ', transliteration: 'bilati', english: 'Tomato' },
+    { id: 'v10', olChiki: 'ᱢᱩᱞᱟᱹ', transliteration: 'mulă', english: 'Raddish' },
+    { id: 'v11', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ', transliteration: 'bilăti', english: 'Tomato' },
     { id: 'v12', olChiki: 'ᱦᱚᱛᱚᱫ', transliteration: 'hotod', english: 'Bottle gourd' },
     { id: 'v13', olChiki: 'ᱚᱫᱟ', transliteration: 'oda', english: 'Ginger' },
     { id: 'v14', olChiki: 'ᱯᱟᱞᱚᱱ ᱟᱲᱟᱜ', transliteration: 'palon adag', english: 'Spinach' },
-    { id: 'v15', olChiki: 'ᱟᱨᱟᱜ ᱢᱩᱞᱟᱹ', transliteration: 'arag mula', english: 'Turnip' },
-    { id: 'v16', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'marich', english: 'Chilli' },
+    { id: 'v15', olChiki: 'ᱟᱨᱟᱜ ᱢᱩᱞᱟᱹ', transliteration: 'arag mulă', english: 'Turnip' },
+    { id: 'v16', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mărich', english: 'Chilli' },
     { id: 'v17', olChiki: 'ᱵᱷᱮᱰᱣᱟ', transliteration: 'bhedwa', english: 'Lady finger' },
-    { id: 'v18', olChiki: 'ᱯᱩᱫᱱᱟᱹ', transliteration: 'pudna', english: 'Mint' },
+    { id: 'v18', olChiki: 'ᱯᱩᱫᱱᱟᱹ', transliteration: 'pudnă', english: 'Mint' },
     { id: 'v19', olChiki: 'ᱡᱟᱲᱟ', transliteration: 'jada', english: 'Papaya' },
     { id: 'v20', olChiki: 'ᱢᱚᱥᱞᱟ ᱥᱟᱠᱟᱢ', transliteration: 'mosla sakam', english: 'Coriander' },
-    { id: 'v21', olChiki: 'ᱜᱷᱟᱱᱴᱟᱲ', transliteration: 'ghatad', english: 'Jack fruit' },
+    { id: 'v21', olChiki: 'ᱜᱷᱟᱱᱴᱟᱲ', transliteration: 'ghantad', english: 'Jack fruit' },
   ],
   "Birds": [
     { id: 'b1', olChiki: 'ᱢᱟᱨᱟᱜ', transliteration: 'marag', english: 'Peacock' },
     { id: 'b2', olChiki: 'ᱢᱤᱨᱩ', transliteration: 'miru', english: 'Parrot' },
-    { id: 'b3', olChiki: 'ᱠᱟᱹᱦᱩ', transliteration: 'kahu', english: 'Crow' },
+    { id: 'b3', olChiki: 'ᱠᱟᱹᱦᱩ', transliteration: 'kăhu', english: 'Crow' },
     { id: 'b4', olChiki: 'ᱯᱟᱨᱣᱟ', transliteration: 'parwa', english: 'Pigeon' },
     { id: 'b5', olChiki: 'ᱠᱤᱥᱱᱤ', transliteration: 'kisni', english: 'Myna' },
     { id: 'b6', olChiki: 'ᱞᱮᱴᱠᱟ ᱪᱮᱸᱬᱮ', transliteration: 'letka chene', english: 'Sparrow' },
     { id: 'b7', olChiki: 'ᱠᱩᱲᱤᱫ', transliteration: 'kudid', english: 'Eagle' },
     { id: 'b8', olChiki: 'ᱠᱚᱡᱚᱨ', transliteration: 'kojor', english: 'Owl' },
-    { id: 'b9', olChiki: 'ᱥᱤᱢ ᱥᱟᱹᱰᱤ', transliteration: 'sim sandi', english: 'Cock' },
+    { id: 'b9', olChiki: 'ᱥᱤᱢ ᱥᱟᱹᱰᱤ', transliteration: 'sim săḍi', english: 'Cock' },
     { id: 'b10', olChiki: 'ᱥᱤᱢ ᱮᱸᱜᱟ', transliteration: 'sim enga', english: 'Hen' },
-    { id: 'b11', olChiki: 'ᱜᱮᱲᱮ', transliteration: 'gede', english: 'Duck' },
+    { id: 'b11', olChiki: 'ᱜᱮᱲᱮ', transliteration: 'geṛe', english: 'Duck' },
     { id: 'b12', olChiki: 'ᱢᱟᱨᱟᱝ ᱜᱮᱰᱮ', transliteration: 'marang gede', english: 'Swan' },
     { id: 'b13', olChiki: 'ᱜᱤᱫᱤ', transliteration: 'gidi', english: 'Vulture' },
   ],
@@ -812,21 +482,21 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'e2', olChiki: 'ᱟᱪᱟᱨ', transliteration: 'achar', english: 'Pickle' },
     { id: 'e3', olChiki: 'ᱥᱩᱡᱤ', transliteration: 'suji', english: 'Semolina' },
     { id: 'e4', olChiki: 'ᱚᱴᱟ', transliteration: 'ota', english: 'Flour' },
-    { id: 'e5', olChiki: 'ᱤᱞᱟᱹᱭᱪᱤ', transliteration: 'elaichi', english: 'Comfit' },
+    { id: 'e5', olChiki: 'ᱤᱞᱟᱹᱭᱪᱤ', transliteration: 'ilăichi', english: 'Comfit' },
     { id: 'e6', olChiki: 'ᱛᱚᱣᱟ ᱨᱮᱭᱟᱜ ᱪᱟᱭ', transliteration: 'towa reag chay', english: 'Coffee' },
     { id: 'e7', olChiki: 'ᱛᱚᱣᱟ', transliteration: 'towa', english: 'Milk' },
     { id: 'e8', olChiki: 'ᱮᱥᱠᱨᱮᱢ', transliteration: 'eskrem', english: 'Ice-cream' },
     { id: 'e9', olChiki: 'ᱜᱩᱦᱩᱢ', transliteration: 'guhum', english: 'Wheat' },
     { id: 'e10', olChiki: 'ᱤᱛᱤᱞ ᱥᱩᱱᱩᱢ', transliteration: 'itil sunum', english: 'Ghee' },
     { id: 'e11', olChiki: 'ᱪᱚᱴᱱᱤ', transliteration: 'cotni', english: 'Sauce' },
-    { id: 'e12', olChiki: 'ᱪᱟᱱᱟ/ᱪᱷᱚᱞᱟ', transliteration: 'chana/chola', english: 'Gram' },
+    { id: 'e12', olChiki: 'ᱪᱟᱱᱟ/ᱪᱷᱚᱞᱟ', transliteration: 'chona/chola', english: 'Gram' },
     { id: 'e13', olChiki: 'ᱪᱟᱣᱞᱮ', transliteration: 'chawle', english: 'Rice' },
     { id: 'e14', olChiki: 'ᱪᱟᱭ', transliteration: 'chai', english: 'Tea' },
     { id: 'e15', olChiki: 'ᱪᱤᱱᱤ', transliteration: 'chini', english: 'Sugar' },
-    { id: 'e16', olChiki: 'ᱯᱟᱹᱱᱤᱨ', transliteration: 'ponir', english: 'Cheese' },
+    { id: 'e16', olChiki: 'ᱯᱟᱹᱱᱤᱨ', transliteration: 'pănir', english: 'Cheese' },
     { id: 'e17', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Vegetables' },
     { id: 'e18', olChiki: 'ᱥᱩᱱᱩᱢ', transliteration: 'sunum', english: 'Oil' },
-    { id: 'e19', olChiki: 'ᱫᱟᱹᱞ', transliteration: 'daal', english: 'Pulse' },
+    { id: 'e19', olChiki: 'ᱫᱟᱹᱞ', transliteration: 'dăl', english: 'Pulse' },
     { id: 'e20', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ ᱪᱟᱴᱱᱤ', transliteration: 'bilati cotni', english: 'Tomato sauce' },
     { id: 'e21', olChiki: 'ᱵᱚᱨᱚᱯᱷ', transliteration: 'boroph', english: 'Ice' },
     { id: 'e22', olChiki: 'ᱵᱤᱥᱠᱩᱴ', transliteration: 'biskut', english: 'Biscuit' },
@@ -839,7 +509,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'e29', olChiki: 'ᱛᱩᱲᱤ', transliteration: 'tudi', english: 'Mustard' },
     { id: 'e30', olChiki: 'ᱧᱤᱸᱫᱟ ᱫᱟᱠᱟ', transliteration: 'ninda daka', english: 'Bread' },
     { id: 'e31', olChiki: 'ᱥᱚᱨᱵᱚᱛ', transliteration: 'sorbot', english: 'Syrup' },
-    { id: 'e32', olChiki: 'ᱯᱟᱹᱨᱣᱟ', transliteration: 'parwa', english: 'Wine' }, // Note: parwa is also Pigeon
+    { id: 'e32', olChiki: 'ᱯᱟᱹᱨᱣᱟ', transliteration: 'părwa', english: 'Wine' },
     { id: 'e33', olChiki: 'ᱧᱮᱸᱞᱮᱨᱟᱥᱟ', transliteration: 'nelerasa', english: 'Honey' },
     { id: 'e34', olChiki: 'ᱛᱩᱲᱤ ᱥᱩᱱᱩᱢ', transliteration: 'tudi sunum', english: 'Mustard oil' },
   ],
@@ -849,7 +519,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'bp3', olChiki: 'ᱠᱷᱟᱯᱨᱤ', transliteration: 'khapri', english: 'Skull' },
     { id: 'bp4', olChiki: 'ᱵᱤᱥᱤᱡᱟᱲ', transliteration: 'bisijad', english: 'Spinal cord' },
     { id: 'bp5', olChiki: 'ᱛᱚᱛᱠᱟ', transliteration: 'totka', english: 'Back of head' },
-    { id: 'bp6', olChiki: 'ᱦᱟᱛᱟᱲ', transliteration: 'hatad', english: 'Brain' }, // Taking first option from "hatad, bheja"
+    { id: 'bp6', olChiki: 'ᱦᱟᱛᱟᱲ', transliteration: 'hatad', english: 'Brain' },
     { id: 'bp7', olChiki: 'ᱢᱚᱞᱚᱝ', transliteration: 'molong', english: 'Forehead' },
     { id: 'bp8', olChiki: 'ᱢᱚᱲᱟ', transliteration: 'moda', english: 'Face' },
     { id: 'bp9', olChiki: 'ᱢᱮᱫ', transliteration: 'med', english: 'Eye' },
@@ -859,40 +529,40 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'bp13', olChiki: 'ᱞᱩᱛᱩᱨ', transliteration: 'lutur', english: 'Ear' },
     { id: 'bp14', olChiki: 'ᱢᱚᱪᱟ', transliteration: 'mocha', english: 'Mouth' },
     { id: 'bp15', olChiki: 'ᱞᱩᱴᱤ', transliteration: 'luti', english: 'Lip' },
-    { id: 'bp16', olChiki: 'ᱛᱟᱹᱨᱩ', transliteration: 'taru', english: 'Palate' },
+    { id: 'bp16', olChiki: 'ᱛᱟᱹᱨᱩ', transliteration: 'tăru', english: 'Palate' },
     { id: 'bp17', olChiki: 'ᱰᱟᱴᱟ', transliteration: 'data', english: 'Tooth' },
     { id: 'bp18', olChiki: 'ᱟᱞᱟᱝ', transliteration: 'alang', english: 'Tongue' },
     { id: 'bp19', olChiki: 'ᱦᱚᱴᱚᱜᱽ', transliteration: 'hotog', english: 'Neck' },
     { id: 'bp20', olChiki: 'ᱛᱟᱨᱮᱱ', transliteration: 'taren', english: 'Shoulder' },
-    { id: 'bp21', olChiki: 'ᱥᱚᱯᱟ', transliteration: 'sopa', english: 'arm' }, // Changed from 'Arm' to 'arm' to match input
+    { id: 'bp21', olChiki: 'ᱥᱚᱯᱟ', transliteration: 'sopa', english: 'arm' },
     { id: 'bp22', olChiki: 'ᱦᱟᱨᱛᱟ', transliteration: 'harta', english: 'Skin' },
     { id: 'bp23', olChiki: 'ᱛᱤ', transliteration: 'ti', english: 'Hand' },
     { id: 'bp24', olChiki: 'ᱢᱚᱠᱟ', transliteration: 'moka', english: 'Elbow' },
     { id: 'bp25', olChiki: 'ᱛᱤᱷ ᱛᱟᱞᱠᱷᱟ', transliteration: 'ti talka', english: 'Palm' },
-    { id: 'bp26', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'katub', english: 'Finger' },
+    { id: 'bp26', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kăṭub', english: 'Finger' },
     { id: 'bp27', olChiki: 'ᱨᱟᱢᱟ', transliteration: 'rama', english: 'Nail' },
-    { id: 'bp28', olChiki: 'ᱮᱸᱜᱟ ᱠᱟᱹᱴᱩᱵ', transliteration: 'enga katub', english: 'Thumb' },
-    { id: 'bp29', olChiki: 'ᱩᱫᱩᱜ ᱠᱟᱹᱴᱩᱵ', transliteration: 'udug katub', english: 'Pointer Finger' }, // Changed from "Panter"
-    { id: 'bp30', olChiki: 'ᱥᱤᱫ ᱠᱟᱹᱴᱩᱵ', transliteration: 'sid katub', english: 'Middle finger' },
-    { id: 'bp31', olChiki: 'ᱵᱟᱯᱞᱟ ᱠᱟᱹᱴᱩᱵᱽ', transliteration: 'bapla katub', english: 'Ring finger' },
-    { id: 'bp32', olChiki: 'ᱦᱩᱰᱤᱧ ᱠᱟᱹᱴᱩᱵ', transliteration: 'hudinj katub', english: 'Little finger' },
-    { id: 'bp33', olChiki: 'ᱠᱚᱲᱟᱢ', transliteration: 'kodam', english: 'Chest' },
+    { id: 'bp28', olChiki: 'ᱮᱸᱜᱟ ᱠᱟᱹᱴᱩᱵ', transliteration: 'enga kăṭub', english: 'Thumb' },
+    { id: 'bp29', olChiki: 'ᱩᱫᱩᱜ ᱠᱟᱹᱴᱩᱵ', transliteration: 'udug kăṭub', english: 'Pointer Finger' },
+    { id: 'bp30', olChiki: 'ᱥᱤᱫ ᱠᱟᱹᱴᱩᱵ', transliteration: 'sid kăṭub', english: 'Middle finger' },
+    { id: 'bp31', olChiki: 'ᱵᱟᱯᱞᱟ ᱠᱟᱹᱴᱩᱵᱽ', transliteration: 'bapla kăṭub', english: 'Ring finger' },
+    { id: 'bp32', olChiki: 'ᱦᱩᱰᱤᱧ ᱠᱟᱹᱴᱩᱵ', transliteration: 'huḍinj kăṭub', english: 'Little finger' },
+    { id: 'bp33', olChiki: 'ᱠᱚᱲᱟᱢ', transliteration: 'koṛam', english: 'Chest' },
     { id: 'bp34', olChiki: 'ᱵᱚᱨᱚ', transliteration: 'boro', english: 'Lungs' },
     { id: 'bp35', olChiki: 'ᱤᱱ', transliteration: 'in', english: 'Heart' },
-    { id: 'bp36', olChiki: 'ᱵᱩᱠᱟᱹ', transliteration: 'buka', english: 'Navel' },
+    { id: 'bp36', olChiki: 'ᱵᱩᱠᱟᱹ', transliteration: 'bukă', english: 'Navel' },
     { id: 'bp37', olChiki: 'ᱫᱮᱭᱟ', transliteration: 'deya', english: 'Back' },
-    { id: 'bp38', olChiki: 'ᱰᱩᱵᱷᱤ', transliteration: 'dubhi', english: 'Rump' },
+    { id: 'bp38', olChiki: 'ᱰᱩᱵᱷᱤ', transliteration: 'ḍubhi', english: 'Rump' },
     { id: 'bp39', olChiki: 'ᱞᱟᱡᱽ', transliteration: 'laj', english: 'Stomach' },
-    { id: 'bp40', olChiki: 'ᱰᱟᱸᱰᱟ', transliteration: 'danda', english: 'Waist' },
-    { id: 'bp41', olChiki: 'ᱢᱩᱛᱩ', transliteration: 'mutu', english: 'genital' }, // Changed to 'genital'
-    { id: 'bp42', olChiki: 'ᱰᱮᱠᱮ', transliteration: 'deke', english: 'Buttock' },
+    { id: 'bp40', olChiki: 'ᱰᱟᱸᱰᱟ', transliteration: 'ḍanḍa', english: 'Waist' },
+    { id: 'bp41', olChiki: 'ᱢᱩᱛᱩ', transliteration: 'mutu', english: 'genital' },
+    { id: 'bp42', olChiki: 'ᱰᱮᱠᱮ', transliteration: 'ḍeke', english: 'Buttock' },
     { id: 'bp43', olChiki: 'ᱡᱟᱝ', transliteration: 'jang', english: 'Bone' },
     { id: 'bp44', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Meat' },
     { id: 'bp45', olChiki: 'ᱢᱟᱭᱟᱢ', transliteration: 'mayam', english: 'Blood' },
-    { id: 'bp46', olChiki: 'ᱵᱩᱞᱩ', transliteration: 'bulu', english: 'Thigh' }, // Taking first option "bulu, dhada"
-    { id: 'bp47', olChiki: 'ᱴᱷᱤᱴᱲᱟᱜ', transliteration: 'thitnak', english: 'Knee' }, // Taking first option "thitnak, gonthe"
+    { id: 'bp46', olChiki: 'ᱵᱩᱞᱩ', transliteration: 'bulu', english: 'Thigh' },
+    { id: 'bp47', olChiki: 'ᱴᱷᱤᱴᱲᱟᱜ', transliteration: 'ṭhiṭṛag', english: 'Knee' },
     { id: 'bp48', olChiki: 'ᱡᱟᱝᱜᱟ', transliteration: 'janga', english: 'Foot' },
-    { id: 'bp49', olChiki: 'ᱤᱲᱤ', transliteration: 'idi', english: 'Heel' },
+    { id: 'bp49', olChiki: 'ᱤᱲᱤ', transliteration: 'iṛi', english: 'Heel' },
     { id: 'bp50', olChiki: 'ᱡᱟᱝᱜᱟ ᱛᱷᱚᱯᱮ', transliteration: 'Janga thope', english: 'Feet' },
   ],
   "Plants & Nature": [
@@ -910,17 +580,17 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 't3', olChiki: 'ᱪᱩᱢᱟᱹᱬ', transliteration: 'cumaṇ', english: 'Pot' },
     { id: 't4', olChiki: 'ᱥᱟᱭᱠᱮᱞ', transliteration: 'saikel', english: 'Bicycle' },
     { id: 't5', olChiki: 'ᱫᱟᱜ', transliteration: 'dag’', english: 'Water' },
-    { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kaṭub', english: 'Knife' },
+    { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kăṭub', english: 'Knife' },
     { id: 't7', olChiki: 'ᱪᱟᱨᱯᱟᱭ', transliteration: 'carpai', english: 'Bed' },
   ],
   "Food Items": [ 
     { id: 'f1', olChiki: 'ᱫᱟᱠᱟ', transliteration: 'daka', english: 'Cooked Rice' },
-    { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Curry/Vegetable Dish' }, // 'Vegetables' also as 'utu' in Eatables
+    { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Curry/Vegetable Dish' },
     { id: 'f3', olChiki: 'ᱡᱚ', transliteration: 'jo', english: 'Fruit' },
     { id: 'f4', olChiki: 'ᱯᱤᱴᱷᱟᱹ', transliteration: 'piṭhạ̈', english: 'Rice Cake/Pancake' },
     { id: 'f5', olChiki: 'ᱦᱟᱺᱰᱤ', transliteration: 'haṇḍi', english: 'Rice Beer' },
     { id: 'f6', olChiki: 'ᱵᱩᱞᱩᱝ', transliteration: 'buluṅ', english: 'Salt' },
-    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mạric', english: 'Chilli' },
+    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mărich', english: 'Chilli' },
   ],
   "Relations": [
     { id: 'rel1', olChiki: 'ᱵᱟᱵᱟ', transliteration: 'baba', english: 'Father' },
@@ -931,12 +601,12 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel6', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Grand Mother' },
     { id: 'rel7', olChiki: 'ᱡᱟᱶᱟᱭ ᱜᱚᱢᱠᱮ', transliteration: 'jaway gomke', english: 'Son in law' },
     { id: 'rel8', olChiki: 'ᱜᱟᱛᱮ', transliteration: 'gaate', english: 'Friend' },
-    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom hadam', english: 'Maternal Grandfather' }, // Same as Grand Father
-    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Maternal Grandmother' }, // Same as Grand Mother
-    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway gomke', english: 'Husband' }, // User provided jaway gomke for husband
+    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom hadam', english: 'Maternal Grandfather' },
+    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Maternal Grandmother' },
+    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway gomke', english: 'Husband' },
     { id: 'rel12', olChiki: 'ᱵᱤᱴᱤ', transliteration: 'biti', english: 'Daughter' },
     { id: 'rel13', olChiki: 'ᱵᱮᱴᱟ', transliteration: 'beta', english: 'Son' },
-    { id: 'rel14', olChiki: 'ᱫᱩᱞᱟᱹᱲ', transliteration: 'dulad', english: 'Love' },
+    { id: 'rel14', olChiki: 'ᱫᱩᱞᱟᱹᱲ', transliteration: 'dulăṛ', english: 'Love' },
     { id: 'rel15', olChiki: 'ᱵᱚᱠᱚᱧ ᱠᱩᱲᱤ', transliteration: 'bokoing kudi', english: 'Sister' },
     { id: 'rel16', olChiki: 'ᱵᱚᱭᱦᱟ', transliteration: 'boyha', english: 'Brother' },
     { id: 'rel17', olChiki: 'ᱯᱮᱲᱟ', transliteration: 'peda', english: 'Guest' },
@@ -949,7 +619,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel24', olChiki: 'ᱢᱟᱢᱤ', transliteration: 'mami', english: 'Maternal Aunt' },
     { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' },
     { id: 'rel26', olChiki: 'ᱟᱪᱮᱛ', transliteration: 'auchet', english: 'Pupil' },
-    { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijor', english: 'Own' },
+    { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijăr', english: 'Own' },
     { id: 'rel28', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱵᱟᱵᱟ', transliteration: 'honjhar baba', english: 'Father in law' },
     { id: 'rel29', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱟᱭᱚ', transliteration: 'honjhar ayo', english: 'Mother in law' },
     { id: 'rel30', olChiki: 'ᱱᱤᱡᱟᱹᱨ ᱯᱮᱲᱟ', transliteration: 'nijor peda', english: 'Relative' },
@@ -965,16 +635,16 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' },
     { id: 'd2', olChiki: 'ᱚᱛᱮ', transliteration: 'ote', english: 'Monday' },
     { id: 'd3', olChiki: 'ᱵᱟᱞᱮ', transliteration: 'bale', english: 'Tuesday' },
-    { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'sagun', english: 'Wednesday' },
-    { id: 'd5', olChiki: 'ᱥᱟᱹᱨᱫᱤ', transliteration: 'sardi', english: 'Thursday' },
-    { id: 'd6', olChiki: 'ᱡᱟᱹᱨᱩᱵ', transliteration: 'jarub', english: 'Friday' },
+    { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'săgun', english: 'Wednesday' },
+    { id: 'd5', olChiki: 'ᱥᱟᱹᱨᱫᱤ', transliteration: 'sărdi', english: 'Thursday' },
+    { id: 'd6', olChiki: 'ᱡᱟᱹᱨᱩᱵ', transliteration: 'jărub', english: 'Friday' },
     { id: 'd7', olChiki: 'ᱧᱩᱸᱦᱩᱢ', transliteration: 'inguhum', english: 'Saturday' },
   ],
   "Months": [
     { id: 'm1', olChiki: 'ᱢᱟᱜᱽ', transliteration: 'mag', english: 'January' },
-    { id: 'm2', olChiki: 'ᱯᱷᱟᱹᱜᱩᱱ', transliteration: 'phagun', english: 'February' },
-    { id: 'm3', olChiki: 'ᱪᱟᱹᱛ', transliteration: 'chhat', english: 'March' },
-    { id: 'm4', olChiki: 'ᱵᱟᱹᱭᱥᱟᱹᱠ', transliteration: 'baysakh', english: 'April' },
+    { id: 'm2', olChiki: 'ᱯᱷᱟᱹᱜᱩᱱ', transliteration: 'phăgun', english: 'February' },
+    { id: 'm3', olChiki: 'ᱪᱟᱹᱛ', transliteration: 'chăt', english: 'March' },
+    { id: 'm4', olChiki: 'ᱵᱟᱹᱭᱥᱟᱹᱠ', transliteration: 'băisăk', english: 'April' },
     { id: 'm5', olChiki: 'ᱡᱷᱮᱴ', transliteration: 'jhet', english: 'May' },
     { id: 'm6', olChiki: 'ᱟᱥᱟᱲ', transliteration: 'aasadh', english: 'June' },
     { id: 'm7', olChiki: 'ᱥᱟᱱ', transliteration: 'san', english: 'July' },
@@ -997,8 +667,8 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'o1', olChiki: 'ᱤᱥᱠᱩᱞ', transliteration: 'iskul', english: 'School' },
     { id: 'o2', olChiki: 'ᱵᱟᱡᱟᱨ', transliteration: 'bajar', english: 'Market' },
     { id: 'o3', olChiki: 'ᱦᱚᱲ', transliteration: 'hɔṛ', english: 'Person/Man' },
-    { id: 'o4', olChiki: 'ᱟᱹᱛᱩ', transliteration: 'ạtu', english: 'Village' },
-    { id: 'o5', olChiki: 'ᱧᱩᱛᱟᱹ', transliteration: 'ñutạ̈', english: 'Night' },
+    { id: 'o4', olChiki: 'ᱟᱹᱛᱩ', transliteration: 'ătu', english: 'Village' },
+    { id: 'o5', olChiki: 'ᱧᱩᱛᱟᱹ', transliteration: 'ñută', english: 'Night' },
     { id: 'o6', olChiki: 'ᱥᱮᱛᱟᱜ', transliteration: 'setag', english: 'Morning' },
     { id: 'o7', olChiki: 'ᱟᱭᱩᱵ', transliteration: 'ayub', english: 'Evening' },
     { id: 'o8', olChiki: 'ᱮᱱᱮᱭ', transliteration: 'eney', english: 'dance' },
@@ -1093,5 +763,9 @@ export function shuffleArray<T>(array: T[]): T[] {
 
 // Flatten all words for dictionary search or quiz generation
 export const allOlChikiWords: OlChikiWord[] = Object.values(categorizedOlChikiWords).flat();
+
+// Adding Santali Name Generator Data
+export const santaliFirstNamesSample: string[] = ["ᱥᱚᱢᱟ", "ᱢᱟᱝᱜᱟᱞ", "ᱵᱩᱫᱷᱩ", "ᱵᱤᱦᱟᱨᱤ", "ᱨᱟᱹᱱᱤ", "ᱯᱷᱩᱞᱢᱚᱱᱤ", "ᱥᱟᱞᱜᱮ", "ᱡᱩᱨᱤ", "ᱫᱩᱞᱟᱹᱲ", "ᱵᱟᱦᱟ"];
+export const santaliSurnamesSample: string[] = ["ᱢᱩᱨᱢᱩ", "ᱦᱟᱸᱥᱫᱟᱜ", "ᱢᱟᱹᱨᱰᱤ", "ᱥᱚᱨᱮᱱ", "ᱴᱩᱰᱩ", "ᱠᱤᱥᱠᱩ", "ᱦᱮᱢᱵᱨᱚᱢ", "ᱵᱟᱥᱠᱮ"];
 
     

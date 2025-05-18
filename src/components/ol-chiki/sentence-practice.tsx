@@ -13,8 +13,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel as RHFFormLabel, Form
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { generateOlchikiSentence, type GenerateOlchikiSentenceInput, type GenerateOlchikiSentenceOutput } from '@/ai/flows/generate-olchiki-sentence';
-import { Loader2, Wand2, Search } from 'lucide-react';
-import { olChikiCharacters, categorizedOlChikiWords, type OlChikiWord } from '@/lib/ol-chiki-data';
+import { Loader2, Wand2, Search, Shuffle } from 'lucide-react';
+import { categorizedOlChikiWords, type OlChikiWord, santaliFirstNamesSample, santaliSurnamesSample } from '@/lib/ol-chiki-data';
 
 // Direct mapping for common English keys to Ol Chiki characters for the first tool
 const directKeyToOlChikiMap: { [key: string]: string } = {
@@ -42,7 +42,7 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   'o': 'ᱳ',
   '.': '᱾',
   ',': 'ᱹ',
-  '?': '?', // Changed from '<y_bin_358>' as per user request for direct typing
+  '?': '?',
 };
 
 // Schema for the AI Translator Tool (Second tool)
@@ -66,7 +66,7 @@ export default function SentencePractice() {
     let result = '';
     for (let i = 0; i < currentInput.length; i++) {
       const char = currentInput[i];
-      result += directKeyToOlChikiMap[char] || char; // Pass through unmapped characters
+      result += directKeyToOlChikiMap[char] || char; 
     }
     return result;
   }, []);
@@ -104,7 +104,6 @@ export default function SentencePractice() {
           description: "English/Hindi sentence translated to Ol Chiki script with transliteration.",
         });
       } else {
-        // This case should ideally be handled by the error parsing in the flow itself
         throw new Error("AI model did not return the expected structured output. Check Genkit logs.");
       }
     } catch (error: any) {
@@ -138,7 +137,7 @@ export default function SentencePractice() {
 
   const onDictionarySearchSubmit: SubmitHandler<DictionarySearchData> = async (data) => {
     setIsDictionarySearching(true);
-    setDictionaryResult(null); // Reset previous result
+    setDictionaryResult(null);
     const term = data.searchTerm.trim().toLowerCase();
 
     if (!term) {
@@ -150,7 +149,7 @@ export default function SentencePractice() {
     const foundWord = allVocabularyWords.find(word =>
       word.olChiki.toLowerCase() === term ||
       word.transliteration.toLowerCase() === term ||
-      word.english.toLowerCase() === term
+      word.english.toLowerCase().includes(term) // Search if English definition includes the term
     );
 
     if (foundWord) {
@@ -160,6 +159,20 @@ export default function SentencePractice() {
     }
     setIsDictionarySearching(false);
   };
+
+  // ---- Santali Name Generator Tool States & Logic (Fourth tool) ----
+  const [generatedSantaliName, setGeneratedSantaliName] = useState<string>('');
+
+  const generateNewSantaliName = useCallback(() => {
+    const randomFirstName = santaliFirstNamesSample[Math.floor(Math.random() * santaliFirstNamesSample.length)];
+    const randomSurname = santaliSurnamesSample[Math.floor(Math.random() * santaliSurnamesSample.length)];
+    setGeneratedSantaliName(`${randomFirstName} ${randomSurname}`);
+  }, []);
+
+  useEffect(() => {
+    // Generate a name on initial load (client-side only)
+    generateNewSantaliName();
+  }, [generateNewSantaliName]);
 
 
   return (
@@ -172,8 +185,7 @@ export default function SentencePractice() {
             <CardTitle>English Keyboard to Ol Chiki Script (Real-time)</CardTitle>
             <CardDescription>
               Type English characters to see their corresponding Ol Chiki script instantly.
-              This tool provides a direct character mapping for common keys (e.g., 'a' to ᱚ).
-              Mapped punctuation: '.' to ᱾ (MUCAAD), ',' to ᱹ (AHAD), '?' to ? (Question Mark).
+              Mapped punctuation: '.' to ᱾, ',' to ᱹ, '?' to ?.
               Other symbols (like '!') and emojis will appear as typed. It is not a full language translator.
             </CardDescription>
           </CardHeader>
@@ -291,7 +303,7 @@ export default function SentencePractice() {
             <CardTitle>Look Up Words (In-App Vocabulary)</CardTitle>
             <CardDescription>
               Enter a Santali word (in Ol Chiki or Roman script) or an English word to find its translation
-              from the vocabulary taught within this app.
+              from the app's internal vocabulary list.
             </CardDescription>
           </CardHeader>
           <Form {...dictionaryForm}>
@@ -353,6 +365,38 @@ export default function SentencePractice() {
               </CardContent>
             </Card>
           )}
+        </Card>
+      </div>
+
+      <Separator className="my-8" />
+
+      {/* Tool 4: Santali Name Generator */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4 text-primary tracking-tight">Santali Name Generator</h2>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>Generate a Santali Name</CardTitle>
+            <CardDescription>
+              Click the button to generate a random Santali name using common first names and surnames.
+              (Uses placeholder data for now).
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-center">
+            {generatedSantaliName && (
+              <div className="mt-4">
+                <Label className="text-accent font-semibold">Generated Name:</Label>
+                <div className="text-3xl font-mono p-4 bg-secondary/30 rounded-md mt-2 min-h-[3em] break-words flex items-center justify-center">
+                  {generatedSantaliName}
+                </div>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter>
+            <Button onClick={generateNewSantaliName} className="w-full">
+              <Shuffle className="mr-2 h-4 w-4" />
+              Generate New Name
+            </Button>
+          </CardFooter>
         </Card>
       </div>
 

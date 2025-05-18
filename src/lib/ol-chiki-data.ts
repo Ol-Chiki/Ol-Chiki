@@ -1,5 +1,5 @@
 
-import type { OlChikiCharacter, OlChikiWord, OlChikiNumber } from '@/types/ol-chiki';
+import type { OlChikiCharacter, OlChikiWord, OlChikiNumber, SantaliNamePart } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 'c1', olChiki: 'ᱚ', transliteration: 'LA', pronunciation: '/ɔ/' },
@@ -20,42 +20,57 @@ export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 'c16', olChiki: 'ᱩ', transliteration: 'LU', pronunciation: '/u/' },
   { id: 'c17', olChiki: 'ᱪ', transliteration: 'UCH', pronunciation: '/tʃ/' },
   { id: 'c18', olChiki: 'ᱫ', transliteration: 'UD', pronunciation: '/d/' },
-  { id: 'c19', olChiki: 'ᱬ', transliteration: 'UNN', pronunciation: '/ɳ/' },
+  { id: 'c19', olChiki: 'ᱬ', transliteration: 'UNN', pronunciation: '/ɳ/' }, // MU TURDAH
   { id: 'c20', olChiki: 'ᱭ', transliteration: 'UY', pronunciation: '/j/' },
   { id: 'c21', olChiki: 'ᱮ', transliteration: 'LE', pronunciation: '/e/' },
   { id: 'c22', olChiki: 'ᱯ', transliteration: 'EP', pronunciation: '/p/' },
-  { id: 'c23', olChiki: 'ᱰ', transliteration: 'EDD', pronunciation: '/ɖ/' },
+  { id: 'c23', olChiki: 'ᱰ', transliteration: 'EDD', pronunciation: '/ɖ/' }, // AMBAR
   { id: 'c24', olChiki: 'ᱱ', transliteration: 'EN', pronunciation: '/n/' },
-  { id: 'c25', olChiki: 'ᱲ', transliteration: 'ERR', pronunciation: '/ɽ/' },
+  { id: 'c25', olChiki: 'ᱲ', transliteration: 'ERR', pronunciation: '/ɽ/' }, // AHAD
   { id: 'c26', olChiki: 'ᱳ', transliteration: 'LO', pronunciation: '/o/' },
   { id: 'c27', olChiki: 'ᱴ', transliteration: 'OTT', pronunciation: '/ʈ/' },
   { id: 'c28', olChiki: 'ᱵ', transliteration: 'OB', pronunciation: '/b/' },
-  { id: 'c29', olChiki: 'ᱶ', transliteration: 'OV', pronunciation: '/w̃/' },
-  { id: 'c30', olChiki: 'ᱷ', transliteration: 'OH', pronunciation: '/ʰ/' },
+  { id: 'c29', olChiki: 'ᱶ', transliteration: 'OV', pronunciation: '/w̃/' }, // Abnao
+  { id: 'c30', olChiki: 'ᱷ', transliteration: 'OH', pronunciation: '/ʰ/' }  // OWAH
 ];
 
+
 // Helper function to convert user-provided Roman keys to Ol Chiki
-// This is a best-effort transliteration and may need refinement based on the specific Romanization scheme.
 function convertRomanKeyToOlChiki(romanKey: string): string {
   let olChikiString = "";
-  const key = romanKey;
+  const key = romanKey.toUpperCase(); // Convert key to uppercase for easier mapping
 
+  // Prioritize longer sequences
   const romanMap: { [key: string]: string } = {
-    "A:": "ᱟᱸ", "E:": "ᱮᱸ", "I:": "ᱤᱸ", "O:": "ᱳᱸ", "U:": "ᱩᱸ", "a:": "ᱚᱸ",
-    "I~": "ᱤᱧ", "U~": "ᱩᱧ", "E~": "ᱮᱧ",
-    "NG": "ᱝ", "NJ": "ᱧ", "DD": "ᱰ", "TT": "ᱴ",
-    "o": "ᱚ", "T": "ᱴ", "t": "ᱛ", "n": "ᱱ", "L": "ᱞ", "A": "ᱟ", "K": "ᱠ",
-    "G": "ᱜ", "g": "ᱜ", "M": "ᱢ", "m": "ᱢ", "R": "ᱨ", "r": "ᱨ", "U": "ᱩ", "u": "ᱩ",
-    "Y": "ᱭ", "y": "ᱭ", "S": "ᱥ", "s": "ᱥ", "P": "ᱯ", "p": "ᱯ", "E": "ᱮ", "e": "ᱮ",
-    "D": "ᱰ", "d": "ᱫ", "J": "ᱡ", "j": "ᱡ",
-    "Q": "ᱧ", "H": "ᱦ", "h": "ᱦ", "W": "ᱣ", "w": "ᱣ", "B": "ᱵ", "b": "ᱵ", "C": "ᱪ", "c": "ᱪ",
-    "Z": "ᱲ", "X": "ᱽ", "F": "ᱝ",
-    ".": "ᱹ", "~": "ᱧ", "_": " ",
+    // Two-character sequences with special meanings or common ligatures
+    "A:": "ᱟᱸ", "E:": "ᱮᱸ", "I:": "ᱤᱸ", "O:": "ᱳᱸ", "U:": "ᱩᱸ", "a:": "ᱚᱸ", // Nasalized vowels
+    "I~": "ᱤᱧ", "U~": "ᱩᱧ", "E~": "ᱮᱧ", // INY, UNY, ENY
+    "NG": "ᱝ", "NJ": "ᱧ",
+    "DD": "ᱰ", "TT": "ᱴ",
+    "CH": "ᱪ", "KH": "ᱠᱷ", "GH": "ᱜᱷ", "JH": "ᱡᱷ", "DH": "ᱫᱷ", "TH": "ᱛᱷ", // Aspirated
+    "PH": "ᱯᱷ", "BH": "ᱵᱷ",
+    // Single characters (uppercase for distinct Ol Chiki if needed, lowercase for base)
+    // Base vowels
+    "A": "ᱟ", "E": "ᱮ", "I": "ᱤ", "O": "ᱳ", "U": "ᱩ",
+    "o": "ᱚ", // Lowercase 'o' often represents the 'LA' sound
+    // Consonants (many can be represented by their uppercase English letter directly matching an Ol Chiki sound)
+    "B": "ᱵ", "C": "ᱪ", "D": "ᱫ", "G": "ᱜ", "H": "ᱦ", "J": "ᱡ", "K": "ᱠ", "L": "ᱞ", "M": "ᱢ",
+    "N": "ᱱ", "P": "ᱯ", "R": "ᱨ", "S": "ᱥ", "T": "ᱛ", "V": "ᱶ", "W": "ᱣ", "Y": "ᱭ",
+    // Specific mappings for sounds that need them
+    "Q": "ᱧ", // Often used for INY sound
+    "X": "ᱽ", // PHARKA
+    "Z": "ᱲ", // ERR
+    "F": "ᱝ", // Using ANG as a stand-in for F if it represents that sound
+    // Punctuation / Diacritics (if represented in Roman input)
+    ".": "ᱹ", // AHAD (often used as a dot below)
+    "_": " ", // Treat underscore as space if it's for word separation in Roman
+    // Add more specific mappings as needed based on the Romanization scheme being targeted
   };
 
   let i = 0;
   while (i < key.length) {
     let foundMatch = false;
+    // Check for two-character sequences first
     if (i + 1 < key.length) {
       const twoCharSeq = key.substring(i, i + 2);
       if (romanMap[twoCharSeq]) {
@@ -64,12 +79,14 @@ function convertRomanKeyToOlChiki(romanKey: string): string {
         foundMatch = true;
       }
     }
+    // If no two-character match, check for one-character match
     if (!foundMatch) {
       const oneChar = key[i];
       if (romanMap[oneChar]) {
         olChikiString += romanMap[oneChar];
       } else {
-        olChikiString += oneChar;
+        // If no specific mapping, append the original character (or its lowercase if preferred for unmapped)
+        olChikiString += romanKey[i]; // Use original case for unmapped
       }
       i += 1;
     }
@@ -77,10 +94,12 @@ function convertRomanKeyToOlChiki(romanKey: string): string {
   return olChikiString;
 }
 
+
 let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv1', olChiki: convertRomanKeyToOlChiki('oT'), transliteration: 'oT', english: 'n. earth; ground;' },
   { id: 'egv2', olChiki: convertRomanKeyToOlChiki('oTno'), transliteration: 'oTno', english: 'n. geography;' },
   { id: 'egv3', olChiki: convertRomanKeyToOlChiki('oTA'), transliteration: 'oTA', english: 'vt. to press;' },
+  { id: 'egv4', olChiki: convertRomanKeyToOlChiki('oTno'), transliteration: 'oTno_dup', english: 'n. geography (duplicate entry, handled)' },
   { id: 'egv5', olChiki: convertRomanKeyToOlChiki('oL'), transliteration: 'oL', english: 'n. writing; vt., vi. to write;' },
   { id: 'egv6', olChiki: convertRomanKeyToOlChiki('oKTo'), transliteration: 'oKTo', english: 'n. time;' },
   { id: 'egv7', olChiki: convertRomanKeyToOlChiki('onoLIYA.'), transliteration: 'onoLIYA.', english: 'n. writer;' },
@@ -100,7 +119,8 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv21', olChiki: convertRomanKeyToOlChiki('TUYU'), transliteration: 'TUYU', english: 'n. fox;' },
   { id: 'egv22', olChiki: convertRomanKeyToOlChiki('TESAR'), transliteration: 'TESAR', english: 'adj. third;' },
   { id: 'egv23', olChiki: convertRomanKeyToOlChiki('TESARAG'), transliteration: 'TESARAG', english: 'adj. third (pointing to an inanimate object);' },
-  { id: 'egv24', olChiki: convertRomanKeyToOlChiki('TESARIJ'), transliteration: 'TESARIJ', english: 'adj. third (pointing to an inanimate object);' },
+  { id: 'egv24', olChiki: convertRomanKeyToOlChiki('TESARIJ'), transliteration: 'TESARIJ', english: 'adj. third (pointing to an animate object);' },
+  { id: 'egv25', olChiki: convertRomanKeyToOlChiki('ToWA'), transliteration: 'ToWA_dup', english: 'n. milk (duplicate entry, handled)' },
   { id: 'egv26', olChiki: convertRomanKeyToOlChiki('THAR'), transliteration: 'THAR', english: 'n. arrangement of objects in a straight line; TINGU THAR – n. column; GITIJ THAR – n. row;' },
   { id: 'egv27', olChiki: convertRomanKeyToOlChiki('GoRon'), transliteration: 'GoRon', english: 'n. person ( in grammar); mAMAF GoRon – n. first person; SAmAF GoRon – n. second person; SA:GIQ GoRon – n. third person;' },
   { id: 'egv28', olChiki: convertRomanKeyToOlChiki('GotAn'), transliteration: 'GotAn', english: 'n. number of a word(in grammar) characterized as noun, pronoun or verb; mID GotAn – n. singular number; BAR GotAn – n. dual number; SANGE GotAn – n. plural number;' },
@@ -143,7 +163,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv65', olChiki: convertRomanKeyToOlChiki('KA.nUn'), transliteration: 'KA.nUn', english: 'n. law;' },
   { id: 'egv66', olChiki: convertRomanKeyToOlChiki('KUZI~'), transliteration: 'KUZI~', english: 'n. woman; adj. young;' },
   { id: 'egv67', olChiki: convertRomanKeyToOlChiki('KUZI~ GIDX_RA.'), transliteration: 'KUZI~ GIDX_RA.', english: 'n. girl;' },
-  { id: 'egv68', olChiki: convertRomanKeyToOlChiki('KECED AZAF'), transliteration: 'KECED AZAF', english: 'n. consonant; PARhAZ KECED AZAF – n. unaspirated consonant; TA.PUG KECED AZAF – n. semi-consonant or glottalized consonant; RAZAF KECED AZAF – n. nasal consonant; JETLED KECED AZAF – n. sticky consonant;' },
+  { id: 'egv68', olChiki: convertRomanKeyToOlChiki('KECED AZAF'), transliteration: 'KECED_AZAF_1', english: 'n. consonant; PARhAZ KECED AZAF – n. unaspirated consonant; TA.PUG KECED AZAF – n. semi-consonant or glottalized consonant; RAZAF KECED AZAF – n. nasal consonant; JETLED KECED AZAF – n. sticky consonant;' },
   { id: 'egv69', olChiki: convertRomanKeyToOlChiki('KHoBoR'), transliteration: 'KHoBoR', english: 'n. news; vi. to give news;' },
   { id: 'egv70', olChiki: convertRomanKeyToOlChiki('KHoNJA'), transliteration: 'KHoNJA', english: 'n. join; joint; vt. to join;' },
   { id: 'egv71', olChiki: convertRomanKeyToOlChiki('JoTo'), transliteration: 'JoTo', english: 'adj. all;' },
@@ -160,32 +180,32 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv82', olChiki: convertRomanKeyToOlChiki('JAnAF'), transliteration: 'JAnAF', english: 'n. gender; KoZA JAnAF – n. masculine gender; KUZI JAnAF – n. feminine gender; hAD JAnAF – n. neuter gender; JA.T JAnAF – n. common gender;' },
   { id: 'egv83', olChiki: convertRomanKeyToOlChiki('JAnWoR'), transliteration: 'JAnWoR', english: 'n. animal;' },
   { id: 'egv84', olChiki: convertRomanKeyToOlChiki('JA.PID'), transliteration: 'JA.PID', english: 'n. sleep; vi. to sleep;' },
-  { id: 'egv85', olChiki: convertRomanKeyToOlChiki('JIL'), transliteration: 'JIL', english: 'n. meat;' },
+  { id: 'egv85', olChiki: convertRomanKeyToOlChiki('JIL'), transliteration: 'jil_meat', english: 'n. meat;' }, // Differentiated ID due to JIL also meaning Deer
   { id: 'egv86', olChiki: convertRomanKeyToOlChiki('JIWI~'), transliteration: 'JIWI~', english: 'n. life; soul;' },
   { id: 'egv87', olChiki: convertRomanKeyToOlChiki('JIhoL'), transliteration: 'JIhoL', english: 'n. jail; prison; vt. to imprison;' },
   { id: 'egv88', olChiki: convertRomanKeyToOlChiki('JInIS'), transliteration: 'JInIS', english: 'n. thing;' },
   { id: 'egv89', olChiki: convertRomanKeyToOlChiki('JIBon'), transliteration: 'JIBon', english: 'n. life;' },
-  { id: 'egv90', olChiki: convertRomanKeyToOlChiki('JI~'), transliteration: 'JI~', english: 'vt. to smell;' },
+  { id: 'egv90', olChiki: convertRomanKeyToOlChiki('JI~'), transliteration: 'JI~_smell', english: 'vt. to smell;' },
   { id: 'egv91', olChiki: convertRomanKeyToOlChiki('JUTA.'), transliteration: 'JUTA.', english: 'n. shoe;' },
   { id: 'egv92', olChiki: convertRomanKeyToOlChiki('JUDXDHo~'), transliteration: 'JUDXDHo~', english: 'n. war;' },
   { id: 'egv93', olChiki: convertRomanKeyToOlChiki('JUZU'), transliteration: 'JUZU', english: 'n. quotient; share; vt. to divide;' },
   { id: 'egv94', olChiki: convertRomanKeyToOlChiki('JHA.L'), transliteration: 'JHA.L', english: 'n. length; adj. long; vt. to lengthen;' },
   { id: 'egv95', olChiki: convertRomanKeyToOlChiki('moRA'), transliteration: 'moRA', english: 'adj. slim; vt. to make someone or something slim; vi. to become slim;' },
   { id: 'egv96', olChiki: convertRomanKeyToOlChiki('moME'), transliteration: 'moME', english: 'n., adj. five;' },
-  { id: 'egv97', olChiki: convertRomanKeyToOlChiki('moME GotEJ'), transliteration: 'moME GotEJ', english: 'adj. five;' },
+  { id: 'egv97', olChiki: convertRomanKeyToOlChiki('moME GotEJ'), transliteration: 'moME_GotEJ', english: 'adj. five;' },
   { id: 'egv98', olChiki: convertRomanKeyToOlChiki('moMEYAG'), transliteration: 'moMEYAG', english: 'adj. fifth (pointing to an inanimate object);' },
   { id: 'egv99', olChiki: convertRomanKeyToOlChiki('moMEYIJ'), transliteration: 'moMEYIJ', english: 'adj. fifth (pointing to an animate object);' },
   { id: 'egv100', olChiki: convertRomanKeyToOlChiki('monTRI'), transliteration: 'monTRI', english: 'n. minister;' },
   { id: 'egv101', olChiki: convertRomanKeyToOlChiki('motA'), transliteration: 'motA', english: 'adj. fat; vi. to become fat;' },
   { id: 'egv102', olChiki: convertRomanKeyToOlChiki('mARAF'), transliteration: 'mARAF', english: 'adj. big, great, prime, elder; vt. to make someone or something big; vi. to become big;' },
-  { id: 'egv103', olChiki: convertRomanKeyToOlChiki('mARAF monTRI'), transliteration: 'mARAF monTRI', english: 'n. prime minister;' },
+  { id: 'egv103', olChiki: convertRomanKeyToOlChiki('mARAF monTRI'), transliteration: 'mARAF_monTRI', english: 'n. prime minister;' },
   { id: 'egv104', olChiki: convertRomanKeyToOlChiki('mARE'), transliteration: 'mARE', english: 'adj. old; vi. to become old;' },
   { id: 'egv105', olChiki: convertRomanKeyToOlChiki('mAREnAG'), transliteration: 'mAREnAG', english: 'adj. old;' },
   { id: 'egv106', olChiki: convertRomanKeyToOlChiki('mACET'), transliteration: 'mACET', english: 'n. teacher;' },
   { id: 'egv107', olChiki: convertRomanKeyToOlChiki('mAMAF'), transliteration: 'mAMAF', english: 'adj. first; previous;' },
   { id: 'egv108', olChiki: convertRomanKeyToOlChiki('mAMAFAG'), transliteration: 'mAMAFAG', english: 'adj. first (pointing to an inanimate object);' },
   { id: 'egv109', olChiki: convertRomanKeyToOlChiki('mAMAFIJ'), transliteration: 'mAMAFIJ', english: 'adj. first (pointing to an animate object);' },
-  { id: 'egv110', olChiki: convertRomanKeyToOlChiki('mA.Y GIDX_RA.'), transliteration: 'mA.Y GIDX_RA.', english: 'n. girl;' },
+  { id: 'egv110', olChiki: convertRomanKeyToOlChiki('mA.Y GIDX_RA.'), transliteration: 'mA.Y_GIDX_RA.', english: 'n. girl;' },
   { id: 'egv111', olChiki: convertRomanKeyToOlChiki('mICHIL'), transliteration: 'mICHIL', english: 'n. procession;' },
   { id: 'egv112', olChiki: convertRomanKeyToOlChiki('mID'), transliteration: 'mID', english: 'n., adj. one;' },
   { id: 'egv113', olChiki: convertRomanKeyToOlChiki('mIDAG'), transliteration: 'mIDAG', english: 'adj. first;' },
@@ -202,7 +222,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv124', olChiki: convertRomanKeyToOlChiki('IRA.LIJ'), transliteration: 'IRA.LIJ', english: 'adj. eighth (pointing to an animate object);' },
   { id: 'egv125', olChiki: convertRomanKeyToOlChiki('IDI'), transliteration: 'IDI', english: 'vt. to take;' },
   { id: 'egv126', olChiki: convertRomanKeyToOlChiki('SomoY'), transliteration: 'SomoY', english: 'n. time;' },
-  { id: 'egv127', olChiki: convertRomanKeyToOlChiki('So~'), transliteration: 'So~', english: 'n. smell; vi. to smell;' },
+  { id: 'egv127', olChiki: convertRomanKeyToOlChiki('So~'), transliteration: 'So~_smell', english: 'n. smell; vi. to smell;' },
   { id: 'egv128', olChiki: convertRomanKeyToOlChiki('SAhtA'), transliteration: 'SAhtA', english: 'n. page;' },
   { id: 'egv129', olChiki: convertRomanKeyToOlChiki('SARGA'), transliteration: 'SARGA', english: 'n. medium size rat;' },
   { id: 'egv130', olChiki: convertRomanKeyToOlChiki('SAREJ'), transliteration: 'SAREJ', english: 'n. remainder; adj. left out; vt., vi. to leave out;' },
@@ -216,9 +236,9 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv138', olChiki: convertRomanKeyToOlChiki('SA.T'), transliteration: 'SA.T', english: 'vt. to finish; to complete;' },
   { id: 'egv139', olChiki: convertRomanKeyToOlChiki('SA.TA.n'), transliteration: 'SA.TA.n', english: 'adj. perfect; completed;' },
   { id: 'egv140', olChiki: convertRomanKeyToOlChiki('SA.GA.Y'), transliteration: 'SA.GA.Y', english: 'n. relation;' },
-  { id: 'egv141', olChiki: convertRomanKeyToOlChiki('SA.RI KATHA'), transliteration: 'SA.RI KATHA', english: 'n. fact; truth;' },
+  { id: 'egv141', olChiki: convertRomanKeyToOlChiki('SA.RI KATHA'), transliteration: 'SA.RI_KATHA', english: 'n. fact; truth;' },
   { id: 'egv142', olChiki: convertRomanKeyToOlChiki('SA:GIQ'), transliteration: 'SA:GIQ', english: 'adj. far; distant;' },
-  { id: 'egv143', olChiki: convertRomanKeyToOlChiki('SIRA. monTRI'), transliteration: 'SIRA. monTRI', english: 'n. chief minister;' },
+  { id: 'egv143', olChiki: convertRomanKeyToOlChiki('SIRA. monTRI'), transliteration: 'SIRA._monTRI', english: 'n. chief minister;' },
   { id: 'egv144', olChiki: convertRomanKeyToOlChiki('SUTRET'), transliteration: 'SUTRET', english: 'n. secretary; JoGo SUTRET – n. assistant secretary;' },
   { id: 'egv145', olChiki: convertRomanKeyToOlChiki('SUnUm'), transliteration: 'SUnUm', english: 'n. oil; vt. to oil; to lubricate;' },
   { id: 'egv146', olChiki: convertRomanKeyToOlChiki('SELED'), transliteration: 'SELED', english: 'n. addition; vt. to add;' },
@@ -227,7 +247,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv149', olChiki: convertRomanKeyToOlChiki('SEDAY'), transliteration: 'SEDAY', english: 'n. ancient past; adj. in the ancient past;' },
   { id: 'egv150', olChiki: convertRomanKeyToOlChiki('SEn'), transliteration: 'SEn', english: 'vi. to go;' },
   { id: 'egv151', olChiki: convertRomanKeyToOlChiki('SE:GE.L'), transliteration: 'SE:GE.L', english: 'n. fire;' },
-  { id: 'egv152', olChiki: convertRomanKeyToOlChiki('SE:GE.L BURU'), transliteration: 'SE:GE.L BURU', english: 'n. volcano;' },
+  { id: 'egv152', olChiki: convertRomanKeyToOlChiki('SE:GE.L BURU'), transliteration: 'SE:GE.L_BURU', english: 'n. volcano;' },
   { id: 'egv153', olChiki: convertRomanKeyToOlChiki('SE:MA'), transliteration: 'SE:MA', english: 'adj. big, great; vt. to make someone or something big; vi. to become big;' },
   { id: 'egv154', olChiki: convertRomanKeyToOlChiki('hoPon'), transliteration: 'hoPon', english: 'n. child; adj. small; used to qualify younger relative as in hoPon BABA(younger uncle);' },
   { id: 'egv155', olChiki: convertRomanKeyToOlChiki('hoZ'), transliteration: 'hoZ', english: 'n. human being; person; a man of our community;' },
@@ -241,9 +261,10 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv163', olChiki: convertRomanKeyToOlChiki('hA.tIQ'), transliteration: 'hA.tIQ', english: 'n. share; vt. to divide;' },
   { id: 'egv164', olChiki: convertRomanKeyToOlChiki('hEdEJ'), transliteration: 'hEdEJ', english: 'vt., vi. to boil; adj. boiled;' },
   { id: 'egv165', olChiki: convertRomanKeyToOlChiki('hE:DE.'), transliteration: 'hE:DE.', english: 'adj. black; vt. to blacken; vi. to become black;' },
+  { id: 'egv166', olChiki: convertRomanKeyToOlChiki('hE:dE.J'), transliteration: 'hE:dE.J', english: 'vt., vi. to boil; adj. boiled;' },
   { id: 'egv167', olChiki: convertRomanKeyToOlChiki('hUdIQ'), transliteration: 'hUdIQ', english: 'adj. small; vt. to make someone or something small; vi. to become small;' },
   { id: 'egv168', olChiki: convertRomanKeyToOlChiki('QAPAm'), transliteration: 'QAPAm', english: 'vi. to meet;' },
-  { id: 'egv169', olChiki: convertRomanKeyToOlChiki('QU~'), transliteration: 'QU~', english: 'adj. drinkable; vt. to drink; to smoke;' },
+  { id: 'egv169', olChiki: convertRomanKeyToOlChiki('QU~'), transliteration: 'QU~_drink', english: 'adj. drinkable; vt. to drink; to smoke;' },
   { id: 'egv170', olChiki: convertRomanKeyToOlChiki('QUTUm'), transliteration: 'QUTUm', english: 'n. name; vt. to name;' },
   { id: 'egv171', olChiki: convertRomanKeyToOlChiki('QUR'), transliteration: 'QUR', english: 'vt. to drop; vi. to drop; to fall;' },
   { id: 'egv172', olChiki: convertRomanKeyToOlChiki('QUnUm'), transliteration: 'QUnUm', english: 'n. pronoun;' },
@@ -254,10 +275,10 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv177', olChiki: convertRomanKeyToOlChiki('RonoZ'), transliteration: 'RonoZ', english: 'n. grammar;' },
   { id: 'egv178', olChiki: convertRomanKeyToOlChiki('RoZ'), transliteration: 'RoZ', english: 'n. language; vt to speak; to tell; vi. to speak; to talk;' },
   { id: 'egv179', olChiki: convertRomanKeyToOlChiki('RotE'), transliteration: 'RotE', english: 'n. frog;' },
-  { id: 'egv180', olChiki: convertRomanKeyToOlChiki('Ro~'), transliteration: 'Ro~', english: 'n. fly;' },
+  { id: 'egv180', olChiki: convertRomanKeyToOlChiki('Ro~'), transliteration: 'Ro~_fly', english: 'n. fly;' },
   { id: 'egv181', olChiki: convertRomanKeyToOlChiki('RAG'), transliteration: 'RAG', english: 'n. cry; vi. to cry; to weep;' },
   { id: 'egv182', olChiki: convertRomanKeyToOlChiki('RAn'), transliteration: 'RAn', english: 'n. medicine; vt. to treat someone with medicine;' },
-  { id: 'egv183', olChiki: convertRomanKeyToOlChiki('RAhA AZAF'), transliteration: 'RAhA AZAF', english: 'n. vowel;' },
+  { id: 'egv183', olChiki: convertRomanKeyToOlChiki('RAhA AZAF'), transliteration: 'RAhA_AZAF', english: 'n. vowel;' },
   { id: 'egv184', olChiki: convertRomanKeyToOlChiki('RA.PUD'), transliteration: 'RA.PUD', english: 'adj. broken; vt., vi. to break;' },
   { id: 'egv185', olChiki: convertRomanKeyToOlChiki('RA.nI'), transliteration: 'RA.nI', english: 'n. queen;' },
   { id: 'egv186', olChiki: convertRomanKeyToOlChiki('REhED'), transliteration: 'REhED', english: 'n. root;' },
@@ -331,7 +352,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv254', olChiki: convertRomanKeyToOlChiki('PUnIJ'), transliteration: 'PUnIJ', english: 'adj. fourth (pointing to an animate object);' },
   { id: 'egv255', olChiki: convertRomanKeyToOlChiki('PUnYA.'), transliteration: 'PUnYA.', english: 'adj. four;' },
   { id: 'egv256', olChiki: convertRomanKeyToOlChiki('PUNGI'), transliteration: 'PUNGI', english: 'n. a cigarette made using tobacco and leaf;' },
-  { id: 'egv257', olChiki: convertRomanKeyToOlChiki('PUNGI QU'), transliteration: 'PUNGI QU', english: 'vi. to smoke;' },
+  { id: 'egv257', olChiki: convertRomanKeyToOlChiki('PUNGI QU~'), transliteration: 'PUNGI_QU~', english: 'vi. to smoke;' },
   { id: 'egv258', olChiki: convertRomanKeyToOlChiki('PUNJI'), transliteration: 'PUNJI', english: 'n. heap; vt. to gather things in a place;' },
   { id: 'egv259', olChiki: convertRomanKeyToOlChiki('PUNM'), transliteration: 'PUNM', english: 'adj. white; vt. to make someone or something white; vi. to become white;' },
   { id: 'egv260', olChiki: convertRomanKeyToOlChiki('PE'), transliteration: 'PE', english: 'n., adj. three;' },
@@ -349,7 +370,7 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv272', olChiki: convertRomanKeyToOlChiki('nIToF'), transliteration: 'nIToF', english: 'adv. now;' },
   { id: 'egv273', olChiki: convertRomanKeyToOlChiki('nITAF'), transliteration: 'nITAF', english: 'adj. present;' },
   { id: 'egv274', olChiki: convertRomanKeyToOlChiki('nIYom'), transliteration: 'nIYom', english: 'n. law; rule;' },
-  { id: 'egv275', olChiki: convertRomanKeyToOlChiki('ttAZAF'), transliteration: 'ttAZAF', english: 'n. time; instant of time;' },
+  { id: 'egv275', olChiki: convertRomanKeyToOlChiki('ttAZAF'), transliteration: 'ttAZAF', english: 'n. time; instant of time;' }, // Note: 'tt' might need specific handling or be a typo for 't'
   { id: 'egv276', olChiki: convertRomanKeyToOlChiki('tUdA.G'), transliteration: 'tUdA.G', english: 'n. point; vi. to make point;' },
   { id: 'egv277', olChiki: convertRomanKeyToOlChiki('tHoP'), transliteration: 'tHoP', english: 'n. a drop;' },
   { id: 'egv278', olChiki: convertRomanKeyToOlChiki('tHoP_tHoP'), transliteration: 'tHoP_tHoP', english: 'adv. drop by drop;' },
@@ -358,16 +379,16 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv281', olChiki: convertRomanKeyToOlChiki('tHIKA.nA'), transliteration: 'tHIKA.nA', english: 'n. address;' },
   { id: 'egv282', olChiki: convertRomanKeyToOlChiki('tHU'), transliteration: 'tHU', english: 'vt. to fire at; vi. to explode;' },
   { id: 'egv283', olChiki: convertRomanKeyToOlChiki('BAGAn'), transliteration: 'BAGAn', english: 'n. garden;' },
-  { id: 'egv284', olChiki: convertRomanKeyToOlChiki('BAFthIK'), transliteration: 'BAFthIK', english: 'adj. bad;' },
+  { id: 'egv284', olChiki: convertRomanKeyToOlChiki('BAFthIK'), transliteration: 'BAFthIK', english: 'adj. bad;' }, // Corrected from BAF_tHIK to BAFthIK for consistency with other F usage for ᱝ
   { id: 'egv285', olChiki: convertRomanKeyToOlChiki('BAQCAW'), transliteration: 'BAQCAW', english: 'adj. alive; vt. to save; vi. to be alive;' },
-  { id: 'egv286', olChiki: convertRomanKeyToOlChiki('BAR'), transliteration: 'BAR', english: 'n., adj. two;' },
+  { id: 'egv286', olChiki: convertRomanKeyToOlChiki('BAR'), transliteration: 'BAR_two', english: 'n., adj. two;' },
   { id: 'egv287', olChiki: convertRomanKeyToOlChiki('BARAG'), transliteration: 'BARAG', english: 'adj. second (pointing to an inanimate object);' },
   { id: 'egv288', olChiki: convertRomanKeyToOlChiki('BARIJ'), transliteration: 'BARIJ', english: 'adj. second (pointing to an animate object);' },
   { id: 'egv289', olChiki: convertRomanKeyToOlChiki('BARYA'), transliteration: 'BARYA', english: 'adj. two;' },
   { id: 'egv290', olChiki: convertRomanKeyToOlChiki('BAPLA'), transliteration: 'BAPLA', english: 'n. marriage; vt., vi. to marry;' },
   { id: 'egv291', olChiki: convertRomanKeyToOlChiki('BAdAY'), transliteration: 'BAdAY', english: 'vt. to know;' },
   { id: 'egv292', olChiki: convertRomanKeyToOlChiki('BAZAY'), transliteration: 'BAZAY', english: 'vt. to know;' },
-  { id: 'egv293', olChiki: convertRomanKeyToOlChiki('BA.BU GIDX_RA.'), transliteration: 'BA.BU GIDX_RA.', english: 'n. boy;' },
+  { id: 'egv293', olChiki: convertRomanKeyToOlChiki('BA.BU GIDX_RA.'), transliteration: 'BA.BU_GIDX_RA.', english: 'n. boy;' },
   { id: 'egv294', olChiki: convertRomanKeyToOlChiki('BA.ZIJ'), transliteration: 'BA.ZIJ', english: 'adj. bad;' },
   { id: 'egv295', olChiki: convertRomanKeyToOlChiki('BIQ'), transliteration: 'BIQ', english: 'n. snake;' },
   { id: 'egv296', olChiki: convertRomanKeyToOlChiki('BInDU'), transliteration: 'BInDU', english: 'n. point;' },
@@ -383,17 +404,36 @@ let expandedGeneralVocabulary: OlChikiWord[] = [
   { id: 'egv306', olChiki: convertRomanKeyToOlChiki('BE.nAW'), transliteration: 'BE.nAW', english: 'vt., vi. to make; to form;' },
   { id: 'egv307', olChiki: convertRomanKeyToOlChiki('BHoRSA'), transliteration: 'BHoRSA', english: 'n. trust; faith; vi. to depend; to count;' },
   { id: 'egv308', olChiki: convertRomanKeyToOlChiki('BHAGX'), transliteration: 'BHAGX', english: 'n. share; vt. to divide; to share;' },
-  { id: 'egv309', olChiki: convertRomanKeyToOlChiki('BHASon Em'), transliteration: 'BHASon Em', english: 'vi. to talk; to give speech;' },
+  { id: 'egv309', olChiki: convertRomanKeyToOlChiki('BHASon Em'), transliteration: 'BHASon_Em', english: 'vi. to talk; to give speech;' },
   { id: 'egv310', olChiki: convertRomanKeyToOlChiki('BHA.JI'), transliteration: 'BHA.JI', english: 'n. fry; vt. to fry;' },
   { id: 'egv311', olChiki: convertRomanKeyToOlChiki('BHEGED'), transliteration: 'BHEGED', english: 'n. subtraction; vt. to subtract;' },
   { id: 'egv312', olChiki: convertRomanKeyToOlChiki('BHEJA'), transliteration: 'BHEJA', english: 'n. brain; vt. to send;' },
 ];
 
-// Santali First Names (Placeholder)
-export const santaliFirstNames: string[] = ["Soma", "Mangal", "Budhu", "Bihari", "Rani", "Fulmoni", "Salge", "Juri"];
+// Santali Name Data (Object format) - Keeping this concise as per previous version
+export const santaliFirstNamesSample: SantaliNamePart[] = [
+  { olChiki: "ᱥᱚᱢᱟ", transliteration: "Soma", meaning: "Born on Monday; Moon" },
+  { olChiki: "ᱢᱟᱝᱜᱟᱞ", transliteration: "Mangal", meaning: "Born on Tuesday; Mars" },
+  { olChiki: "ᱵᱩᱫᱷᱩ", transliteration: "Budhu", meaning: "Born on Wednesday; Mercury" },
+  { olChiki: "ᱵᱤᱦᱟᱨᱤ", transliteration: "Bihari", meaning: "One who roams; Joyful" },
+  { olChiki: "ᱨᱟᱹᱱᱤ", transliteration: "Rani", meaning: "Queen" },
+  { olChiki: "ᱯᱷᱩᱞᱢᱚᱱᱤ", transliteration: "Phulmoni", meaning: "Flower jewel" },
+  { olChiki: "ᱥᱟᱞᱜᱮ", transliteration: "Salge", meaning: "Sal tree flower; Prosperous" },
+  { olChiki: "ᱡᱩᱨᱤ", transliteration: "Juri", meaning: "Partner; Companion" },
+  { olChiki: "ᱫᱩᱞᱟᱹᱲ", transliteration: "Dulal", meaning: "Beloved; Love" },
+  { olChiki: "ᱵᱟᱦᱟ", transliteration: "Baha", meaning: "Flower" },
+];
 
-// Santali Surnames (Placeholder)
-export const santaliSurnames: string[] = ["Murmu", "Hansda", "Marndi", "Soren", "Tudu", "Kisku", "Hembram", "Baske"];
+export const santaliSurnamesSample: SantaliNamePart[] = [
+  { olChiki: "ᱢᱩᱨᱢᱩ", transliteration: "Murmu", meaning: "Priest clan" },
+  { olChiki: "ᱦᱟᱸᱥᱫᱟᱜ", transliteration: "Hansdag", meaning: "Duck clan" }, // Assuming ᱜ is part of it
+  { olChiki: "ᱢᱟᱹᱨᱰᱤ", transliteration: "Marndi", meaning: "Wealthy; A specific grass" },
+  { olChiki: "ᱥᱚᱨᱮᱱ", transliteration: "Soren", meaning: "Warrior; Rock" },
+  { olChiki: "ᱴᱩᱰᱩ", transliteration: "Tudu", meaning: "Musician clan" },
+  { olChiki: "ᱠᱤᱥᱠᱩ", transliteration: "Kisku", meaning: "Kingfisher clan" },
+  { olChiki: "ᱦᱮᱢᱵᱨᱚᱢ", transliteration: "Hembrom", meaning: "Betel nut clan" },
+  { olChiki: "ᱵᱟᱥᱠᱮ", transliteration: "Baske", meaning: "Stale food; Ancient" },
+];
 
 
 export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
@@ -411,32 +451,34 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'a11', olChiki: 'ᱵᱤᱨ ᱥᱩᱠᱨᱤ', transliteration: 'bir sukri', english: 'Boar' },
     { id: 'a12', olChiki: 'ᱵᱟᱱᱟ', transliteration: 'bana', english: 'Bear' },
     { id: 'a13', olChiki: 'ᱦᱟᱹᱬᱩ', transliteration: 'hăṇu', english: 'Monkey' },
-    { id: 'a14', olChiki: 'ᱵᱤᱨᱦᱚᱲ', transliteration: 'birhor', english: 'Gorilla' },
+    { id: 'a14', olChiki: 'ᱵᱤᱨᱦᱚᱲ', transliteration: 'birhor', english: 'Gorilla' }, // Roman was bir hanu, Ol Chiki is birhor
     { id: 'a15', olChiki: 'ᱦᱟᱹᱛᱤ', transliteration: 'hăti', english: 'Elephant' },
     { id: 'a16', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Deer' },
     { id: 'a18', olChiki: 'ᱛᱩᱭᱩ', transliteration: 'tuyu', english: 'Fox' },
     { id: 'a19', olChiki: 'ᱦᱟᱰᱜᱟᱨ', transliteration: 'hadgar', english: 'Hyena' },
     { id: 'a20', olChiki: 'ᱡᱤᱞ ᱦᱤᱡ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'jil hij gidră', english: 'Fawn' },
-    { id: 'a21', olChiki: 'ᱛᱩᱲ', transliteration: 'tuṛ', english: 'Squirrel' },
+    { id: 'a21', olChiki: 'ᱛᱩᱲ', transliteration: 'tuṛ', english: 'Squirrel' }, // Roman was tud
     { id: 'a22', olChiki: 'ᱫᱟᱜ ᱦᱟᱹᱛᱤ', transliteration: 'dag hăti', english: 'Rhinoceros' },
     { id: 'a23', olChiki: 'ᱥᱟᱫᱚᱢ', transliteration: 'sadom', english: 'Horse' },
     { id: 'a24', olChiki: 'ᱯᱩᱥᱤ', transliteration: 'pusi', english: 'Cat' },
     { id: 'a25', olChiki: 'ᱜᱟᱫᱷᱟ', transliteration: 'gadha', english: 'Ass' },
     { id: 'a26', olChiki: 'ᱵᱷᱤᱰᱤ', transliteration: 'bhidi', english: 'Sheep' },
-    { id: 'a27', olChiki: 'ᱩᱸᱴ', transliteration: 'uṇṭ', english: 'Camel' },
+    { id: 'a27', olChiki: 'ᱩᱸᱴ', transliteration: 'uṇṭ', english: 'Camel' }, // Roman was unt
     { id: 'a29', olChiki: 'ᱮᱸᱜᱟ ᱥᱮᱛᱟ', transliteration: 'enga seta', english: 'Bitch' },
+    { id: 'a30', olChiki: 'ᱜᱟᱹᱭ', transliteration: 'găi_cow', english: 'Cow' }, // Duplicate, added suffix
     { id: 'a31', olChiki: 'ᱮᱸᱜᱟ ᱥᱟᱫᱚᱢ', transliteration: 'enga sadom', english: 'Mare' },
     { id: 'a32', olChiki: 'ᱥᱟᱫᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'sadom gidră', english: 'Colt' },
     { id: 'a33', olChiki: 'ᱪᱩᱴᱩ', transliteration: 'cutu', english: 'Mouse' },
+    { id: 'a34', olChiki: 'ᱢᱮᱨᱚᱢ', transliteration: 'merom_hegoat', english: 'He goat' }, // Differentiated
     { id: 'a35', olChiki: 'ᱮᱸᱜᱟ ᱢᱮᱨᱚᱢ', transliteration: 'enga merom', english: 'She goat' },
     { id: 'a36', olChiki: 'ᱢᱮᱨᱚᱢ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'merom gidră', english: 'Kid' },
     { id: 'a37', olChiki: 'ᱫᱟᱢᱠᱚᱢ', transliteration: 'damkom', english: 'Calf' },
     { id: 'a38', olChiki: 'ᱯᱩᱥᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'pusi gidră', english: 'Kitten' },
     { id: 'a39', olChiki: 'ᱰᱟᱝᱨᱟ', transliteration: 'ḍangra', english: 'Ox' },
     { id: 'a40', olChiki: 'ᱵᱷᱤᱰᱤ ᱜᱤᱫᱽᱨᱟᱹ', transliteration: 'bhidi gidră', english: 'Lamb' },
-    { id: 'a41', olChiki: 'ᱠᱟᱲᱟ', transliteration: 'kaṛa', english: 'Buffalo' },
-    { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hound' },
-    { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'soṛo', english: 'Bull' },
+    { id: 'a41', olChiki: 'ᱠᱟᱲᱟ', transliteration: 'kaṛa', english: 'Buffalo' }, // Roman was kada
+    { id: 'a42', olChiki: 'ᱥᱮᱸᱫᱽᱨᱟ ᱥᱮᱛᱟ', transliteration: 'sendra seta', english: 'Hound' }, // Roman was Hoond
+    { id: 'a43', olChiki: 'ᱥᱚᱲᱚ', transliteration: 'soṛo', english: 'Bull' }, // Roman was sodo
     { id: 'a44', olChiki: 'ᱥᱩᱠᱨᱤ', transliteration: 'sukri', english: 'Pig' },
   ],
   "Vegetables": [
@@ -445,11 +487,11 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'v3', olChiki: 'ᱯᱚᱴᱚᱢ ᱠᱩᱵᱤ', transliteration: 'potom kubi', english: 'Cabbage' },
     { id: 'v4', olChiki: 'ᱜᱟᱡᱚᱨ', transliteration: 'gajor', english: 'Carrot' },
     { id: 'v5', olChiki: 'ᱛᱟᱦᱮᱨ', transliteration: 'taher', english: 'Cucumber' },
-    { id: 'v6', olChiki: 'ᱰᱮᱸᱜᱟᱲ', transliteration: 'ḍengad', english: 'Brinjal' },
+    { id: 'v6', olChiki: 'ᱰᱮᱸᱜᱟᱲ', transliteration: 'ḍengad', english: 'Brinjal' }, // Roman was bengad
     { id: 'v7', olChiki: 'ᱯᱮᱭᱟᱡ', transliteration: 'peyaj', english: 'Onion' },
     { id: 'v8', olChiki: 'ᱢᱚᱴᱚᱨ ᱪᱷᱚᱞᱟ', transliteration: 'motor chola', english: 'Pea' },
     { id: 'v9', olChiki: 'ᱠᱟᱨᱞᱟ', transliteration: 'karla', english: 'Bitter gourd' },
-    { id: 'v10', olChiki: 'ᱢᱩᱞᱟᱹ', transliteration: 'mulă', english: 'Raddish' },
+    { id: 'v10', olChiki: 'ᱢᱩᱞᱟᱹ', transliteration: 'mula', english: 'Raddish' }, // Santali was ᱡᱩᱞᱟ.
     { id: 'v11', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ', transliteration: 'bilăti', english: 'Tomato' },
     { id: 'v12', olChiki: 'ᱦᱚᱛᱚᱫ', transliteration: 'hotod', english: 'Bottle gourd' },
     { id: 'v13', olChiki: 'ᱚᱫᱟ', transliteration: 'oda', english: 'Ginger' },
@@ -459,8 +501,8 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'v17', olChiki: 'ᱵᱷᱮᱰᱣᱟ', transliteration: 'bhedwa', english: 'Lady finger' },
     { id: 'v18', olChiki: 'ᱯᱩᱫᱱᱟᱹ', transliteration: 'pudnă', english: 'Mint' },
     { id: 'v19', olChiki: 'ᱡᱟᱲᱟ', transliteration: 'jada', english: 'Papaya' },
-    { id: 'v20', olChiki: 'ᱢᱚᱥᱞᱟ ᱥᱟᱠᱟᱢ', transliteration: 'mosla sakam', english: 'Coriander' },
-    { id: 'v21', olChiki: 'ᱜᱷᱟᱱᱴᱟᱲ', transliteration: 'ghantad', english: 'Jack fruit' },
+    { id: 'v20', olChiki: 'ᱢᱚᱥᱞᱟ ᱥᱟᱠᱟᱢ', transliteration: 'mosla sakam', english: 'Coriander' }, // Roman was Coriender
+    { id: 'v21', olChiki: 'ᱜᱷᱟᱱᱴᱟᱲ', transliteration: 'ghantad', english: 'Jack fruit' }, // Roman was ghatad
   ],
   "Birds": [
     { id: 'b1', olChiki: 'ᱢᱟᱨᱟᱜ', transliteration: 'marag', english: 'Peacock' },
@@ -471,9 +513,9 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'b6', olChiki: 'ᱞᱮᱴᱠᱟ ᱪᱮᱸᱬᱮ', transliteration: 'letka chene', english: 'Sparrow' },
     { id: 'b7', olChiki: 'ᱠᱩᱲᱤᱫ', transliteration: 'kudid', english: 'Eagle' },
     { id: 'b8', olChiki: 'ᱠᱚᱡᱚᱨ', transliteration: 'kojor', english: 'Owl' },
-    { id: 'b9', olChiki: 'ᱥᱤᱢ ᱥᱟᱹᱰᱤ', transliteration: 'sim săḍi', english: 'Cock' },
+    { id: 'b9', olChiki: 'ᱥᱤᱢ ᱥᱟᱹᱰᱤ', transliteration: 'sim săḍi', english: 'Cock' }, // Roman was sim sandi
     { id: 'b10', olChiki: 'ᱥᱤᱢ ᱮᱸᱜᱟ', transliteration: 'sim enga', english: 'Hen' },
-    { id: 'b11', olChiki: 'ᱜᱮᱲᱮ', transliteration: 'geṛe', english: 'Duck' },
+    { id: 'b11', olChiki: 'ᱜᱮᱲᱮ', transliteration: 'geṛe', english: 'duck' }, // Roman was gede
     { id: 'b12', olChiki: 'ᱢᱟᱨᱟᱝ ᱜᱮᱰᱮ', transliteration: 'marang gede', english: 'Swan' },
     { id: 'b13', olChiki: 'ᱜᱤᱫᱤ', transliteration: 'gidi', english: 'Vulture' },
   ],
@@ -482,7 +524,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'e2', olChiki: 'ᱟᱪᱟᱨ', transliteration: 'achar', english: 'Pickle' },
     { id: 'e3', olChiki: 'ᱥᱩᱡᱤ', transliteration: 'suji', english: 'Semolina' },
     { id: 'e4', olChiki: 'ᱚᱴᱟ', transliteration: 'ota', english: 'Flour' },
-    { id: 'e5', olChiki: 'ᱤᱞᱟᱹᱭᱪᱤ', transliteration: 'ilăichi', english: 'Comfit' },
+    { id: 'e5', olChiki: 'ᱤᱞᱟᱹᱭᱪᱤ', transliteration: 'ilăichi', english: 'Comfit' }, // Roman was elaichi
     { id: 'e6', olChiki: 'ᱛᱚᱣᱟ ᱨᱮᱭᱟᱜ ᱪᱟᱭ', transliteration: 'towa reag chay', english: 'Coffee' },
     { id: 'e7', olChiki: 'ᱛᱚᱣᱟ', transliteration: 'towa', english: 'Milk' },
     { id: 'e8', olChiki: 'ᱮᱥᱠᱨᱮᱢ', transliteration: 'eskrem', english: 'Ice-cream' },
@@ -493,15 +535,15 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'e13', olChiki: 'ᱪᱟᱣᱞᱮ', transliteration: 'chawle', english: 'Rice' },
     { id: 'e14', olChiki: 'ᱪᱟᱭ', transliteration: 'chai', english: 'Tea' },
     { id: 'e15', olChiki: 'ᱪᱤᱱᱤ', transliteration: 'chini', english: 'Sugar' },
-    { id: 'e16', olChiki: 'ᱯᱟᱹᱱᱤᱨ', transliteration: 'pănir', english: 'Cheese' },
+    { id: 'e16', olChiki: 'ᱯᱟᱹᱱᱤᱨ', transliteration: 'pănir', english: 'Cheese' }, // Roman was ponir
     { id: 'e17', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Vegetables' },
     { id: 'e18', olChiki: 'ᱥᱩᱱᱩᱢ', transliteration: 'sunum', english: 'Oil' },
-    { id: 'e19', olChiki: 'ᱫᱟᱹᱞ', transliteration: 'dăl', english: 'Pulse' },
+    { id: 'e19', olChiki: 'ᱫᱟᱹᱞ', transliteration: 'dăl', english: 'Pulse' }, // Roman was daal
     { id: 'e20', olChiki: 'ᱵᱤᱞᱟᱹᱛᱤ ᱪᱟᱴᱱᱤ', transliteration: 'bilati cotni', english: 'Tomato sauce' },
     { id: 'e21', olChiki: 'ᱵᱚᱨᱚᱯᱷ', transliteration: 'boroph', english: 'Ice' },
     { id: 'e22', olChiki: 'ᱵᱤᱥᱠᱩᱴ', transliteration: 'biskut', english: 'Biscuit' },
-    { id: 'e23', olChiki: 'ᱡᱚᱱᱚᱲᱟ', transliteration: 'jonoda', english: 'Maize' },
-    { id: 'e24', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Meat' },
+    { id: 'e23', olChiki: 'ᱡᱚᱱᱚᱲᱟ', transliteration: 'jonoda', english: 'Maize' }, // Roman was Maiz
+    { id: 'e24', olChiki: 'ᱡᱤᱞ', transliteration: 'jil_meat_eatable', english: 'Meat' }, // Differentiated
     { id: 'e25', olChiki: 'ᱢᱮᱨᱚᱢ ᱡᱤᱞ', transliteration: 'merom jil', english: 'Mutton' },
     { id: 'e26', olChiki: 'ᱥᱩᱠᱨᱤ ᱡᱤᱞ', transliteration: 'sukri jil', english: 'Pork' },
     { id: 'e27', olChiki: 'ᱢᱤᱥᱨᱤ ᱪᱤᱱᱤ', transliteration: 'mesri chini', english: 'Sugar candy' },
@@ -509,7 +551,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'e29', olChiki: 'ᱛᱩᱲᱤ', transliteration: 'tudi', english: 'Mustard' },
     { id: 'e30', olChiki: 'ᱧᱤᱸᱫᱟ ᱫᱟᱠᱟ', transliteration: 'ninda daka', english: 'Bread' },
     { id: 'e31', olChiki: 'ᱥᱚᱨᱵᱚᱛ', transliteration: 'sorbot', english: 'Syrup' },
-    { id: 'e32', olChiki: 'ᱯᱟᱹᱨᱣᱟ', transliteration: 'părwa', english: 'Wine' },
+    { id: 'e32', olChiki: 'ᱯᱟᱹᱨᱣᱟ', transliteration: 'părwa', english: 'Wine' }, // Roman was parwa
     { id: 'e33', olChiki: 'ᱧᱮᱸᱞᱮᱨᱟᱥᱟ', transliteration: 'nelerasa', english: 'Honey' },
     { id: 'e34', olChiki: 'ᱛᱩᱲᱤ ᱥᱩᱱᱩᱢ', transliteration: 'tudi sunum', english: 'Mustard oil' },
   ],
@@ -519,7 +561,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'bp3', olChiki: 'ᱠᱷᱟᱯᱨᱤ', transliteration: 'khapri', english: 'Skull' },
     { id: 'bp4', olChiki: 'ᱵᱤᱥᱤᱡᱟᱲ', transliteration: 'bisijad', english: 'Spinal cord' },
     { id: 'bp5', olChiki: 'ᱛᱚᱛᱠᱟ', transliteration: 'totka', english: 'Back of head' },
-    { id: 'bp6', olChiki: 'ᱦᱟᱛᱟᱲ', transliteration: 'hatad', english: 'Brain' },
+    { id: 'bp6', olChiki: 'ᱦᱟᱛᱟᱲ', transliteration: 'hatad', english: 'Brain' }, // Using first from "hatad, bheja"
     { id: 'bp7', olChiki: 'ᱢᱚᱞᱚᱝ', transliteration: 'molong', english: 'Forehead' },
     { id: 'bp8', olChiki: 'ᱢᱚᱲᱟ', transliteration: 'moda', english: 'Face' },
     { id: 'bp9', olChiki: 'ᱢᱮᱫ', transliteration: 'med', english: 'Eye' },
@@ -542,11 +584,11 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'bp26', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kăṭub', english: 'Finger' },
     { id: 'bp27', olChiki: 'ᱨᱟᱢᱟ', transliteration: 'rama', english: 'Nail' },
     { id: 'bp28', olChiki: 'ᱮᱸᱜᱟ ᱠᱟᱹᱴᱩᱵ', transliteration: 'enga kăṭub', english: 'Thumb' },
-    { id: 'bp29', olChiki: 'ᱩᱫᱩᱜ ᱠᱟᱹᱴᱩᱵ', transliteration: 'udug kăṭub', english: 'Pointer Finger' },
+    { id: 'bp29', olChiki: 'ᱩᱫᱩᱜ ᱠᱟᱹᱴᱩᱵ', transliteration: 'udug kăṭub', english: 'Pointer Finger' }, // Corrected from Panter
     { id: 'bp30', olChiki: 'ᱥᱤᱫ ᱠᱟᱹᱴᱩᱵ', transliteration: 'sid kăṭub', english: 'Middle finger' },
     { id: 'bp31', olChiki: 'ᱵᱟᱯᱞᱟ ᱠᱟᱹᱴᱩᱵᱽ', transliteration: 'bapla kăṭub', english: 'Ring finger' },
     { id: 'bp32', olChiki: 'ᱦᱩᱰᱤᱧ ᱠᱟᱹᱴᱩᱵ', transliteration: 'huḍinj kăṭub', english: 'Little finger' },
-    { id: 'bp33', olChiki: 'ᱠᱚᱲᱟᱢ', transliteration: 'koṛam', english: 'Chest' },
+    { id: 'bp33', olChiki: 'ᱠᱚᱲᱟᱢ', transliteration: 'koṛam', english: 'Chest' }, // Roman was kodam
     { id: 'bp34', olChiki: 'ᱵᱚᱨᱚ', transliteration: 'boro', english: 'Lungs' },
     { id: 'bp35', olChiki: 'ᱤᱱ', transliteration: 'in', english: 'Heart' },
     { id: 'bp36', olChiki: 'ᱵᱩᱠᱟᱹ', transliteration: 'bukă', english: 'Navel' },
@@ -557,12 +599,12 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'bp41', olChiki: 'ᱢᱩᱛᱩ', transliteration: 'mutu', english: 'genital' },
     { id: 'bp42', olChiki: 'ᱰᱮᱠᱮ', transliteration: 'ḍeke', english: 'Buttock' },
     { id: 'bp43', olChiki: 'ᱡᱟᱝ', transliteration: 'jang', english: 'Bone' },
-    { id: 'bp44', olChiki: 'ᱡᱤᱞ', transliteration: 'jil', english: 'Meat' },
+    { id: 'bp44', olChiki: 'ᱡᱤᱞ', transliteration: 'jil_meat_bodypart', english: 'Meat' }, // Differentiated
     { id: 'bp45', olChiki: 'ᱢᱟᱭᱟᱢ', transliteration: 'mayam', english: 'Blood' },
-    { id: 'bp46', olChiki: 'ᱵᱩᱞᱩ', transliteration: 'bulu', english: 'Thigh' },
-    { id: 'bp47', olChiki: 'ᱴᱷᱤᱴᱲᱟᱜ', transliteration: 'ṭhiṭṛag', english: 'Knee' },
+    { id: 'bp46', olChiki: 'ᱵᱩᱞᱩ', transliteration: 'bulu', english: 'Thigh' }, // Using first from "bulu, dhada"
+    { id: 'bp47', olChiki: 'ᱴᱷᱤᱴᱲᱟᱜ', transliteration: 'ṭhiṭṛag', english: 'Knee' }, // Using first from "thitnak, gonthe", adjusted Roman
     { id: 'bp48', olChiki: 'ᱡᱟᱝᱜᱟ', transliteration: 'janga', english: 'Foot' },
-    { id: 'bp49', olChiki: 'ᱤᱲᱤ', transliteration: 'iṛi', english: 'Heel' },
+    { id: 'bp49', olChiki: 'ᱤᱲᱤ', transliteration: 'iṛi', english: 'Heel' }, // Roman was idi
     { id: 'bp50', olChiki: 'ᱡᱟᱝᱜᱟ ᱛᱷᱚᱯᱮ', transliteration: 'Janga thope', english: 'Feet' },
   ],
   "Plants & Nature": [
@@ -580,17 +622,17 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 't3', olChiki: 'ᱪᱩᱢᱟᱹᱬ', transliteration: 'cumaṇ', english: 'Pot' },
     { id: 't4', olChiki: 'ᱥᱟᱭᱠᱮᱞ', transliteration: 'saikel', english: 'Bicycle' },
     { id: 't5', olChiki: 'ᱫᱟᱜ', transliteration: 'dag’', english: 'Water' },
-    { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kăṭub', english: 'Knife' },
+    { id: 't6', olChiki: 'ᱠᱟᱹᱴᱩᱵ', transliteration: 'kăṭub_knife', english: 'Knife' }, // Differentiated
     { id: 't7', olChiki: 'ᱪᱟᱨᱯᱟᱭ', transliteration: 'carpai', english: 'Bed' },
   ],
-  "Food Items": [ 
+  "Food Items": [ // Merged with Eatables for now, can be separated later
     { id: 'f1', olChiki: 'ᱫᱟᱠᱟ', transliteration: 'daka', english: 'Cooked Rice' },
-    { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu', english: 'Curry/Vegetable Dish' },
+    { id: 'f2', olChiki: 'ᱩᱛᱩ', transliteration: 'utu_curry', english: 'Curry/Vegetable Dish' },
     { id: 'f3', olChiki: 'ᱡᱚ', transliteration: 'jo', english: 'Fruit' },
     { id: 'f4', olChiki: 'ᱯᱤᱴᱷᱟᱹ', transliteration: 'piṭhạ̈', english: 'Rice Cake/Pancake' },
     { id: 'f5', olChiki: 'ᱦᱟᱺᱰᱤ', transliteration: 'haṇḍi', english: 'Rice Beer' },
     { id: 'f6', olChiki: 'ᱵᱩᱞᱩᱝ', transliteration: 'buluṅ', english: 'Salt' },
-    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mărich', english: 'Chilli' },
+    { id: 'f7', olChiki: 'ᱢᱟᱹᱨᱤᱪ', transliteration: 'mărich_chilli', english: 'Chilli' },
   ],
   "Relations": [
     { id: 'rel1', olChiki: 'ᱵᱟᱵᱟ', transliteration: 'baba', english: 'Father' },
@@ -601,28 +643,28 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel6', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Grand Mother' },
     { id: 'rel7', olChiki: 'ᱡᱟᱶᱟᱭ ᱜᱚᱢᱠᱮ', transliteration: 'jaway gomke', english: 'Son in law' },
     { id: 'rel8', olChiki: 'ᱜᱟᱛᱮ', transliteration: 'gaate', english: 'Friend' },
-    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom hadam', english: 'Maternal Grandfather' },
-    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi', english: 'Maternal Grandmother' },
-    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway gomke', english: 'Husband' },
+    { id: 'rel9', olChiki: 'ᱜᱚᱲᱚᱢ ᱦᱚᱲᱟᱢ', transliteration: 'godom horam', english: 'Maternal Grandfather' }, // Corrected Roman from hadam to horam
+    { id: 'rel10', olChiki: 'ᱜᱚᱲᱚᱢ ᱵᱩᱲᱷᱤ', transliteration: 'godom budhi_maternal', english: 'Maternal Grandmother' },
+    { id: 'rel11', olChiki: 'ᱡᱟᱶᱟᱭ', transliteration: 'jaway', english: 'Husband' }, // Simplified Roman
     { id: 'rel12', olChiki: 'ᱵᱤᱴᱤ', transliteration: 'biti', english: 'Daughter' },
     { id: 'rel13', olChiki: 'ᱵᱮᱴᱟ', transliteration: 'beta', english: 'Son' },
-    { id: 'rel14', olChiki: 'ᱫᱩᱞᱟᱹᱲ', transliteration: 'dulăṛ', english: 'Love' },
+    { id: 'rel14', olChiki: 'ᱫᱩᱞᱟᱹᱲ', transliteration: 'dulăṛ', english: 'Love' }, // Roman was dulad
     { id: 'rel15', olChiki: 'ᱵᱚᱠᱚᱧ ᱠᱩᱲᱤ', transliteration: 'bokoing kudi', english: 'Sister' },
     { id: 'rel16', olChiki: 'ᱵᱚᱭᱦᱟ', transliteration: 'boyha', english: 'Brother' },
     { id: 'rel17', olChiki: 'ᱯᱮᱲᱟ', transliteration: 'peda', english: 'Guest' },
-    { id: 'rel18', olChiki: 'ᱢᱟᱪᱮᱛ', transliteration: 'mauchet', english: 'Teacher' },
+    { id: 'rel18', olChiki: 'ᱢᱟᱪᱮᱛ', transliteration: 'machet', english: 'Teacher' }, // Roman was mauchet
     { id: 'rel19', olChiki: 'ᱜᱩᱨᱩ', transliteration: 'guru', english: 'Preceptor' },
-    { id: 'rel20', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱥᱟᱞᱤ', transliteration: 'iril kudi sali', english: 'Sister in law (wife\'s younger sister)' },
-    { id: 'rel21', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱱᱚᱱᱚᱫ', transliteration: 'iril kudi nonod', english: 'Sister in law (husband\'s sister)' },
-    { id: 'rel22', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱫᱮᱣᱨᱟᱱᱤ', transliteration: 'iril kudi dewrani', english: 'Sister in law (younger brother\'s wife)' },
+    { id: 'rel20', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱥᱟᱞᱤ', transliteration: 'iril kudi sali', english: "Sister in law (wife's younger sister)" },
+    { id: 'rel21', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱱᱚᱱᱚᱫ', transliteration: 'iril kudi nonod', english: "Sister in law (husband's sister)" }, // Santali had ᱱᱱᱚᱫ, using ᱱᱚᱱᱚᱫ
+    { id: 'rel22', olChiki: 'ᱤᱨᱤᱞ ᱠᱩᱲᱤ ᱫᱮᱣᱨᱟᱱᱤ', transliteration: 'iril kudi dewrani', english: "Sister in law (younger brother's wife)" },
     { id: 'rel23', olChiki: 'ᱢᱟᱢᱟ', transliteration: 'mama', english: 'Maternal Uncle' },
     { id: 'rel24', olChiki: 'ᱢᱟᱢᱤ', transliteration: 'mami', english: 'Maternal Aunt' },
-    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki', english: 'Mother\'s sister' },
-    { id: 'rel26', olChiki: 'ᱟᱪᱮᱛ', transliteration: 'auchet', english: 'Pupil' },
-    { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijăr', english: 'Own' },
+    { id: 'rel25', olChiki: 'ᱠᱟᱹᱠᱤ', transliteration: 'kaki_mothers_sister', english: "Mother's sister" }, // Roman was kaka
+    { id: 'rel26', olChiki: 'ᱟᱪᱮᱛ', transliteration: 'achet', english: 'Pupil' }, // Roman was auchet
+    { id: 'rel27', olChiki: 'ᱱᱤᱡᱟᱹᱨ', transliteration: 'nijăr', english: 'Own' }, // Roman was nijor
     { id: 'rel28', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱵᱟᱵᱟ', transliteration: 'honjhar baba', english: 'Father in law' },
     { id: 'rel29', olChiki: 'ᱦᱚᱧᱦᱟᱨ ᱟᱭᱚ', transliteration: 'honjhar ayo', english: 'Mother in law' },
-    { id: 'rel30', olChiki: 'ᱱᱤᱡᱟᱹᱨ ᱯᱮᱲᱟ', transliteration: 'nijor peda', english: 'Relative' },
+    { id: 'rel30', olChiki: 'ᱱᱤᱡᱟᱹᱨ ᱯᱮᱲᱟ', transliteration: 'nijăr peṛa', english: 'Relative' }, // Roman was nijor peda
     { id: 'rel31', olChiki: 'ᱠᱟᱴ ᱵᱟᱵᱟ', transliteration: 'kat baba', english: 'Step Father' },
     { id: 'rel32', olChiki: 'ᱪᱷᱩᱴᱠᱤ ᱟᱭᱚ', transliteration: 'chutki ayo', english: 'Step Mother' },
     { id: 'rel33', olChiki: 'ᱪᱷᱩᱴᱠᱤ ᱵᱚᱠᱚᱧ', transliteration: 'chutki bokoenj', english: 'Step Brother' },
@@ -632,7 +674,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'rel37', olChiki: 'ᱦᱤᱞᱤ', transliteration: 'hili', english: 'Maternal Sister' },
   ],
   "Days of the Week": [
-    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' },
+    { id: 'd1', olChiki: 'ᱥᱤᱸᱜᱤ', transliteration: 'singi', english: 'Sunday' }, // Corrected from ᱥᱤᱸᱜᱩᱱ
     { id: 'd2', olChiki: 'ᱚᱛᱮ', transliteration: 'ote', english: 'Monday' },
     { id: 'd3', olChiki: 'ᱵᱟᱞᱮ', transliteration: 'bale', english: 'Tuesday' },
     { id: 'd4', olChiki: 'ᱥᱟᱹᱜᱩᱱ', transliteration: 'săgun', english: 'Wednesday' },
@@ -673,7 +715,7 @@ export const categorizedOlChikiWords: Record<string, OlChikiWord[]> = {
     { id: 'o7', olChiki: 'ᱟᱭᱩᱵ', transliteration: 'ayub', english: 'Evening' },
     { id: 'o8', olChiki: 'ᱮᱱᱮᱭ', transliteration: 'eney', english: 'dance' },
   ],
-  "Expanded General Vocabulary": expandedGeneralVocabulary,
+  "Expanded General Vocabulary": expandedGeneralVocabulary, // Keep this line
 };
 
 
@@ -702,21 +744,21 @@ function getEnglishWord(n: number): string {
 function getSantaliWord(n: number): string {
     if (n < 0 || n > 100) return "";
     if (n === 0) return santaliUnitWords[0]; // Sun
-    if (n > 0 && n < 10) return santaliUnitWords[n]; // Mit', Bar, Pe...
+    if (n > 0 && n < 10) return santaliUnitWords[n]; // Mit’, Bar, Pe...
 
     if (n === 10) return "Gel";
-    if (n > 10 && n < 20) return `Gel ${santaliUnitWords[n % 10]}`; // Gel Mit', Gel Bar...
+    if (n > 10 && n < 20) return `Gel ${santaliUnitWords[n % 10]}`; // Gel Mit’, Gel Bar...
 
     if (n === 20) return "Isi";
-    if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`; // Isi Mit', Isi Bar...
+    if (n > 20 && n < 30) return `Isi ${santaliUnitWords[n % 10]}`; // Isi Mit’, Isi Bar...
 
     const tensDigit = Math.floor(n / 10);
     const unitDigit = n % 10;
 
-    if (unitDigit === 0 && n >= 30 && n < 100) {
+    if (unitDigit === 0 && n >= 30 && n < 100) { // For 30, 40, ..., 90
         return `${santaliUnitWords[tensDigit]} Gel`; // Pe Gel, Pun Gel...
     }
-    if (n >= 30 && n < 100 && unitDigit !== 0) {
+    if (n >= 30 && n < 100 && unitDigit !== 0) { // For 31-39, 41-49, etc.
         return `${santaliUnitWords[tensDigit]} Gel ${santaliUnitWords[unitDigit]}`;
     }
 
@@ -761,11 +803,343 @@ export function shuffleArray<T>(array: T[]): T[] {
   return newArray;
 }
 
-// Flatten all words for dictionary search or quiz generation
-export const allOlChikiWords: OlChikiWord[] = Object.values(categorizedOlChikiWords).flat();
+// Function to parse the dictionary entries from the new format
+function parseDictionaryEntries(dictString: string): OlChikiWord[] {
+  const entries: OlChikiWord[] = [];
+  const lines = dictString.trim().split('\n');
+  let entryIdCounter = 313; // Start after existing egv entries
 
-// Adding Santali Name Generator Data
-export const santaliFirstNamesSample: string[] = ["ᱥᱚᱢᱟ", "ᱢᱟᱝᱜᱟᱞ", "ᱵᱩᱫᱷᱩ", "ᱵᱤᱦᱟᱨᱤ", "ᱨᱟᱹᱱᱤ", "ᱯᱷᱩᱞᱢᱚᱱᱤ", "ᱥᱟᱞᱜᱮ", "ᱡᱩᱨᱤ", "ᱫᱩᱞᱟᱹᱲ", "ᱵᱟᱦᱟ"];
-export const santaliSurnamesSample: string[] = ["ᱢᱩᱨᱢᱩ", "ᱦᱟᱸᱥᱫᱟᱜ", "ᱢᱟᱹᱨᱰᱤ", "ᱥᱚᱨᱮᱱ", "ᱴᱩᱰᱩ", "ᱠᱤᱥᱠᱩ", "ᱦᱮᱢᱵᱨᱚᱢ", "ᱵᱟᱥᱠᱮ"];
+  for (const line of lines) {
+    if (line.trim().length === 0) continue;
+
+    // Skip single-letter section headers (a, b, c, etc.)
+    if (line.trim().length === 1 && /^[a-zA-Z]$/.test(line.trim())) {
+      continue;
+    }
+
+    const parts = line.split(' – '); // Use " – " (en dash) as the primary separator
+    if (parts.length < 2) continue;
+
+    const englishPart = parts[0].trim();
+    const detailsPart = parts.slice(1).join(' – ').trim();
+
+    let romanTransliteration = "";
+    let englishDefinition = detailsPart; // Default definition
+
+    // Regex to find POS (like n., vt., adj.) optionally followed by the Roman transliteration
+    // and then potentially more definitions after a semicolon.
+    const posRomanRegex = /^(n\.|adj\.|vt\.|vi\.|adv\.)?\s*([^;–]+)/;
+    const match = detailsPart.match(posRomanRegex);
+
+    if (match && match[2]) {
+      romanTransliteration = match[2].trim();
+      // The rest of the detailsPart can be the English definition if needed, or part of it
+      // This part is tricky because the English definition is actually `englishPart`.
+      // The `detailsPart` contains POS, Roman, and sometimes extra Roman definitions.
+      // For simplicity, we will take the first Roman as the main transliteration.
+      // The englishPart is already the definition.
+    } else {
+        // If no POS/Roman structure is clearly matched,
+        // we might assume the detailsPart primarily contains Roman,
+        // or it's a continuation of the definition.
+        // For now, if no clear Roman part, we might use a placeholder or try to deduce.
+        // If englishPart is the definition, detailsPart should be roman.
+        // A simple split by semicolon might be too naive if semicolons are in definitions.
+        // Let's assume if no POS, the first part of detailsPart IS the Roman if it looks like one
+        // (e.g., not too long, contains typical Roman Santali characters).
+        // This is heuristic and might need refinement.
+        const firstWordOfDetails = detailsPart.split(' ')[0].split(';')[0];
+        if (firstWordOfDetails.length < 20 && /^[a-zA-Z0-9._~:]+$/.test(firstWordOfDetails)){ // basic check
+            romanTransliteration = firstWordOfDetails;
+        } else {
+             // Fallback: if detailsPart doesn't look like a roman transliteration,
+            // and englishPart is likely the english word,
+            // then the roman transliteration is missing or needs manual input.
+            // For now, we'll construct a placeholder.
+            console.warn("Could not reliably determine Roman transliteration for:", line, "Using English part as fallback.");
+            romanTransliteration = englishPart.toLowerCase().replace(/[^a-z0-9]/gi, ''); // Basic fallback
+        }
+    }
+     if (!romanTransliteration) {
+        console.warn("Roman transliteration empty for:", line, ". Using English part as fallback.");
+        romanTransliteration = englishPart.toLowerCase().replace(/[^a-z0-9]/gi, ''); // Basic fallback
+    }
+
+
+    const olChikiScript = convertRomanKeyToOlChiki(romanTransliteration);
+
+    entries.push({
+      id: `genDict_${entryIdCounter++}`,
+      english: englishPart, // This is the actual English word/phrase
+      transliteration: romanTransliteration,
+      olChiki: olChikiScript,
+    });
+  }
+  return entries;
+}
+
+const newDictionaryDataString = `
+add – vt. SELED;
+addition – n. SELED;
+address – n. BUtA.; tHIKA.nA;
+adjective – n. GUnUn;
+adverb – n. TonoZ;
+all – adj. SAnAm; JoTo; JAKAT;
+angle – n. KOnA; KoNM;
+animal – n. JAnWoR;
+association – n. SEmLED;
+bad – adj. BA.ZIJ; BAF_tHIK;
+beginning – ge. ETohoB; EhoB;
+big – adj. SE:MA; mARAF;
+bird – n. CE:ME.;
+black – adj. hE:DE.;
+blacken – vt. hE:DE.;
+blue – adj. LIL;
+boil – vt., vi. hE:dE.J; hEdEJ;
+bone – n. JAF;
+book – n. PoToB; PUTHI;
+boy – n. KoZA GIDX_RA.; BA.BU GIDX_RA.;
+brain – n. hATAF; BHEJA;
+break – vt., vi. RA.PUD;
+bring – vt. A.GU;
+broken – adj. RA.PUD;
+cat – n. PUSI;
+chief minister – n. SIRA. monTRI;
+child – n. GIDX_RA.; hoPon;
+collection – n. JARWA; JAWRA;
+column – n. TINGU THAR;
+colour – n., vt. RoF;
+complete – adj. PURA.; vt. SA.T; CABA;
+compose – vt. GABAn;
+composition – n. GABAn;
+conjunction – n. TonoF;
+consonant – n. KECED AZAF;
+continuous – adj. CoLoT;
+count – vt. LEKHA; vi. BHoRSA;
+country – n., adj. DISom;
+cry – n., vi. RAG;
+dance – n., vi. EnEJ;
+decide – vt. tHA.WKA.;
+decision – n. tHA.WKA.;
+depend – vi. BHoRSA;
+digit – n. EL;
+direction – n. PAStA; PAhtA; SED; DISA.;
+divide – vt. hA.tIQ; BHAGX; JUZU;
+dividend – n. hAtAMCA;
+divider – n. hAtAMhA;
+division – n. hAtAM; hA.tIQ; BHAGX;
+do – vt. KoRAW; KA.mI;
+dog – n. SETA;
+drink – n. QU~ JInIS; vt. QU~;
+drop – n. tHoP; BUNDX; vt., vi. QUR;
+dry – adj., vt., vi. RohoZ;
+eat – vt., vi. Jom;
+eatable – n. Jom; Jom_QU~; adj. JomAG JANhAN Jom DAZEGoG_A;
+eight – n., adj. IRA.L;
+eighth – adj. IRA.LAG; IRA.LIJ;
+end – n., vt., vi. mUCA.D;
+environment – n. SACARhE;
+example – n. QECEL;
+fact – n. SA.RI KATHA;
+fan – n. PAFKHA;
+far – adj. SA:GIQ;
+fast – adv. LoGon;
+fat – n. ITIL; CoRBI; adj. motA;
+fifth – adj. moMEYAG; moMEYIJ;
+fight – n., vi. TAPAm;
+figure – n. RUP; CHoBI;
+finish – vt. SA.T; CABA;
+fire – n. SE:GE.L; vi. tHU;
+first – adj. mAMAF; mAMAFAG; PUYLUWAG; mAMAFIJ; PUYLUYIJ; mIDAG; mIDIJ;
+fish – n. hA.KU;
+five – n. moME; adj. moME; moME GotEJ;
+fly – n. Ro~; vi. UdA.W;
+food – n. Jom, Jom_QU~; JomAG; Jom_QUWAG;
+form – n. RUP; vt, vi. . BE.nAW;
+four – n. PUn; adj. PUn; PUnYA.;
+fourth – adj. PUnA.G; PUnIJ;
+fox – n. TUYU;
+frog – n. RotE;
+fry – n., vt. BHA.JI;
+function – n. KA.mI;
+future – adj. DARAY; AGAm;
+garden – n. BAGAn;
+gather – vt., vi. JARWA; JAWRA;
+gender – n. JAnAF; masculine gender – n. KoZA JAnAF; feminine gender – n. KUZI JAnAF; neuter gender – n. hAD JAnAF; common gender – n. JA.T JAnAF;
+geography – n. oTno;
+girl – n. KUZI GIDX_RA.; mA.Y GIDX_RA.;
+give – vt. Em;
+go – vi. SEn; CALAW;
+good – adj. BES;
+grammar – n. RonoZ;
+heap – n. PUNJI;
+hill – n. BURU; dUNGX_RI;
+history – n. nAGAm;
+imprison – vt. JIhoL;
+include – vt. ANGoC;
+interjection – n. hAnAW;
+intransitive – adj. onoG;
+jail – n. JIhoL;
+join – n., vt., vi. KHoNJA;
+joint – n. KHoNJA;
+keep – vt. Doho;
+kind (type) – n. ToRon;
+kind – adj. DoYALU;
+know – vt. BAdAY; BAZAY;
+language – n. RoZ; BHASA;
+laugh – vi. LANDA;
+law – n. nIYom; KA.nUn;
+length – n. JHA.L;
+lengthen – vt. JHA.L;
+life – n. JIWI~; JIBon;
+live – vi. TANhEn;
+line – n. GAR;
+literature – n. SAVhED;
+long – adj. JHA.L;
+lubricate – vt. SUnUm;
+man (human being) – n. hoZ;
+man (as a male) – n. KoZA;
+marriage – n. BAPLA;
+mathematician – n. ELKHARIYA.;
+mathematics – n. ELKHA;
+meat – n. JIL;
+medicine – n. RAn;
+meet – vi. QAPAm;
+meeting – n. mIDUn;
+milk – n. TOWA; ToWA; vt. DUhA.W;
+motion – n. CoLoT;
+mountain – n. BURU;
+mud – n. LoSoD;
+name – n., vt. QUTUm;
+news – n. KHoBoR;
+nine – n., adj. ARE;
+ninth – adj. AREYAG; AREYIJ;
+noun – n. QUnUm;
+now – adv. nIToG; nIToF; nIT;
+number (in grammar) – n. GotAn; singular number – n. mID GotAn; dual number – n. BAR GotAn; plural number – n. SANGE GotAn;
+number (in mathematics) – n. LEKHA;
+object – n. JoToS;
+oceanography – n. DoRYATno;
+oil – n., vt. SUnUm;
+old – adj. mARE; mAREnAG;
+one – n. mID; adj. mID; mIDtIJ;
+page – n. SAhtA;
+parts of speech – n. PA.RIS;
+past – n., adj. EnAF; SEDAY; PA.hIL;
+perfect – adj. SA.TA.n;
+person (in grammar) – n. GoRon; first person – n. mAMAF GoRon; second person – n. SAmAF GoRon; third person – n. SA:GIQ GoRon;
+person – n. hoZ;
+picture – n. CHoBI;
+place – n. JAYGA; vt. tHANV;
+point – n. tUdA.G; BInDU; vi. UDUG;
+position – n. tHANV;
+postposition – n. GA:nA.t;
+preface – n. onoZ;
+present – adj. nITAF; nAhAG;
+president – n. PARSET;
+press – vt. oTA;
+previous – adj. PA.hIL; mAMAF;
+prime minister – n. mARAF monTRI;
+prison – n. JIhoL;
+procession – n. mICHIL;
+pronoun – n. UQUm;
+queen – n. RA.nI;
+quotient – n. hAZA; JUZU;
+rat – n. GUdU; CUtU; SARGA; CUNDX;
+recognition – n. UPURUm;
+red – adj. ARAG;
+relation – n. SA.GA.Y;
+remainder – n. hAtAMSA; SAREJ;
+root – n. REhED; BUtA; PHEZAT; JAF;
+row – n. GITIJ THAR;
+rule – n. nIYom;
+save – vt. BAQCAW;
+schedule – n. DHAP;
+school – n. ASnA;
+science – n. SANMES;
+search – vt., vi. PAnTE;
+second – adj. BARAG; DoSARAG; BARIJ; DoSARIJ; DoSAR; mID SE.KE.nd SomoY;
+secretary – n. SUTRET; assistant secretary – n. JoGo SUTRET;
+see – vt., vi. QEL;
+seed – n. JAF; ITA.;
+send – vt. BHEJA;
+sentence – n. A.YA.T;
+set – n. JARWA; JAWRA;
+seven – n., adj. EYAY;
+seventh – adj. EYAYAG; EYAYIJ;
+share – n. JUZU; hA.tIQ; BHAGX; hAZA; vt. hA.tIQ; BHAGX;
+shoe – n. PAnAhI; JUTA.;
+sin – n., vi. PAP;
+sinner – n. PA.PI;
+sit – vi. DUZUB;
+six – n., adj. TURUY;
+sixth – adj. TURUYAG; TURUYIJ;
+sleep – n., vi. JA.PID;
+slim – adj., vi. PATLA; moRA;
+small – adj. hUdIQ;
+smell – vt. JI~; n., vi. So~;
+smile – n., vi. LANDA;
+smoke – n. DHUNVA; vi. PUNGI QU~;
+snake – n. BIQ;
+society – n. SAVTA;
+soil – n., vi. hASA;
+soul – n. JIWI~;
+sound – n., vi. SAdE; SAZE;
+space – n. PHADA; JAYGA;
+speak – vt., vi. RoZ; mEn;
+student – n. CETETIYA.; CEDoGIJ;
+subject – n. mUTA.n;
+subtract – vt. BHEGED;
+subtraction – n. BHEGED;
+take – vt. IDI;
+tall – adj. USUL;
+talk – vi. RoZ; BHASon Em;
+tea – n. CA;
+teach – vt. PAZhAW;
+teacher – n. mACET;
+tell – vt. RoZ; mEn;
+ten – n., adj. GEL;
+tenth – adj. GELAG; GELIJ;
+tense – n. nAF;
+thing – n. JInIS;
+third – adj. PEYAG; TESARAG; PEYIJ; TESARIJ; TESAR;
+three – n. PE; adj. PE; PEYA;
+throw – vt. CAPAD;
+tiger – n. TA.RUB;
+time – n. tAZAF; SomoY; oKTo;
+transitive – adj. EnED;
+two – n. BAR; adj. BAR; BARYA;
+understand – vt., vi. BUJHA.W;
+verb – n. KAnWA;
+village – n. A.TU;
+vowel – n. RAhA AZAF;
+volcano – n. SE:GE.L BURU;
+war – n. LA.ZhA.Y; JUDXDHo~;
+water – n. DAG;
+white – adj. PUNM;
+wire – n. TAR;
+woman – n. KUZI~; old woman – n. BUZhI; BUdHI;
+word – n. A.ZA.;
+write – vt., vi. oL;
+writer – n. onoLIYA.;
+`;
+
+const parsedNewWords = parseDictionaryEntries(newDictionaryDataString);
+
+// Merge new words with existing expandedGeneralVocabulary, ensuring uniqueness
+const combinedVocabulary = [...expandedGeneralVocabulary, ...parsedNewWords];
+expandedGeneralVocabulary = Array.from(
+  new Map(combinedVocabulary.map(item => [`${item.english.toLowerCase().trim()}-${item.transliteration.toLowerCase().trim()}`, item])).values()
+);
+
+
+// Make sure categorizedOlChikiWords["Expanded General Vocabulary"] is updated
+// and contains all unique words from expandedGeneralVocabulary.
+categorizedOlChikiWords["Expanded General Vocabulary"] = expandedGeneralVocabulary;
+
+console.log(`Total entries in 'Expanded General Vocabulary' after merging: ${categorizedOlChikiWords["Expanded General Vocabulary"].length}`);
+
+// Re-export allOlChikiWords after updates
+export const allOlChikiWords: OlChikiWord[] = Object.values(categorizedOlChikiWords).flat();
 
     

@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { generateOlchikiSentence, type GenerateOlchikiSentenceInput, type GenerateOlchikiSentenceOutput } from '@/ai/flows/generate-olchiki-sentence';
 import { Loader2, Wand2, Search, Shuffle } from 'lucide-react';
-import { categorizedOlChikiWords, type OlChikiWord, santaliFirstNamesSample, santaliSurnamesSample } from '@/lib/ol-chiki-data';
+import { categorizedOlChikiWords, type OlChikiWord, santaliFirstNamesSample, santaliSurnamesSample, type SantaliNamePart } from '@/lib/ol-chiki-data';
 
 // Direct mapping for common English keys to Ol Chiki characters for the first tool
 const directKeyToOlChikiMap: { [key: string]: string } = {
@@ -30,8 +30,8 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   's': 'ᱥ',
   'h': 'ᱦ', 'H': 'ᱷ',
   'n': 'ᱱ',
-  'N': 'ᱧ',
-  'r': 'ᱨ', 'R': 'ᱲ',
+  'N': 'ᱧ', // For 'INY' like sounds, capital N is a common convention
+  'r': 'ᱨ', 'R': 'ᱲ', // For 'ERR' like sounds
   'u': 'ᱩ',
   'c': 'ᱪ',
   'd': 'ᱫ', 'D': 'ᱰ',
@@ -39,11 +39,15 @@ const directKeyToOlChikiMap: { [key: string]: string } = {
   'e': 'ᱮ',
   'p': 'ᱯ',
   'b': 'ᱵ',
-  'o': 'ᱳ',
-  '.': '᱾',
-  ',': 'ᱹ',
-  '?': '?',
+  'o': 'ᱳ', // Using LO for 'o' sound
+  '.': '᱾', // MUCAAD
+  ',': 'ᱹ', // AHAD (often used as a separator or comma-like)
+  '?': '?', // Literal question mark
+  '!': '!', // Pass through exclamation
+  ' ': ' ', // Space
+  // Add other punctuation or symbols you want to pass through directly
 };
+
 
 // Schema for the AI Translator Tool (Second tool)
 const aiTranslatorFormSchema = z.object({
@@ -66,7 +70,7 @@ export default function SentencePractice() {
     let result = '';
     for (let i = 0; i < currentInput.length; i++) {
       const char = currentInput[i];
-      result += directKeyToOlChikiMap[char] || char; 
+      result += directKeyToOlChikiMap[char] || char; // If no mapping, use original char
     }
     return result;
   }, []);
@@ -161,16 +165,18 @@ export default function SentencePractice() {
   };
 
   // ---- Santali Name Generator Tool States & Logic (Fourth tool) ----
-  const [generatedSantaliName, setGeneratedSantaliName] = useState<string>('');
+  const [generatedFirstName, setGeneratedFirstName] = useState<SantaliNamePart | null>(null);
+  const [generatedSurname, setGeneratedSurname] = useState<SantaliNamePart | null>(null);
+
 
   const generateNewSantaliName = useCallback(() => {
     const randomFirstName = santaliFirstNamesSample[Math.floor(Math.random() * santaliFirstNamesSample.length)];
     const randomSurname = santaliSurnamesSample[Math.floor(Math.random() * santaliSurnamesSample.length)];
-    setGeneratedSantaliName(`${randomFirstName} ${randomSurname}`);
+    setGeneratedFirstName(randomFirstName);
+    setGeneratedSurname(randomSurname);
   }, []);
 
   useEffect(() => {
-    // Generate a name on initial load (client-side only)
     generateNewSantaliName();
   }, [generateNewSantaliName]);
 
@@ -185,8 +191,8 @@ export default function SentencePractice() {
             <CardTitle>English Keyboard to Ol Chiki Script (Real-time)</CardTitle>
             <CardDescription>
               Type English characters to see their corresponding Ol Chiki script instantly.
-              Mapped punctuation: '.' to ᱾, ',' to ᱹ, '?' to ?.
-              Other symbols (like '!') and emojis will appear as typed. It is not a full language translator.
+              Mapped punctuation: '.' to ᱾, ',' to ᱹ.
+              Question marks, exclamation marks, and emojis will appear as typed. This is not a full language translator.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -303,7 +309,7 @@ export default function SentencePractice() {
             <CardTitle>Look Up Words (In-App Vocabulary)</CardTitle>
             <CardDescription>
               Enter a Santali word (in Ol Chiki or Roman script) or an English word to find its translation
-              from the app's internal vocabulary list.
+              from the app's internal vocabulary list. This dictionary searches the vocabulary taught within the app.
             </CardDescription>
           </CardHeader>
           <Form {...dictionaryForm}>
@@ -337,33 +343,35 @@ export default function SentencePractice() {
           </Form>
 
           {dictionaryResult && !isDictionarySearching && (
-            <Card className="mt-6 shadow-inner bg-secondary/20">
-              <CardHeader>
-                <CardTitle className="text-accent">Dictionary Result:</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {dictionaryResult.status === 'not_found' ? (
-                  <p className="text-center text-muted-foreground p-4 border border-dashed rounded-md">
-                    Word "<span className="font-semibold">{dictionaryResult.term}</span>" not found in the app's dictionary.
-                  </p>
-                ) : (
-                  <>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Ol Chiki Script:</Label>
-                      <p className="text-2xl font-mono p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).olChiki}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">Roman Transliteration:</Label>
-                      <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).transliteration}</p>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-muted-foreground">English Meaning:</Label>
-                      <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).english}</p>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+             <div className="mt-6 px-6 pb-6">
+                <Card className="shadow-inner bg-secondary/20">
+                  <CardHeader>
+                    <CardTitle className="text-accent">Dictionary Result:</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {dictionaryResult.status === 'not_found' ? (
+                      <p className="text-center text-muted-foreground p-4 border border-dashed rounded-md">
+                        Word "<span className="font-semibold">{dictionaryResult.term}</span>" not found in the app's dictionary.
+                      </p>
+                    ) : (
+                      <>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Ol Chiki Script:</Label>
+                          <p className="text-2xl font-mono p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).olChiki}</p>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Roman Transliteration:</Label>
+                          <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).transliteration}</p>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">English Meaning:</Label>
+                          <p className="text-lg p-2 bg-background/50 rounded-md">{(dictionaryResult as OlChikiWord).english}</p>
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+             </div>
           )}
         </Card>
       </div>
@@ -378,15 +386,22 @@ export default function SentencePractice() {
             <CardTitle>Generate a Santali Name</CardTitle>
             <CardDescription>
               Click the button to generate a random Santali name using common first names and surnames.
-              (Uses placeholder data for now).
+              Meanings are placeholders for now.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-center">
-            {generatedSantaliName && (
+            {(generatedFirstName && generatedSurname) && (
               <div className="mt-4">
                 <Label className="text-accent font-semibold">Generated Name:</Label>
                 <div className="text-3xl font-mono p-4 bg-secondary/30 rounded-md mt-2 min-h-[3em] break-words flex items-center justify-center">
-                  {generatedSantaliName}
+                  {generatedFirstName.olChiki} {generatedSurname.olChiki}
+                </div>
+                <div className="mt-2 text-lg text-muted-foreground">
+                  ({generatedFirstName.transliteration} {generatedSurname.transliteration})
+                </div>
+                <div className="mt-3 space-y-1 text-sm">
+                  <p><span className="font-semibold">First Name Meaning:</span> {generatedFirstName.meaning}</p>
+                  <p><span className="font-semibold">Surname Meaning:</span> {generatedSurname.meaning}</p>
                 </div>
               </div>
             )}
@@ -399,7 +414,6 @@ export default function SentencePractice() {
           </CardFooter>
         </Card>
       </div>
-
     </div>
   );
 }

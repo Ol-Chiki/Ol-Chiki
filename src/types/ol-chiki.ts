@@ -22,6 +22,13 @@ export interface OlChikiNumber {
   santaliWord: string; // Santali word for the number, e.g., "Sun", "Mit'"
 }
 
+export interface SantaliNamePart {
+  olChiki: string;
+  transliteration: string;
+  meaning: string;
+}
+
+
 // Game related types
 export interface GameLevel {
   id: string;
@@ -38,4 +45,11 @@ export interface TranscriptionQuestion {
   id: string; // Typically the character's id
   olChiki: string;
   correctAnswer: string; // Transliteration or other expected answer
+}
+
+// Quiz related types for Reading/Writing Practice
+export interface QuizScoreData {
+  score: number;
+  totalQuestions: number;
+  stars: number;
 }

@@ -1,5 +1,5 @@
 
-import type { OlChikiCharacter, OlChikiWord, OlChikiNumber, SantaliNamePart } from '@/types/ol-chiki';
+import type { OlChikiCharacter,  OlChikiWord, OlChikiNumber,  SantaliNamePart } from '@/types/ol-chiki';
 
 export const olChikiCharacters: OlChikiCharacter[] = [
   { id: 'c1', olChiki: 'ᱚ', transliteration: 'LA', pronunciation: '/ɔ/' },

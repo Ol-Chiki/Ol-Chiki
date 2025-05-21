@@ -4,15 +4,15 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
-import LearnAlphabet from "@/components/ol-chiki/learn-alphabet";
-import LearnNumbers from "@/components/ol-chiki/learn-numbers";
-import LearnWords from "@/components/ol-chiki/learn-words";
-import SentencePractice from "@/components/ol-chiki/sentence-practice";
-import WritingPracticeQuiz from "@/components/ol-chiki/writing-practice-quiz";
-import GameHub from "@/components/ol-chiki/game-hub";
-import BasicLearningHub from "@/components/ol-chiki/basic-learning-hub";
-import PracticeHub from '@/components/ol-chiki/practice-hub';
-import ReadingPracticeHub from '@/components/ol-chiki/reading-practice-hub';
+import LearnAlphabet from "@/components/ol-chiki/LearnAlphabet";
+import LearnNumbers from "@/components/ol-chiki/LearnNumbers";
+import LearnWords from "@/components/ol-chiki/LearnWords";
+import SentencePractice from "@/components/ol-chiki/SentencePractice";
+import WritingPracticeQuiz from "@/components/ol-chiki/WritingPracticeQuiz";
+import GameHub from "@/components/ol-chiki/GameHub";
+import BasicLearningHub from "@/components/ol-chiki/BasicLearningHub";
+import PracticeHub from '@/components/ol-chiki/PracticeHub';
+import ReadingPracticeHub from '@/components/ol-chiki/ReadingPracticeHub';
 import ReadingQuizSelectionHub from '@/components/ol-chiki/quizzes/reading-quiz-selection-hub';
 import ReadingQuizIdentifyWords from '@/components/ol-chiki/quizzes/reading-quiz-identify-words';
 import ReadingEasySelectionHub from '@/components/ol-chiki/quizzes/reading-easy-selection-hub';
@@ -23,7 +23,7 @@ import ReadingHardSelectionHub from '@/components/ol-chiki/quizzes/reading-hard-
 import ReadingHardStoryQuiz from '@/components/ol-chiki/quizzes/reading-hard-story-quiz';
 import ReadingExpertSelectionHub from '@/components/ol-chiki/quizzes/reading-expert-selection-hub';
 import ReadingExpertMcqQuiz from '@/components/ol-chiki/quizzes/reading-expert-mcq-quiz';
-import WritingPracticeHub from '@/components/ol-chiki/writing-practice-hub';
+import WritingPracticeHub from '@/components/ol-chiki/WritingPracticeHub';
 // Writing Quiz Selection Hubs
 import WritingBasicSelectionHub from '@/components/ol-chiki/quizzes/writing-basic-selection-hub';
 import WritingEasySelectionHub from '@/components/ol-chiki/quizzes/writing-easy-selection-hub';
@@ -307,9 +307,7 @@ export default function OlChikiPathPage() {
           <GraduationCap className="h-6 w-6" />
           <h1 className="text-base sm:text-xl font-bold tracking-tight leading-tight">Let's Learn Ol Chiki</h1>
         </div>
-        {user && (
-           <div className="text-xs sm:text-sm hidden sm:block truncate max-w-[150px] sm:max-w-[250px]" title={user.email ?? undefined}>Logged in as: {user.email}</div>
-        )}
+        
       </header>
 
       <main className="flex-grow container mx-auto py-2 px-1 md:py-6 md:px-4 pb-20">
